@@ -118,22 +118,24 @@
 
     <main class="{{ Auth::check() ? 'main-content' : '' }}">
         @auth
-        <header class="top-bar is-minimized" id="topBar">
-            <div class="top-bar-left">
+        <header class="top-bar" id="topBar">
+            <div class="top-bar-left" style="flex: 1;">
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
             
-            <div class="search-bar" style="margin: 0 auto; flex: 0 1 400px;">
-                <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
-                    <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
-                    <input type="text" name="q" placeholder="Raadi..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent; font-weight: 600;">
-                </form>
+            <div class="search-bar-container" style="flex: 2; display: flex; justify-content: center;">
+                <div class="search-bar" style="width: 100%; max-width: 450px;">
+                    <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
+                        <input type="text" name="q" placeholder="Raadi halkan..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent; font-weight: 600;">
+                    </form>
+                </div>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="top-bar-right" style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
                 <!-- Notification Dropdown -->
                 <div class="notification-dropdown" style="position: relative;">
                     <i class="fa-regular fa-bell" style="cursor: pointer; color: var(--text-main); font-size: 1.1rem;" onclick="toggleNotifications()"></i>
