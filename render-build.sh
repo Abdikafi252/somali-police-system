@@ -2,6 +2,7 @@
 # exit on error
 set -o errexit
 
+# Run composer install
 composer install --no-dev --optimize-autoloader
 
 # Run database migrations

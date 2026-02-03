@@ -225,13 +225,23 @@
             @endauth
         })();
 
-        // Mobile Sidebar Toggle
+        // Sidebar Toggle (Mobile & Desktop)
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.querySelector('.sidebar-overlay');
+            const mainContent = document.querySelector('.main-content');
             
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+            if (window.innerWidth <= 1024) {
+                // Mobile behavior
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('collapsed');
+                if (mainContent) {
+                    mainContent.classList.toggle('expanded');
+                }
+            }
         }
         
         // Close sidebar when clicking outside on mobile
