@@ -188,7 +188,8 @@ body {
 /* ==================== TOP BAR ==================== */
 .top-bar {
     display: grid;
-    grid-template-columns: 1fr minmax(200px, 450px) 1fr;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    /* Middle column a bit wider but side columns equal */
     align-items: center;
     padding: 0 2rem;
     background: rgba(255, 255, 255, 0.82);
@@ -201,14 +202,23 @@ body {
     --glass-border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
+/* Force side columns to be exactly the same width for perfect centering */
+.top-bar>div:first-child,
+.top-bar>div:last-child {
+    width: 100%;
+}
+
 .top-bar-left {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
 }
 
 .top-bar-right {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
 }
 
 .search-bar-container {
@@ -234,7 +244,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    width: 350px;
+    width: 100%;
+    max-width: 450px;
     border: 1px solid #e2e8f0;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
