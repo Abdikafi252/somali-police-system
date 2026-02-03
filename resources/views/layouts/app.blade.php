@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="top-bar-right" style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+            <div class="top-bar-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
                 <!-- Notification Dropdown -->
                 <div class="notification-dropdown" style="position: relative;">
                     <i class="fa-regular fa-bell" style="cursor: pointer; color: var(--text-main); font-size: 1.1rem;" onclick="toggleNotifications()"></i>
@@ -168,9 +168,6 @@
                     </div>
                 </div>
 
-                <div class="top-bar-trigger" onclick="toggleTopBar()">
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
             </div>
         </header>
         @endauth
