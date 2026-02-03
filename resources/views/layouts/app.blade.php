@@ -109,110 +109,36 @@
             <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">
                 @csrf
             </form>
-            <a href="#" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
+            <button class="logout-btn-premium" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fa-solid fa-power-off"></i> <span>SAX GAX (LOGOUT)</span>
+            </button>
         </div>
     </div>
     @endauth
 
     <main class="{{ Auth::check() ? 'main-content' : '' }}">
         @auth
-        <header class="top-bar">
+        <header class="top-bar is-minimized" id="topBar">
             <div class="top-bar-left">
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <div class="greeting">
-                    <h2>Soo dhawoow, {{ auth()->user()->name }}! 👋</h2>
-                    <p>{{ now()->format('l, F j, Y') }}</p>
+                    <h2>{{ auth()->user()->name }}</h2>
+                    <p>{{ auth()->user()->role->name }}</p>
                 </div>
             </div>
             
             <div class="search-bar">
                 <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
                     <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
-                    <input type="text" name="q" placeholder="Raadi kiisaska, dambiilayaasha..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent;">
+                    <input type="text" name="q" placeholder="Raadi..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent;">
                 </form>
             </div>
-            <div class="utility-icons" style="display: flex; gap: 15px; align-items: center;">
-                
-                <!-- Notification Dropdown -->
-                <div class="notification-dropdown" style="position: relative;">
-                    <i class="fa-regular fa-bell" style="cursor: pointer; color: #636e72; font-size: 1.1rem;" onclick="toggleNotifications()"></i>
-                    @if(auth()->user()->unreadNotifications->count() > 0)
-                        <span style="position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                            {{ auth()->user()->unreadNotifications->count() }}
-                        </span>
-                    @endif
 
-                    <div id="notification-list" style="display: none; position: absolute; top: 30px; right: 0; background: white; width: 300px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border-soft); z-index: 1000; overflow: hidden;">
-                        <div style="padding: 10px 15px; border-bottom: 1px solid var(--border-soft); font-weight: 700; color: var(--sidebar-bg); display: flex; justify-content: space-between; align-items: center;">
-                            <span>Notifications</span>
-                            <div style="display: flex; gap: 10px;">
-                                @if(auth()->user()->unreadNotifications->count() > 0)
-                                    <form action="{{ route('notifications.mark-all-read') }}" method="POST" id="mark-all-read-form" style="display: none;">@csrf</form>
-                                    <a href="#" onclick="event.preventDefault(); document.getElementById('mark-all-read-form').submit();" style="font-size: 0.7rem; color: #3498db; text-decoration: none;">Mark all read</a>
-                                @endif
-                                <a href="{{ route('notifications.index') }}" style="font-size: 0.7rem; color: var(--primary); text-decoration: none;">View All</a>
-                            </div>
-                        </div>
-                        <div style="max-height: 400px; overflow-y: auto;">
-                            @forelse(auth()->user()->unreadNotifications as $notification)
-                                <div style="padding: 12px 15px; border-bottom: 1px solid #f1f2f6; background: #fff; transition: 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='#fff'">
-                                    
-                                    @if(isset($notification->data['type']) && $notification->data['type'] == 'suspect_alert')
-                                        <!-- Suspect Notification -->
-                                        <div style="display: flex; gap: 10px; align-items: start;">
-                                            @if(!empty($notification->data['photo']))
-                                                <img src="{{ asset('storage/' . $notification->data['photo']) }}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
-                                            @else
-                                                <div style="width: 40px; height: 40px; border-radius: 8px; background: #e74c3c; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                                                    {{ substr($notification->data['message'], 0, 1) }}
-                                                </div>
-                                            @endif
-                                            <div>
-                                                <div style="font-weight: 700; font-size: 0.85rem; color: #e74c3c; margin-bottom: 2px;">
-                                                    <i class="fa-solid fa-handcuffs"></i> Dambiile Cusub
-                                                </div>
-                                                <div style="font-size: 0.8rem; color: var(--sidebar-bg); font-weight: 600;">{{ $notification->data['name'] }} ({{ $notification->data['age'] }} sano)</div>
-                                                <div style="font-size: 0.75rem; color: var(--text-sub);">
-                                                    <strong>{{ $notification->data['crime_type'] }}</strong> - {{ $notification->data['case_number'] }}
-                                                </div>
-                                                <div style="font-size: 0.7rem; color: var(--text-sub); margin-top: 2px;">
-                                                    {{ $notification->created_at->diffForHumans() }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <!-- Standard Crime Notification -->
-                                        <div style="font-weight: 700; font-size: 0.85rem; color: #3498db; margin-bottom: 2px;">
-                                            <i class="fa-solid fa-file-invoice"></i> {{ $notification->data['message'] ?? 'New Notification' }}
-                                        </div>
-                                        @if(isset($notification->data['description']))
-                                            <div style="font-size: 0.75rem; color: #636e72; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                                {{ $notification->data['description'] }}
-                                            </div>
-                                        @endif
-                                        <div style="font-size: 0.7rem; color: #b2bec3;">
-                                            {{ $notification->created_at->diffForHumans() }}
-                                            @if(isset($notification->data['reporter_name']))
-                                                <span class="mx-1">•</span> <i class="fa-solid fa-user-shield"></i> {{ $notification->data['reporter_name'] }}
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-                            @empty
-                                <div style="padding: 20px; text-align: center; color: var(--text-sub); font-size: 0.85rem;">
-                                    No new notifications
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-
-
+            <div class="top-bar-trigger" onclick="toggleTopBar()">
+                <i class="fa-solid fa-chevron-down"></i>
             </div>
         </header>
         @endauth
@@ -222,13 +148,15 @@
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
-        // Initialize Theme
-        (function() {
-            @auth
-                const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
-                document.body.setAttribute('data-theme', userTheme);
-            @endauth
-        })();
+        function toggleTopBar() {
+            const topBar = document.getElementById('topBar');
+            topBar.classList.toggle('is-minimized');
+        }
+
+        @auth
+            const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
+            document.body.setAttribute('data-theme', userTheme);
+        @endauth
 
         function toggleNotifications() {
             var list = document.getElementById('notification-list');

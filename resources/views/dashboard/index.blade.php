@@ -7,61 +7,54 @@
     
 
     <!-- Stats Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+    <!-- Stats Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
         
         <!-- Total Cases -->
-        <div class="glass-card stat-card" style="border-bottom: 4px solid #3498db;">
-            <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
                 <i class="fa-solid fa-folder-open"></i>
             </div>
-            <div class="stat-info">
-                <h3>{{ $case_stats['total'] }}</h3>
-                <p>Wadarta Kiisaska</p>
-            </div>
+            <div class="stat-label" style="color: var(--text-sub); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Wadarta Kiisaska</div>
+            <div class="stat-value" style="font-size: 1.8rem; font-weight: 800; color: var(--sidebar-bg);">{{ $case_stats['total'] }}</div>
         </div>
 
         <!-- Active Investigations -->
-        <div class="glass-card stat-card" style="border-bottom: 4px solid #e67e22;">
-            <div class="stat-icon" style="background: rgba(230, 126, 34, 0.1); color: #e67e22;">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
                 <i class="fa-solid fa-magnifying-glass-chart"></i>
             </div>
-            <div class="stat-info">
-                <h3>{{ $case_stats['investigating'] }}</h3>
-                <p>Baarista Socota</p>
-            </div>
+            <div class="stat-label" style="color: var(--text-sub); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Baarista Socota</div>
+            <div class="stat-value" style="font-size: 1.8rem; font-weight: 800; color: var(--sidebar-bg);">{{ $case_stats['investigating'] }}</div>
         </div>
 
         <!-- Prosecution & Court -->
-        <div class="glass-card stat-card" style="border-bottom: 4px solid #9b59b6;">
-            <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
                 <i class="fa-solid fa-gavel"></i>
             </div>
-            <div class="stat-info">
-                <h3>{{ $case_stats['prosecution'] + $case_stats['court'] }}</h3>
-                <p>Maxkamad/Xeer-ilaalin</p>
-            </div>
+            <div class="stat-label" style="color: var(--text-sub); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Maxkamad/Xeer-ilaalin</div>
+            <div class="stat-value" style="font-size: 1.8rem; font-weight: 800; color: var(--sidebar-bg);">{{ $case_stats['prosecution'] + $case_stats['court'] }}</div>
         </div>
 
         <!-- Resolved -->
-        <div class="glass-card stat-card" style="border-bottom: 4px solid #2ecc71;">
-            <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div class="stat-icon-wrapper" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                 <i class="fa-solid fa-check-double"></i>
             </div>
-            <div class="stat-info">
-                <h3>{{ $case_stats['closed'] }}</h3>
-                <p>La Xaliyay</p>
-            </div>
+            <div class="stat-label" style="color: var(--text-sub); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">La Xaliyay</div>
+            <div class="stat-value" style="font-size: 1.8rem; font-weight: 800; color: var(--sidebar-bg);">{{ $case_stats['closed'] }}</div>
         </div>
     </div>
 
     <!-- Charts & Analytics Section -->
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
         
-        <!-- Monthly Trends (New Line Chart) -->
-        <div class="glass-card" style="min-height: 400px; grid-column: span 2;">
+        <!-- Monthly Trends -->
+        <div class="glass-card" style="padding: 1.5rem; min-height: 400px; grid-column: span 2;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-chart-line" style="color: #3498db; margin-right: 8px;"></i>
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-chart-line" style="color: #6366f1; margin-right: 8px;"></i>
                     Dhaqdhaqaaqa Bilaha (Monthly Trends)
                 </h3>
             </div>
@@ -71,10 +64,10 @@
         </div>
 
         <!-- Crime Types Chart -->
-        <div class="glass-card" style="min-height: 400px;">
+        <div class="glass-card" style="padding: 1.5rem; min-height: 400px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-chart-pie" style="color: #3498db; margin-right: 8px;"></i>
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-chart-pie" style="color: #6366f1; margin-right: 8px;"></i>
                     Noocyada Dambiyada
                 </h3>
             </div>
@@ -84,9 +77,9 @@
         </div>
 
         <!-- Station Performance -->
-        <div class="glass-card">
-            <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-building-shield" style="color: #2d4a53; margin-right: 8px;"></i>
+        <div class="glass-card" style="padding: 1.5rem;">
+            <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-building-shield" style="color: #6366f1; margin-right: 8px;"></i>
                  Saldhigyada ugu sareeya
             </h3>
             <div style="position: relative; height: 300px;">
@@ -94,184 +87,118 @@
             </div>
         </div>
     </div>
-
     <!-- Upcoming Hearings & Evidence -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
         
         <!-- Upcoming Hearings -->
-        <div class="glass-card">
+        <div class="glass-card" style="padding: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-gavel" style="color: #2d3436; margin-right: 8px;"></i>
-                    Ballamaha Maxkamadda (Upcoming Hearings)
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-gavel" style="color: #6366f1; margin-right: 8px;"></i>
+                    Ballamaha Maxkamadda
                 </h3>
-                <a href="{{ route('court-cases.index') }}" class="text-xs font-bold text-blue-500 hover:text-blue-700" style="text-decoration: none;">Eeg Dhammaan</a>
+                <a href="{{ route('court-cases.index') }}" style="text-decoration: none; font-size: 0.75rem; color: #6366f1; font-weight: 700;">Eeg Dhammaan</a>
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 0.8rem;">
                 @forelse($upcoming_hearings as $hearing)
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #fff; border-radius: 12px; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.6); border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
                     <div style="display: flex; gap: 1rem; align-items: center;">
-                        <div style="text-align: center; min-width: 50px; line-height: 1.1;">
-                            <span style="display: block; font-size: 0.8rem; font-weight: 700; color: #e74c3c; text-transform: uppercase;">{{ \Carbon\Carbon::parse($hearing->hearing_date)->format('M') }}</span>
-                            <span style="display: block; font-size: 1.5rem; font-weight: 800; color: #2d3436;">{{ \Carbon\Carbon::parse($hearing->hearing_date)->format('d') }}</span>
+                        <div style="text-align: center; min-width: 50px;">
+                            <span style="display: block; font-size: 0.7rem; font-weight: 800; color: #ef4444; text-transform: uppercase;">{{ \Carbon\Carbon::parse($hearing->hearing_date)->format('M') }}</span>
+                            <span style="display: block; font-size: 1.4rem; font-weight: 900; color: var(--sidebar-bg);">{{ \Carbon\Carbon::parse($hearing->hearing_date)->format('d') }}</span>
                         </div>
-                        <div style="border-left: 2px solid #f1f5f9; padding-left: 1rem;">
-                            <h5 style="font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 0.1rem;">{{ $hearing->case_number ?? 'Kiis #' . $hearing->id }}</h5>
-                            <p style="font-size: 0.8rem; color: #64748b; margin: 0;">
-                                Judge: {{ $hearing->judge->name ?? 'N/A' }} 
-                            </p>
-                            @if($hearing->prosecution && $hearing->prosecution->suspect)
-                                <p style="font-size: 0.75rem; color: #e74c3c; font-weight: 600; margin-top: 2px;">
-                                    Suspect: {{ $hearing->prosecution->suspect->name }}
-                                </p>
-                            @endif
+                        <div style="border-left: 2px solid rgba(0,0,0,0.05); padding-left: 1rem;">
+                            <h5 style="font-size: 0.9rem; font-weight: 700; color: var(--sidebar-bg); margin-bottom: 0px;">{{ $hearing->case_number ?? 'Kiis #' . $hearing->id }}</h5>
+                            <p style="font-size: 0.75rem; color: var(--text-sub); margin: 0;">Garsoore: {{ $hearing->judge->name ?? 'N/A' }}</p>
                         </div>
-                    </div>
-                    <div>
-                        <span class="badge badge-soft-warning">{{ \Carbon\Carbon::parse($hearing->hearing_date)->format('h:i A') }}</span>
                     </div>
                 </div>
                 @empty
-                <div class="text-center py-4 text-muted">Ma jiraan ballamo maxkamadeed oo soo socda.</div>
+                <div style="text-align: center; padding: 2rem; color: var(--text-sub); font-size: 0.85rem;">Ma jiraan ballamo dhow.</div>
                 @endforelse
             </div>
         </div>
 
         <!-- Recent Evidence Uploads -->
-        <div class="glass-card">
+        <div class="glass-card" style="padding: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-fingerprint" style="color: #8e44ad; margin-right: 8px;"></i>
-                    Caddaymaha Cusub (Recent Evidence)
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-fingerprint" style="color: #6366f1; margin-right: 8px;"></i>
+                    Caddaymaha Cusub
                 </h3>
             </div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.8rem;">
                 @forelse($recent_evidence as $evidence)
-                <div style="position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 2px solid #f1f5f9; cursor: pointer;">
+                <div style="position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                     @if(Str::startsWith($evidence->file_type, 'image'))
                         <img src="{{ asset('storage/' . $evidence->file_path) }}" 
-                             onerror="this.src='https://ui-avatars.com/api/?name=Ev&background=f1f5f9&color=64748b&bold=true'"
-                             style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                             onerror="this.src='https://ui-avatars.com/api/?name=Ev&background=f1f5f9&color=6366f1&bold=true'"
+                             style="width: 100%; height: 100%; object-fit: cover;">
                     @else
-                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f8fafc; color: #64748b; font-size: 1.5rem;">
-                            @if(Str::contains($evidence->file_type, 'video'))
-                                <i class="fa-solid fa-file-video"></i>
-                            @elseif(Str::contains($evidence->file_type, 'pdf'))
-                                <i class="fa-solid fa-file-pdf"></i>
-                            @else
-                                <i class="fa-solid fa-file-lines"></i>
-                            @endif
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f8fafc; color: #6366f1; font-size: 1.2rem;">
+                            <i class="fa-solid fa-file"></i>
                         </div>
                     @endif
-                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; padding: 4px; font-size: 0.65rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        {{ $evidence->crime->case_number ?? '#' . $evidence->crime_id }}
-                    </div>
                 </div>
                 @empty
-                <div class="col-span-full text-center py-4 text-muted">Ma jiro caddayn dhawaan lasoo galiyay.</div>
+                <div style="grid-column: span 3; text-align: center; padding: 2rem; color: var(--text-sub); font-size: 0.85rem;">Ma jiraan caddeymo.</div>
                 @endforelse
             </div>
         </div>
     </div>
 
     <!-- Recent Activity & Top Officers -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
         
-        <!-- Recent Activities (Audit Logs) -->
-        <div class="glass-card">
+        <!-- Recent Activities -->
+        <div class="glass-card" style="padding: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-list-ul" style="color: #e67e22; margin-right: 8px;"></i>
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-list-ul" style="color: #6366f1; margin-right: 8px;"></i>
                     Dhaqdhaqaaqa Nidaamka
                 </h3>
-                <span style="font-size: 0.75rem; color: #2ecc71; background: rgba(46, 204, 113, 0.1); padding: 4px 10px; border-radius: 20px; font-weight: 700;">LIVE</span>
             </div>
             
-            <div style="position: relative; padding-left: 10px;">
-                <!-- Timeline Line -->
-                <div style="position: absolute; left: 27px; top: 10px; bottom: 10px; width: 2px; background: #f1f5f9; z-index: 0;"></div>
-
-                <div style="display: flex; flex-direction: column; gap: 1.2rem; position: relative; z-index: 1;">
-                    @foreach($activities as $activity)
-                    @php
-                        $icon = match($activity->action) {
-                            'create' => 'fa-plus',
-                            'update' => 'fa-pen',
-                            'delete' => 'fa-trash',
-                            'view' => 'fa-eye',
-                            'login' => 'fa-right-to-bracket',
-                            default => 'fa-circle-dot'
-                        };
-                        $iconColor = match($activity->action) {
-                            'create' => '#2ecc71', // Green
-                            'update' => '#3498db', // Blue
-                            'delete' => '#e74c3c', // Red
-                            'view' => '#9b59b6', // Purple
-                            'login' => '#f1c40f', // Yellow
-                            default => '#95a5a6'
-                        };
-                        $bgColor = match($activity->action) {
-                            'create' => 'rgba(46, 204, 113, 0.1)',
-                            'update' => 'rgba(52, 152, 219, 0.1)',
-                            'delete' => 'rgba(231, 76, 60, 0.1)',
-                            'view' => 'rgba(155, 89, 182, 0.1)',
-                            'login' => 'rgba(241, 196, 15, 0.1)',
-                            default => '#f8fafc'
-                        };
-                    @endphp
-                    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: white; border: 2px solid {{ $iconColor }}; display: flex; align-items: center; justify-content: center; color: {{ $iconColor }}; font-size: 0.9rem; flex-shrink: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                            <i class="fa-solid {{ $icon }}"></i>
-                        </div>
-                        <div style="flex-grow: 1; background: white; padding: 0.8rem; border-radius: 12px; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.3rem;">
-                                <span style="font-weight: 700; color: #1e293b; font-size: 0.9rem;">{{ $activity->user->name ?? 'System' }}</span>
-                                <span style="font-size: 0.7rem; color: #94a3b8;">{{ $activity->created_at->diffForHumans() }}</span>
-                            </div>
-                            <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
-                                {{ ucfirst($activity->action) }}: <span style="color: #475569;">{{ Str::limit($activity->description ?? $activity->details, 40) }}</span>
-                            </p>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <!-- Top Officers -->
-        <div class="glass-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-user-shield" style="color: #27ae60; margin-right: 8px;"></i>
-                    Askarta ugu Shaqada badan
-                </h3>
-            </div>
-
             <div style="display: flex; flex-direction: column; gap: 1rem;">
-                @foreach($top_officers as $officer)
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.8rem; background: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9;">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                         <div style="font-weight: 900; color: #cbd5e1; font-size: 1.2rem;">#{{ $loop->iteration }}</div>
-                        <div style="width: 40px; height: 40px; border-radius: 10px; background: white; overflow: hidden; border: 1px solid #e2e8f0;">
-                            <img src="{{ $officer->profile_image ? asset('storage/' . $officer->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($officer->name) . '&background=27ae60&color=fff' }}" 
-                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($officer->name) }}&background=27ae60&color=fff'"
-                                 style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div>
-                            <div style="font-weight: 700; color: #1e293b; font-size: 0.95rem;">{{ $officer->name }}</div>
-                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">{{ $officer->rank }}</div>
-                        </div>
+                @foreach($activities as $activity)
+                <div style="display: flex; gap: 0.8rem; align-items: center; padding: 0.8rem; background: rgba(255,255,255,0.4); border-radius: 12px; border: 1px solid rgba(0,0,0,0.03);">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">
+                        <i class="fa-solid fa-bolt"></i>
                     </div>
-                    <div style="text-align: right;">
-                        <span style="display: block; font-weight: 800; color: #2d3436; font-size: 1.1rem;">{{ $officer->cases_count }}</span>
-                        <span style="font-size: 0.7rem; color: #64748b;">Kiis</span>
+                    <div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--sidebar-bg);">{{ $activity->user->name ?? 'System' }}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-sub);">{{ Str::limit($activity->description ?? $activity->details, 35) }}</div>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
+
+        <!-- Top Officers -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-user-shield" style="color: #6366f1; margin-right: 8px;"></i>
+                    Askarta ugu Firfircoon
+                </h3>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                @foreach($top_officers as $officer)
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                    <img src="{{ $officer->profile_image ? asset('storage/' . $officer->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($officer->name) . '&background=6366f1&color=fff' }}" 
+                         style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                    <div style="flex-grow: 1;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--sidebar-bg);">{{ $officer->name }}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-sub);">Kiisaska: {{ $officer->cases_count }}</div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
         </div>
     </div>
 
