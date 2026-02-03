@@ -117,14 +117,14 @@
     <main class="{{ Auth::check() ? 'main-content' : '' }}">
         @auth
         <header class="top-bar" id="topBar">
-            <div class="top-bar-left" style="flex: 1;">
+            <div class="top-bar-left">
                 <!-- Mobile Menu Toggle -->
                 <button class="mobile-menu-toggle" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
             
-            <div class="search-bar-container" style="flex: 2; display: flex; justify-content: center;">
+            <div class="search-bar-container">
                 <div class="search-bar" style="width: 100%; max-width: 450px;">
                     <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
                         <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
