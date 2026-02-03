@@ -52,7 +52,7 @@ RUN chown -R www-data:www-data /var/www/html/database
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Run migrations and seed
-RUN php artisan migrate --force
+RUN php artisan migrate --seed --force
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
