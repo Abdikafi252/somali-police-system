@@ -11,15 +11,14 @@
 </head>
 <body>
     @auth
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-    
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
     
     <div class="sidebar" id="sidebar">
+        <!-- Inside Sidebar Close Button (Mobile Only) -->
+        <button class="sidebar-close-btn" onclick="toggleSidebar()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
         <div class="sidebar-profile">
             <a href="{{ route('profile.show') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px; width: 100%;">
                 @if(auth()->user()->profile_image)
@@ -128,9 +127,15 @@
     <main class="{{ Auth::check() ? 'main-content' : '' }}">
         @auth
         <header class="top-bar">
-            <div class="greeting">
-                <h2>Soo dhawoow, {{ auth()->user()->name }}! 👋</h2>
-                <p>{{ now()->format('l, F j, Y') }}</p>
+            <div class="top-bar-left">
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="greeting">
+                    <h2>Soo dhawoow, {{ auth()->user()->name }}! 👋</h2>
+                    <p>{{ now()->format('l, F j, Y') }}</p>
+                </div>
             </div>
             
             <div class="search-bar">
