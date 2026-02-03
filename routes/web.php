@@ -78,6 +78,8 @@ Route::middleware(['auth'])->group(function () {
     // Chat System
     Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/users', [\App\Http\Controllers\ChatController::class, 'fetchUsers'])->name('chat.users');
+    Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
+    Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
     // Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [App\Http\Controllers\SettingsController::class, 'index'])->name('index');
