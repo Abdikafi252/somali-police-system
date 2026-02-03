@@ -177,10 +177,6 @@
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
-        function toggleTopBar() {
-            const topBar = document.getElementById('topBar');
-            topBar.classList.toggle('is-minimized');
-        }
 
         @auth
             const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
