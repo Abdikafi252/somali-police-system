@@ -2,158 +2,8 @@
 
 @section('title', 'Dashboard-ka guud')
 
-@section('css')
-<style>
-    :root {
-        --glass-bg: rgba(255, 255, 255, 0.95);
-        --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-        --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        --primary-gradient: linear-gradient(135deg, #2d4a53 0%, #203a43 100%);
-        --accent-color: #3498db;
-    }
-
-    .dashboard-container {
-        padding: 0 0 2rem 0;
-    }
-
-    .glass-card {
-        background: var(--glass-bg);
-        border: 1px solid rgba(226, 232, 240, 0.8);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        backdrop-filter: blur(20px);
-        border-radius: 24px;
-        padding: 1.5rem;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .glass-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-    }
-
-    .stat-card {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        background: rgba(52, 152, 219, 0.1);
-        color: #3498db;
-        transition: all 0.3s ease;
-    }
-
-    .glass-card:hover .stat-icon {
-        transform: scale(1.1) rotate(5deg);
-    }
-
-    .stat-info h3 {
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin: 0;
-        color: #1e293b;
-        line-height: 1.2;
-    }
-
-    .stat-info p {
-        margin: 0;
-        color: #64748b;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Welcome Section */
-    .welcome-section {
-        background: var(--primary-gradient);
-        border-radius: 24px;
-        padding: 3rem;
-        color: white;
-        margin-bottom: 2.5rem;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(45, 74, 83, 0.2);
-    }
-
-    .welcome-content {
-        position: relative;
-        z-index: 2;
-        max-width: 600px;
-    }
-
-    .welcome-bg-icon {
-        position: absolute;
-        right: -20px;
-        bottom: -40px;
-        font-size: 15rem;
-        opacity: 0.05;
-        transform: rotate(-15deg);
-        color: white;
-    }
-
-    .badge-soft {
-        padding: 0.5rem 1rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .badge-soft-success { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
-    .badge-soft-warning { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
-    .badge-soft-danger { background: rgba(231, 76, 60, 0.15); color: #e74c3c; }
-
-    /* Tables */
-    .modern-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 0.8rem;
-    }
-
-    .modern-table tr {
-        transition: all 0.2s;
-    }
-
-    .modern-table td {
-        background: white;
-        padding: 1rem;
-        border-top: 1px solid #f1f5f9;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-    .modern-table td:first-child {
-        border-left: 1px solid #f1f5f9;
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-    }
-
-    .modern-table td:last-child {
-        border-right: 1px solid #f1f5f9;
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
-    .modern-table tr:hover td {
-        background: #f8fafc;
-        transform: scale(1.01);
-    }
-</style>
-@endsection
-
 @section('content')
-<div class="dashboard-container">
+<div class="dashboard-container animate-up">
     
     <!-- Welcome Header -->
     <div class="welcome-section" style="display: flex; justify-content: space-between; align-items: center; position: relative;">
@@ -179,10 +29,10 @@
     </div>
 
     <!-- Quick Actions Row -->
-    <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1rem; padding-left: 0.5rem;">
+    <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1rem; padding-left: 0.5rem;" class="animate-up">
         <i class="fa-solid fa-bolt" style="color: #f1c40f; margin-right: 8px;"></i> Ficilada Degdega ah
     </h3>
-    <div style="display: flex; gap: 1rem; margin-bottom: 2.5rem; overflow-x: auto; padding-bottom: 1rem; padding-left: 0.5rem; scroll-snap-type: x mandatory;">
+    <div class="quick-actions-row animate-up" style="display: flex; gap: 1rem; margin-bottom: 2.5rem; overflow-x: auto; padding-bottom: 1rem; padding-left: 0.5rem; scroll-snap-type: x mandatory;">
         <a href="{{ route('crimes.create') }}" class="glass-card" style="min-width: 180px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: 20px; background: white; border: 1px solid #f1f5f9; transition: all 0.3s; scroll-snap-align: start;">
             <div style="width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.2) 100%); color: #e74c3c; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.15);">
                 <i class="fa-solid fa-file-circle-plus"></i>
