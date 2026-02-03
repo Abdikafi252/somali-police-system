@@ -47,13 +47,10 @@
                     <td style="padding: 1.2rem 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             <div style="position: relative;">
-                                @if($user->profile_image)
-                                    <img src="{{ asset('storage/' . $user->profile_image) }}" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                @else
-                                    <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #3498db66, #3498db11); color: #2980b9; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem;">
-                                        {{ substr($user->name, 0, 1) }}
-                                    </div>
-                                @endif
+                                <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3498db&color=fff' }}" 
+                                     alt="Profile"
+                                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=3498db&color=fff'"
+                                     style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                                 <div style="position: absolute; bottom: -5px; right: -5px; width: 14px; height: 14px; border-radius: 50%; background: {{ $user->status == 'active' ? '#2ecc71' : '#95a5a6' }}; border: 2px solid #fff;"></div>
                             </div>
                             <div style="display: flex; flex-direction: column;">

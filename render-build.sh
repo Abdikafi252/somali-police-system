@@ -10,3 +10,6 @@ composer install --no-dev --optimize-autoloader
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# Create symbolic link for storage
+php artisan storage:link

@@ -43,11 +43,10 @@
             <tr style="border-bottom: 1px solid var(--border-soft);">
                 <td style="padding: 1rem; font-weight: 700; color: var(--sidebar-bg);">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        @if($suspect->photo)
-                            <img src="{{ asset('storage/' . $suspect->photo) }}" style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover;">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=eaf1f7&color=2d4a53" style="width: 32px; height: 32px; border-radius: 8px;">
-                        @endif
+                        <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=6366f1&color=fff' }}" 
+                             alt="Suspect"
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=6366f1&color=fff'"
+                             style="width: 40px; height: 40px; border-radius: 12px; object-fit: cover; border: 2px solid #f1f5f9;">
                         {{ $suspect->name }}
                     </div>
                 </td>

@@ -5,62 +5,6 @@
 @section('content')
 <div class="dashboard-container animate-up">
     
-    <!-- Welcome Header -->
-    <div class="welcome-section" style="display: flex; justify-content: space-between; align-items: center; position: relative;">
-        <div class="welcome-content">
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; color: #ffffff;">
-                Soo dhowow, <span style="color: #6edff6;">{{ Auth::user()->name }}</span> 👋
-            </h1>
-            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 1.5rem; font-weight: 300;">
-                Halkaan waxaad kala socon kartaa dhammaan dhaqdhaqaaqyada nidaamka booliska.
-                <br>
-                <span style="font-size: 0.9rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-weight: 600; margin-top: 10px; display: inline-block;">
-                    <i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> {{ \Carbon\Carbon::now()->locale('so')->isoFormat('dddd, D MMMM YYYY') }}
-                </span>
-            </p>
-        </div>
-        <div style="text-align: right; z-index: 2;">
-            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 1rem 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
-                <span style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Darajadaada</span>
-                <span style="display: block; font-size: 1.5rem; font-weight: 800;">{{ Auth::user()->rank ?? 'Sargaal' }}</span>
-            </div>
-        </div>
-        <i class="fa-solid fa-shield-halved welcome-bg-icon"></i>
-    </div>
-
-    <!-- Quick Actions Row -->
-    <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1rem; padding-left: 0.5rem;" class="animate-up">
-        <i class="fa-solid fa-bolt" style="color: #f1c40f; margin-right: 8px;"></i> Ficilada Degdega ah
-    </h3>
-    <div class="quick-actions-row animate-up" style="display: flex; gap: 1rem; margin-bottom: 2.5rem; overflow-x: auto; padding-bottom: 1rem; padding-left: 0.5rem; scroll-snap-type: x mandatory;">
-        <a href="{{ route('crimes.create') }}" class="glass-card" style="min-width: 180px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: 20px; background: white; border: 1px solid #f1f5f9; transition: all 0.3s; scroll-snap-align: start;">
-            <div style="width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.2) 100%); color: #e74c3c; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.15);">
-                <i class="fa-solid fa-file-circle-plus"></i>
-            </div>
-            <span style="color: #1e293b; font-weight: 700; font-size: 0.95rem;">Diiwaangeli Dambi</span>
-        </a>
-
-        <a href="{{ route('suspects.create') }}" class="glass-card" style="min-width: 180px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: 20px; background: white; border: 1px solid #f1f5f9; transition: all 0.3s; scroll-snap-align: start;">
-            <div style="width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.2) 100%); color: #3498db; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.15);">
-                <i class="fa-solid fa-user-plus"></i>
-            </div>
-            <span style="color: #1e293b; font-weight: 700; font-size: 0.95rem;">Diiwaangeli Dambiile</span>
-        </a>
-
-        <a href="{{ route('cases.create') }}" class="glass-card" style="min-width: 180px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: 20px; background: white; border: 1px solid #f1f5f9; transition: all 0.3s; scroll-snap-align: start;">
-            <div style="width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(46, 204, 113, 0.2) 100%); color: #2ecc71; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.15);">
-                <i class="fa-solid fa-briefcase"></i>
-            </div>
-            <span style="color: #1e293b; font-weight: 700; font-size: 0.95rem;">Fur Kiis Cusub</span>
-        </a>
-
-        <a href="{{ route('reports.index') }}" class="glass-card" style="min-width: 180px; padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: 20px; background: white; border: 1px solid #f1f5f9; transition: all 0.3s; scroll-snap-align: start;">
-            <div style="width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, rgba(155, 89, 182, 0.1) 0%, rgba(155, 89, 182, 0.2) 100%); color: #9b59b6; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(155, 89, 182, 0.15);">
-                <i class="fa-solid fa-file-invoices"></i>
-            </div>
-            <span style="color: #1e293b; font-weight: 700; font-size: 0.95rem;">Warbixin Guud</span>
-        </a>
-    </div>
 
     <!-- Stats Grid -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
@@ -207,7 +151,9 @@
                 @forelse($recent_evidence as $evidence)
                 <div style="position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 2px solid #f1f5f9; cursor: pointer;">
                     @if(Str::startsWith($evidence->file_type, 'image'))
-                        <img src="{{ asset('storage/' . $evidence->file_path) }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s hover:scale-110;">
+                        <img src="{{ asset('storage/' . $evidence->file_path) }}" 
+                             onerror="this.src='https://ui-avatars.com/api/?name=Ev&background=f1f5f9&color=64748b&bold=true'"
+                             style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
                     @else
                         <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f8fafc; color: #64748b; font-size: 1.5rem;">
                             @if(Str::contains($evidence->file_type, 'video'))
@@ -309,11 +255,9 @@
                     <div style="display: flex; align-items: center; gap: 1rem;">
                          <div style="font-weight: 900; color: #cbd5e1; font-size: 1.2rem;">#{{ $loop->iteration }}</div>
                         <div style="width: 40px; height: 40px; border-radius: 10px; background: white; overflow: hidden; border: 1px solid #e2e8f0;">
-                             @if($officer->profile_image)
-                                <img src="{{ asset('storage/' . $officer->profile_image) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                            @else
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($officer->name) }}&background=27ae60&color=fff" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                            @endif
+                            <img src="{{ $officer->profile_image ? asset('storage/' . $officer->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($officer->name) . '&background=27ae60&color=fff' }}" 
+                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($officer->name) }}&background=27ae60&color=fff'"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <div>
                             <div style="font-weight: 700; color: #1e293b; font-size: 0.95rem;">{{ $officer->name }}</div>
@@ -470,12 +414,10 @@
             <div style="display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem;">
                 @forelse($wanted_suspects as $suspect)
                 <div style="min-width: 150px; background: white; border-radius: 12px; border: 1px solid #f1f5f9; padding: 1rem; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <div style="width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; border: 3px solid #e74c3c;">
-                        @if($suspect->photo)
-                            <img src="{{ asset('storage/' . $suspect->photo) }}" style="width: 100%; height: 100%; object-fit: cover;">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=e74c3c&color=fff" style="width: 100%; height: 100%; object-fit: cover;">
-                        @endif
+                    <div style="width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; border: 3px solid #e74c3c; position: relative; background: #f8fafc;">
+                        <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=e74c3c&color=fff' }}" 
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=e74c3c&color=fff'"
+                             style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <h5 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem; color: #1e293b;">{{ Str::limit($suspect->name, 15) }}</h5>
                     <p style="font-size: 0.75rem; color: #e74c3c; font-weight: 600;">{{ $suspect->crime->crime_type ?? 'N/A' }}</p>

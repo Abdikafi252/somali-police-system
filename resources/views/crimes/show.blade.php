@@ -98,11 +98,9 @@
         <div class="glass-card" style="padding: 1.5rem;">
             <p style="color: var(--text-sub); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 1.5rem; font-weight: 700; letter-spacing: 1px;">Diiwaangeliyay</p>
             <div style="display: flex; align-items: center; gap: 1rem;">
-                @if($crime->reporter->profile_image)
-                    <img src="{{ asset('storage/' . $crime->reporter->profile_image) }}" style="width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid var(--border-soft);">
-                @else
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode($crime->reporter->name) }}&background=1abc9c&color=3498db&size=55&font-size=0.4" style="border-radius: 12px; border: 2px solid var(--border-soft);">
-                @endif
+                <img src="{{ $crime->reporter->profile_image ? asset('storage/' . $crime->reporter->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($crime->reporter->name) . '&background=1abc9c&color=fff' }}" 
+                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($crime->reporter->name) }}&background=1abc9c&color=fff'"
+                     style="width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid var(--border-soft);">
                 <div>
                     <div style="font-weight: 800; color: var(--sidebar-bg); font-size: 1.05rem;">{{ $crime->reporter->name }}</div>
                     <div style="font-size: 0.75rem; color: var(--accent-teal); font-weight: 700; background: rgba(26, 188, 156, 0.05); padding: 0.2rem 0.5rem; border-radius: 4px; display: inline-block; margin-top: 0.3rem;">{{ strtoupper($crime->reporter->role->name) }}</div>

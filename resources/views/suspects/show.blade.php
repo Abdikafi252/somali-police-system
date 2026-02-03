@@ -15,11 +15,9 @@
 
 <div class="dashboard-row" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; display: grid;">
     <div class="glass-card" style="text-align: center;">
-        @if($suspect->photo)
-            <img src="{{ asset('storage/' . $suspect->photo) }}" style="width: 120px; height: 120px; border-radius: 20px; margin-bottom: 1rem; object-fit: cover;">
-        @else
-            <img src="https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&size=120&background=eaf1f7&color=2d4a53" style="border-radius: 20px; margin-bottom: 1rem;">
-        @endif
+        <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=6366f1&color=fff' }}" 
+             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=6366f1&color=fff'"
+             style="width: 120px; height: 120px; border-radius: 20px; margin-bottom: 1rem; object-fit: cover; border: 3px solid #f1f5f9;">
         <h2 style="font-weight: 800; color: var(--sidebar-bg);">{{ $suspect->name }}</h2>
         <p style="color: var(--text-sub);">National ID: {{ $suspect->national_id ?? 'N/A' }}</p>
         

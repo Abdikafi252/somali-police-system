@@ -19,84 +19,75 @@
         <button class="sidebar-close-btn" onclick="toggleSidebar()">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <div class="sidebar-profile">
-            <a href="{{ route('profile.show') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px; width: 100%;">
-                <div style="position: relative;">
-                    <img src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=1abc9c&color=fff' }}" 
-                         alt="Profile" class="profile-img" 
-                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=1abc9c&color=fff'"
-                         style="object-fit: cover; width: 55px; height: 55px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2);">
-                </div>
-                <div class="profile-info">
-                    <h4>{{ auth()->user()->name }}</h4>
-                    <p>{{ auth()->user()->email }}</p>
-                </div>
-            </a>
-        </div>
         
-        <nav class="nav-menu">
+        <div class="sidebar-header" style="padding: 2rem 1.5rem; text-align: center;">
+            <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
+                <div class="profile-glow"></div>
+                <img src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}" 
+                     alt="Profile" class="profile-img" 
+                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=6366f1&color=fff'"
+                     style="width: 80px; height: 80px; border-radius: 24px; border: 3px solid rgba(255,255,255,0.8); object-fit: cover; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; z-index: 2;">
+            </div>
+            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: white;">{{ auth()->user()->name }}</h4>
+            <p style="margin: 4px 0 0; font-size: 0.8rem; opacity: 0.7; color: white; font-weight: 500;">{{ auth()->user()->role->name }}</p>
+        </div>
+
+        <nav class="nav-menu" style="padding: 0 1rem 2rem;">
+            <div class="nav-section-label">MAGNA (MAIN)</div>
             <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
-                <i class="fa-solid fa-gauge"></i> Dashboard
+                <i class="fa-solid fa-house-chimney"></i> <span>Dashboard</span>
             </a>
 
-            @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-qaran']))
-            <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
-                <i class="fa-solid fa-house-chimney-crack"></i> Saldhigyada
-            </a>
-            <a href="{{ route('station-commanders.index') }}" class="nav-link {{ request()->is('station-commanders*') ? 'active' : '' }}">
-                <i class="fa-solid fa-user-tie"></i> Taliyayaasha Saldhiga
-            </a>
-            @endif
-
-            @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-qaran', 'taliye-saldhig']))
-            <a href="{{ route('station-officers.index') }}" class="nav-link {{ request()->is('station-officers*') ? 'active' : '' }}">
-                <i class="fa-solid fa-user-shield"></i> Askarta Saldhigyada
-            </a>
-            @endif
-            
+            <div class="nav-section-label">AMNIGA & DAMBIYADA</div>
             @if(auth()->user()->role->slug == 'admin' || auth()->user()->role->slug == 'askari' || auth()->user()->role->slug == 'taliye-saldhig')
             <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
-                <i class="fa-solid fa-file-invoice"></i> Dambiyada
+                <i class="fa-solid fa-handcuffs"></i> <span>Dambiyada (Crimes)</span>
             </a>
             @endif
 
             @if(!in_array(auth()->user()->role->slug, ['prosecutor', 'judge']))
             <a href="{{ route('suspects.index') }}" class="nav-link {{ request()->is('suspects*') ? 'active' : '' }}">
-                <i class="fa-solid fa-users-viewfinder"></i> Dambiilayaasha
+                <i class="fa-solid fa-user-ninja"></i> <span>Dambiilayaasha</span>
             </a>
             @endif
             
-
             <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases') || (request()->is('cases/*') && !request()->has('assigned')) ? 'active' : '' }}">
-                <i class="fa-solid fa-briefcase"></i> Kiisaska
+                <i class="fa-solid fa-folder-tree"></i> <span>Kiisaska (Cases)</span>
             </a>
-
-            @if(auth()->user()->role->slug == 'cid' || auth()->user()->role->slug == 'askari')
-            <a href="{{ route('cases.index', ['assigned' => 'me']) }}" class="nav-link {{ request()->has('assigned') ? 'active' : '' }}">
-                <i class="fa-solid fa-list-check"></i> Kiisaska la ii xil-saaray
-            </a>
-            @endif
 
             @if(auth()->user()->role->slug == 'admin' || auth()->user()->role->slug == 'cid' || auth()->user()->role->slug == 'taliye-saldhig')
             <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
-                <i class="fa-solid fa-magnifying-glass-chart"></i> Baaritaanada
+                <i class="fa-solid fa-magnifying-glass-location"></i> <span>Baaritaanada</span>
+            </a>
+            @endif
+
+            <div class="nav-section-label">MAAMULKA (ADMIN)</div>
+            @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-qaran']))
+            <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
+                <i class="fa-solid fa-building-shield"></i> <span>Saldhigyada</span>
+            </a>
+            <a href="{{ route('station-commanders.index') }}" class="nav-link {{ request()->is('station-commanders*') ? 'active' : '' }}">
+                <i class="fa-solid fa-user-tie"></i> <span>Taliyayaasha</span>
+            </a>
+            @endif
+
+            @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-qaran', 'taliye-saldhig']))
+            <a href="{{ route('station-officers.index') }}" class="nav-link {{ request()->is('station-officers*') ? 'active' : '' }}">
+                <i class="fa-solid fa-user-shield"></i> <span>Askarta</span>
             </a>
             @endif
 
             @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol']))
             <a href="{{ route('deployments.index') }}" class="nav-link {{ request()->is('deployments*') ? 'active' : '' }}">
-                <i class="fa-solid fa-shield-halved"></i> Shaqaalaha
+                <i class="fa-solid fa-users-gear"></i> <span>Shaqaalaha</span>
             </a>
-            @endif
-
-            @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol']))
             <a href="{{ route('facilities.index') }}" class="nav-link {{ request()->is('facilities*') ? 'active' : '' }}">
-                <i class="fa-solid fa-building-shield"></i> Xarumaha
+                <i class="fa-solid fa-house-medical-flag"></i> <span>Xarumaha</span>
             </a>
             @endif
 
             <a href="{{ route('reports.index') }}" class="nav-link {{ request()->is('reports*') ? 'active' : '' }}">
-                <i class="fa-solid fa-chart-line"></i> Warbixinada
+                <i class="fa-solid fa-chart-pie"></i> <span>Warbixinada</span>
             </a>
 
             @if(auth()->user()->role->slug == 'admin')

@@ -45,11 +45,10 @@
             <tr style="border-bottom: 1px solid var(--border-soft);">
                 <td style="padding: 1rem;">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        @if($officer->user && $officer->user->profile_image)
-                            <img src="{{ asset('storage/' . $officer->user->profile_image) }}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($officer->user->name ?? 'N/A') }}&size=35&background=random" style="border-radius: 50%;">
-                        @endif
+                        <img src="{{ ($officer->user && $officer->user->profile_image) ? asset('storage/' . $officer->user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($officer->user->name ?? 'N/A') . '&background=random&color=fff' }}" 
+                             alt="Officer"
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($officer->user->name ?? 'N/A') }}&background=6366f1&color=fff'"
+                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
                         <span style="font-weight: 700;">{{ $officer->user->name ?? 'Lama yaqaan' }}</span>
                     </div>
                 </td>

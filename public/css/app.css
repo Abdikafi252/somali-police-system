@@ -80,16 +80,16 @@ body {
 /* ==================== SIDEBAR ==================== */
 .sidebar {
     width: 280px;
-    background: var(--sidebar-gradient);
     height: 100vh;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     position: fixed;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    color: white;
+    left: 0;
+    top: 0;
     z-index: 1000;
-    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.2);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sidebar-profile {
@@ -113,31 +113,65 @@ body {
     display: none;
 }
 
+.profile-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+    filter: blur(15px);
+    z-index: 1;
+}
+
+.nav-section-label {
+    padding: 1.5rem 1rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
 .nav-link {
     display: flex;
     align-items: center;
-    gap: 0.9rem;
-    padding: 0.9rem 1.2rem;
-    margin-bottom: 0.5rem;
+    gap: 12px;
+    padding: 0.8rem 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    font-size: 0.95rem;
     border-radius: 12px;
-    font-size: 0.92rem;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
+    margin-bottom: 4px;
+}
+
+.nav-link i {
+    width: 20px;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
 }
 
 .nav-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
     transform: translateX(5px);
 }
 
+.nav-link:hover i {
+    transform: scale(1.2);
+}
+
 .nav-link.active {
-    background: var(--primary-gradient);
-    color: #ffffff;
-    font-weight: 600;
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.nav-link.active i {
+    color: #fff;
 }
 
 /* ==================== MAIN CONTENT ==================== */
