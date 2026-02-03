@@ -46,9 +46,13 @@ COPY . /var/www/html
 
 # Create sqlite database file if it doesn't exist
 RUN mkdir -p database && touch database/database.sqlite
+RUN chown -R www-data:www-data /var/www/html/database
 
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# Run migrations and seed
+RUN php artisan migrate --force
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
