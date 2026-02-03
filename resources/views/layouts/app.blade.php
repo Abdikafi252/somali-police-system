@@ -125,15 +125,15 @@
             </div>
             
             <div class="search-bar-container">
-                <div class="search-bar" style="width: 100%; max-width: 450px;">
-                    <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
-                        <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
-                        <input type="text" name="q" placeholder="Raadi halkan..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent; font-weight: 600;">
-                    </form>
-                </div>
+            <div class="search-bar">
+                <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
+                    <input type="text" name="q" placeholder="Raadi halkan..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent; font-weight: 600;">
+                </form>
+            </div>
             </div>
 
-            <div class="top-bar-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+            <div class="top-bar-right">
                 <!-- Notification Dropdown -->
                 <div class="notification-dropdown" style="position: relative;">
                     <i class="fa-regular fa-bell" style="cursor: pointer; color: var(--text-main); font-size: 1.1rem;" onclick="toggleNotifications()"></i>
