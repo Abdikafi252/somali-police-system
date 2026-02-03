@@ -21,13 +21,13 @@
         </button>
         
         <div class="sidebar-header" style="padding: 2.5rem 1.5rem; text-align: center;">
-            <div style="position: relative; display: inline-block;">
+            <a href="{{ route('profile.show') }}" style="text-decoration: none; display: inline-block; position: relative;" title="My Profile">
                 <div class="profile-glow"></div>
                 <img src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}" 
                      alt="Profile" class="profile-img" 
                      onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=6366f1&color=fff'"
                      style="width: 90px; height: 90px; border-radius: 28px; border: 3px solid rgba(255,255,255,0.8); object-fit: cover; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; z-index: 2;">
-            </div>
+            </a>
         </div>
 
         <nav class="nav-menu" style="padding: 0 1rem 2rem;">
@@ -103,11 +103,11 @@
             </a>
         </nav>
 
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" style="padding: 1.5rem; display: flex; justify-content: center;">
             <form action="{{ route('logout') }}" method="POST" id="logout-form" style="display: none;">
                 @csrf
             </form>
-            <button class="logout-btn-premium" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <button class="logout-btn-premium" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="width: 100%; max-width: 220px;">
                 <i class="fa-solid fa-power-off"></i> <span>SAX GAX (LOGOUT)</span>
             </button>
         </div>

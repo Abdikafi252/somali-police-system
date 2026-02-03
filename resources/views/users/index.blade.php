@@ -49,6 +49,7 @@
                             <div style="position: relative;">
                                 <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=3498db&color=fff' }}" 
                                      alt="Profile"
+                                     class="user-profile-img"
                                      onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=3498db&color=fff'"
                                      style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                                 <div style="position: absolute; bottom: -5px; right: -5px; width: 14px; height: 14px; border-radius: 50%; background: {{ $user->status == 'active' ? '#2ecc71' : '#95a5a6' }}; border: 2px solid #fff;"></div>
