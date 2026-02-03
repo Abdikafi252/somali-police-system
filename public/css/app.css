@@ -7,14 +7,15 @@
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: 1px solid rgba(255, 255, 255, 0.4);
 
-    /* Base Colors */
-    --primary-bg: #f8fafc;
+    --primary-bg: #f3f7fa;
     --sidebar-bg: #0f2027;
     --card-bg: #ffffff;
     --text-main: #1e293b;
     --text-sub: #64748b;
     --accent-blue: #3498db;
     --accent-purple: #667eea;
+    --border-soft: #e2e8f0;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -104,6 +105,14 @@ body {
     transition: all 0.3s ease;
 }
 
+.sidebar-close-btn {
+    display: none;
+}
+
+.mobile-menu-toggle {
+    display: none;
+}
+
 .nav-link {
     display: flex;
     align-items: center;
@@ -136,7 +145,10 @@ body {
     margin-left: 280px;
     flex: 1;
     padding: 2rem;
+    padding-top: 2rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 0;
+    /* Prevent flex overflow */
 }
 
 .top-bar {
@@ -146,13 +158,14 @@ body {
     padding: 0.8rem 2rem;
     background: var(--glass-bg);
     backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border: var(--glass-border);
-    border-radius: 24px;
+    border-radius: 20px;
     position: sticky;
-    top: 1.5rem;
+    top: 1rem;
     z-index: 900;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-    margin-bottom: 2.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
 }
 
 .top-bar-left {
@@ -297,30 +310,86 @@ body {
     }
 }
 
-/* ==================== STAT CARDS ==================== */
-.stat-card {
+/* ==================== LAYOUT UTILITIES ==================== */
+.form-row {
     display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    position: relative;
-    overflow: hidden;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
-.stat-icon {
-    width: 55px;
-    height: 55px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    background: rgba(102, 126, 234, 0.1);
-    color: var(--accent-purple);
+.form-row>div {
+    flex: 1;
+    min-width: 250px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Common Header */
+.header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+.form-input,
+.form-select,
+.form-control {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: #ffffff;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    color: var(--text-main);
 }
 
-.stat-card:hover .stat-icon {
-    transform: scale(1.15) rotate(10deg);
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-input:focus,
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
 /* ==================== DARK MODE ==================== */
@@ -340,4 +409,28 @@ body {
 
 [data-theme='dark'] .top-bar {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .form-input,
+[data-theme='dark'] .form-select,
+[data-theme='dark'] .form-control {
+    background: #1e293b;
+    border-color: #334155;
+    color: white;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+    transform: translateY(-2px);
 }

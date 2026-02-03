@@ -21,11 +21,12 @@
         </button>
         <div class="sidebar-profile">
             <a href="{{ route('profile.show') }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px; width: 100%;">
-                @if(auth()->user()->profile_image)
-                    <img src="{{ asset('storage/' . auth()->user()->profile_image) }}" alt="Profile" class="profile-img" style="object-fit: cover;">
-                @else
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=1abc9c&color=fff" alt="Profile" class="profile-img">
-                @endif
+                <div style="position: relative;">
+                    <img src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=1abc9c&color=fff' }}" 
+                         alt="Profile" class="profile-img" 
+                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=1abc9c&color=fff'"
+                         style="object-fit: cover; width: 55px; height: 55px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2);">
+                </div>
                 <div class="profile-info">
                     <h4>{{ auth()->user()->name }}</h4>
                     <p>{{ auth()->user()->email }}</p>

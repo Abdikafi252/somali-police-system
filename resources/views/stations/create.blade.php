@@ -28,28 +28,23 @@
     <form action="{{ route('stations.store') }}" method="POST">
         @csrf
         
-        <div style="margin-bottom: 2rem;">
-            <label for="station_name" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
+        <div class="form-group">
+            <label for="station_name" class="form-label">
                 <i class="fa-solid fa-building-columns" style="color: #3498db; margin-right: 0.4rem;"></i> Magaca Saldhigga <span style="color: red;">*</span>
             </label>
-            <input type="text" name="station_name" id="station_name" value="{{ old('station_name') }}" placeholder="Tusaale: Saldhigga Galbeed" 
-                style="width: 100%; padding: 1.2rem; border-radius: 15px; border: 2px solid var(--border-soft); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600; background: #f8f9fa; color: #2d3436; transition: 0.3s;" required>
+            <input type="text" name="station_name" id="station_name" value="{{ old('station_name') }}" placeholder="Tusaale: Saldhigga Galbeed" class="form-control" required>
         </div>
 
-        <div style="margin-bottom: 2.5rem;">
-            <label for="location" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
+        <div class="form-group">
+            <label for="location" class="form-label">
                 <i class="fa-solid fa-location-dot" style="color: #e74c3c; margin-right: 0.4rem;"></i> Goobta / Degmada <span style="color: red;">*</span>
             </label>
-            <input type="text" name="location" id="location" value="{{ old('location') }}" placeholder="Tusaale: Degmada Hodan, Muqdisho" 
-                style="width: 100%; padding: 1.2rem; border-radius: 15px; border: 2px solid var(--border-soft); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600; background: #f8f9fa; color: #2d3436; transition: 0.3s;" required>
+            <input type="text" name="location" id="location" value="{{ old('location') }}" placeholder="Tusaale: Degmada Hodan, Muqdisho" class="form-control" required>
         </div>
 
-        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-            <a href="{{ route('stations.index') }}" 
-                style="padding: 1rem 2rem; background: #f1f2f6; color: #4b5563; border-radius: 15px; text-decoration: none; font-weight: 800; font-family: 'Outfit'; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
-                CIRIIRI (CANCEL)
-            </a>
-            <button type="submit" style="padding: 1rem 2.5rem; background: linear-gradient(135deg, var(--sidebar-bg), #1e272e); border: none; border-radius: 15px; color: white; font-weight: 900; font-family: 'Outfit'; font-size: 1rem; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2.5rem;">
+            <a href="{{ route('stations.index') }}" class="btn-secondary" style="text-decoration: none;">Jooji</a>
+            <button type="submit" class="btn-primary">
                 <i class="fa-solid fa-save"></i> KAYDI SALDHIGGA
             </button>
         </div>

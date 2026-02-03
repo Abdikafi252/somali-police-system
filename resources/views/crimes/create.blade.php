@@ -11,10 +11,10 @@
 <div class="glass-card" style="max-width: 800px;">
     <form action="{{ route('crimes.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <div class="stat-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 2rem; gap: 1.5rem;">
+        <div class="grid-2">
             <div class="form-group">
-                <label for="crime_type" style="font-size: 0.85rem; color: var(--sidebar-bg); font-weight: 600;">Nooca Dambiga</label>
-                <select name="crime_type" id="crime_type" class="form-control" required>
+                <label for="crime_type" class="form-label">Nooca Dambiga</label>
+                <select name="crime_type" id="crime_type" class="form-select" required>
                     <option value="">Dooro nooca...</option>
                     <option value="Dil (Qof dil)">Dil (Qof dil)</option>
                     <option value="Isku day dil">Isku day dil</option>
@@ -46,30 +46,30 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="crime_date" style="font-size: 0.85rem; color: var(--sidebar-bg); font-weight: 600;">Taariikhda & Waqtiga</label>
+                <label for="crime_date" class="form-label">Taariikhda & Waqtiga</label>
                 <input type="datetime-local" name="crime_date" id="crime_date" class="form-control" required>
             </div>
         </div>
 
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label for="location" style="font-size: 0.85rem; color: var(--sidebar-bg); font-weight: 600;">Goobta uu ka dhacay (Location)</label>
+        <div class="form-group">
+            <label for="location" class="form-label">Goobta uu ka dhacay (Location)</label>
             <input type="text" name="location" id="location" class="form-control" placeholder="Tusaale: Degmada Hodan, Muqdisho" required>
         </div>
 
         <div class="form-group">
-            <label for="description" style="font-size: 0.85rem; color: var(--sidebar-bg); font-weight: 600;">Faahfaahinta Dambiga</label>
+            <label for="description" class="form-label">Faahfaahinta Dambiga</label>
             <textarea name="description" id="description" class="form-control" rows="5" placeholder="Sharaxaad dambe oo kooban..." required></textarea>
         </div>
 
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label for="evidence" style="font-size: 0.85rem; color: var(--sidebar-bg); font-weight: 600;">Cadaymaha (Sawiro/Dukumeenti)</label>
+        <div class="form-group">
+            <label for="evidence" class="form-label">Cadaymaha (Sawiro/Dukumeenti)</label>
             <input type="file" name="evidence[]" id="evidence" class="form-control" multiple accept="image/*,application/pdf" style="padding: 0.6rem;">
             <small style="color: var(--text-sub); font-size: 0.75rem;">Waxaad soo gelin kartaa sawiro badan ama PDF files (Max: 5MB)</small>
         </div>
 
-        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-            <button type="submit" class="btn-primary" style="width: auto; padding: 0.8rem 2.5rem;">DIIWANGELI DAMBIGA</button>
-            <a href="{{ route('crimes.index') }}" class="btn" style="background: #f1f2f6; color: var(--text-sub); text-decoration: none; padding: 0.8rem 2rem; border-radius: 8px; font-weight: 600;">Jooji</a>
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+            <a href="{{ route('crimes.index') }}" class="btn-secondary" style="text-decoration: none;">Jooji</a>
+            <button type="submit" class="btn-primary">DIIWANGELI DAMBIGA</button>
         </div>
     </form>
 </div>
