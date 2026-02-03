@@ -56,8 +56,8 @@ RUN chown -R www-data:www-data /var/www/html/database
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Run migrations and seed
-RUN php artisan migrate --seed --force
+# Run migrations and seed (Removed from build, moved to CMD)
+# RUN php artisan migrate --seed --force
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
@@ -68,4 +68,4 @@ RUN php artisan storage:link
 
 # Expose port 80 and start apache server
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
