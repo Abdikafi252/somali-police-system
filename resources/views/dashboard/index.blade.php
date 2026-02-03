@@ -203,223 +203,105 @@
     </div>
 
     <!-- Station Performance & Recent Cases -->
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
         
         <!-- Station Performance -->
-        <div class="glass-card">
+        <div class="glass-card" style="padding: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
                     <i class="fa-solid fa-trophy" style="color: #f1c40f; margin-right: 8px;"></i>
-                    Saldhigyada ugu fiican
+                    Saldhigyada ugu Fiican
                 </h3>
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
                 @foreach($station_performance as $station)
-                @php
-                    $rankColor = match($loop->iteration) {
-                        1 => 'linear-gradient(135deg, #FFD700 0%, #FDB931 100%)', // Gold
-                        2 => 'linear-gradient(135deg, #E0E0E0 0%, #BDBDBD 100%)', // Silver
-                        3 => 'linear-gradient(135deg, #CD7F32 0%, #A0522D 100%)', // Bronze
-                        default => 'rgba(241, 245, 249, 0.5)' // Default
-                    };
-                    $textColor = $loop->iteration <= 3 ? 'white' : '#64748b';
-                    $borderColor = $loop->iteration <= 3 ? 'transparent' : '#e2e8f0';
-                @endphp
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: {{ $loop->iteration <= 3 ? 'white' : '#f8fafc' }}; border-radius: 16px; border: 1px solid {{ $borderColor }}; box-shadow: {{ $loop->iteration <= 3 ? '0 10px 20px rgba(0,0,0,0.05)' : 'none' }}; transition: transform 0.2s;">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div style="width: 45px; height: 45px; border-radius: 12px; background: {{ $rankColor }}; display: flex; align-items: center; justify-content: center; font-weight: 800; color: {{ $textColor }}; font-size: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                            @if($loop->iteration <= 3)
-                                <i class="fa-solid fa-crown"></i>
-                            @else
-                                {{ $loop->iteration }}
-                            @endif
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.8rem; background: rgba(255,255,255,0.4); border-radius: 12px;">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <div style="width: 35px; height: 35px; border-radius: 10px; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;">
+                            {{ $loop->iteration }}
                         </div>
                         <div>
-                            <div style="font-weight: 800; color: #1e293b; font-size: 1rem;">{{ $station['name'] }}</div>
-                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 5px;">
-                                <i class="fa-solid fa-user-tie" style="color: #3498db;"></i> {{ $station['commander'] }}
-                            </div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--sidebar-bg);">{{ $station['name'] }}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-sub);">{{ $station['commander'] }}</div>
                         </div>
                     </div>
                     <div style="text-align: right;">
-                        <span style="display: block; font-weight: 900; color: #2ecc71; font-size: 1.2rem;">{{ $station['solved'] }}</span>
-                        <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Xaliyay</span>
+                        <span style="font-weight: 800; color: #10b981;">{{ $station['solved'] }}</span>
                     </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Recent Cases -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-clock-rotate-left" style="color: #6366f1; margin-right: 8px;"></i>
+                    Kiisaskii u Dambeeyay
+                </h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                @foreach($recent_crimes as $crime)
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                    <div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--sidebar-bg);">{{ $crime->crime_type }}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-sub);">{{ $crime->case_number }}</div>
+                    </div>
+                    <span style="font-size: 0.7rem; padding: 4px 8px; border-radius: 8px; background: {{ $crime->status == 'Diiwaangelin' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $crime->status == 'Diiwaangelin' ? '#ef4444' : '#10b981' }}; font-weight: 700;">
+                        {{ $crime->status }}
+                    </span>
                 </div>
                 @endforeach
             </div>
         </div>
     </div>
 
-    <!-- Recent Cases Table (Moved inside this grid) -->
-    <div class="glass-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-clock-rotate-left" style="color: #3498db; margin-right: 8px;"></i>
-                    Kiisaskii u dambeeyay
-                </h3>
-                <a href="{{ route('cases.index') }}" style="color: #3498db; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
-                    Eeg dhammaan <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-            
-            <table class="modern-table">
-                <tbody>
-                    @foreach($recent_crimes as $crime)
-                    <tr>
-                        <td style="width: 50px;">
-                            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(52, 152, 219, 0.1); display: flex; align-items: center; justify-content: center; color: #3498db;">
-                                <i class="fa-solid fa-file-shield"></i>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="font-weight: 700; color: #1e293b;">{{ $crime->crime_type }}</div>
-                            <div style="font-size: 0.8rem; color: #64748b;">{{ $crime->case_number }}</div>
-                        </td>
-                        <td>
-                            <div style="font-size: 0.9rem; color: #1e293b;"><i class="fa-solid fa-location-dot" style="color: #95a5a6;"></i> {{ $crime->location }}</div>
-                        </td>
-                        <td style="text-align: right;">
-                            <span class="badge-soft {{ $crime->status == 'Diiwaangelin' ? 'badge-soft-danger' : 'badge-soft-success' }}">
-                                {{ ucfirst($crime->status) }}
-                            </span>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <!-- My Tasks Highlight (if available) -->
-        @if(!empty($my_stats))
-        <div class="glass-card" style="background: linear-gradient(145deg, #ffffff, #f8fafc);">
-            <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-list-check" style="color: #27ae60; margin-right: 8px;"></i>
-                Shaqadayda Maanta
-            </h3>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div style="background: white; padding: 1.5rem; border-radius: 16px; border: 1px solid #f1f5f9; text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 800; color: #3498db; margin-bottom: 0.5rem;">{{ $my_stats['active'] }}</div>
-                    <div style="font-size: 0.9rem; color: #64748b; font-weight: 600;">Kiisaska Furan</div>
-                </div>
-                
-                <div style="background: white; padding: 1.5rem; border-radius: 16px; border: 1px solid #f1f5f9; text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 800; color: #2ecc71; margin-bottom: 0.5rem;">{{ $my_stats['completed'] }}</div>
-                    <div style="font-size: 0.9rem; color: #64748b; font-weight: 600;">La Dhameeyay</div>
-                </div>
-
-                <div style="grid-column: span 2; background: #2d4a53; padding: 1.5rem; border-radius: 16px; color: white; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 2rem; font-weight: 800;">{{ $my_stats['assigned'] }}</div>
-                        <div style="opacity: 0.8; font-size: 0.9rem;">Wadarta Guud ee lugu soo diray</div>
-                    </div>
-                    <div>
-                        <a href="{{ route('cases.index', ['assigned' => 'me']) }}" style="background: rgba(255,255,255,0.2); color: white; padding: 0.8rem 1.5rem; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.3s;">
-                            Gale Kiisaska
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-    <!-- Wanted Suspects & Facilities -->
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <!-- Wanted Suspects & Deployments -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
         
         <!-- Wanted Suspects -->
-        <div class="glass-card">
+        <div class="glass-card" style="padding: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem;">
-                    <i class="fa-solid fa-handcuffs" style="color: #e74c3c; margin-right: 8px;"></i>
+                <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem;">
+                    <i class="fa-solid fa-handcuffs" style="color: #ef4444; margin-right: 8px;"></i>
                     Dambiilayaasha La Raadinayo
                 </h3>
-                <span class="badge badge-soft-danger px-3">Wanted</span>
             </div>
-            
-            <div style="display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem;">
+            <div style="display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem;">
                 @forelse($wanted_suspects as $suspect)
-                <div style="min-width: 150px; background: white; border-radius: 12px; border: 1px solid #f1f5f9; padding: 1rem; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <div style="width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; border: 3px solid #e74c3c; position: relative; background: #f8fafc;">
-                        <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=e74c3c&color=fff' }}" 
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=e74c3c&color=fff'"
-                             style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    <h5 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem; color: #1e293b;">{{ Str::limit($suspect->name, 15) }}</h5>
-                    <p style="font-size: 0.75rem; color: #e74c3c; font-weight: 600;">{{ $suspect->crime->crime_type ?? 'N/A' }}</p>
+                <div style="min-width: 120px; text-align: center;">
+                    <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=ef4444&color=fff' }}" 
+                         style="width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ef4444; object-fit: cover; margin-bottom: 0.5rem;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--sidebar-bg);">{{ Str::limit($suspect->name, 12) }}</div>
                 </div>
                 @empty
-                <div class="text-center w-100 py-3 text-muted">
-                    Ma jiraan dambiilayaal la raadinayo hadda.
-                </div>
+                <div style="text-align: center; width: 100%; color: var(--text-sub); font-size: 0.8rem;">Ma jiraan dambiilayaal la raadinayo.</div>
                 @endforelse
             </div>
         </div>
 
-        <!-- Facility Status -->
-        <div class="glass-card">
-            <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-hospital" style="color: #9b59b6; margin-right: 8px;"></i>
-                Xaaladda Xarumaha
+        <!-- Deployments Highlights -->
+        <div class="glass-card" style="padding: 1.5rem;">
+            <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.2rem; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-user-clock" style="color: #10b981; margin-right: 8px;"></i>
+                Shaqada Hadda (Active)
             </h3>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                @foreach($facility_stats as $stat)
-                <div style="display: flex; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 10px;">
-                    <span style="font-weight: 600; color: #2d3436;">{{ $stat->type }}</span>
-                    <span class="badge bg-primary rounded-pill">{{ $stat->count }}</span>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                @forelse($active_deployments as $deployment)
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: rgba(16, 185, 129, 0.05); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($deployment->user->name) }}&background=10b981&color=fff" style="width: 30px; height: 30px; border-radius: 50%;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--sidebar-bg);">{{ $deployment->user->name }}</div>
+                    </div>
+                    <span style="font-size: 0.65rem; font-weight: 800; color: #10b981;">ON DUTY</span>
                 </div>
-                @endforeach
-                 @if($facility_stats->isEmpty())
-                    <p class="text-muted small">No facility data available.</p>
-                @endif
+                @empty
+                <div style="text-align: center; padding: 1rem; color: var(--text-sub); font-size: 0.8rem;">Ma jiraan ciidan hadda shaqada ku jira.</div>
+                @endforelse
             </div>
         </div>
-    </div>
-
-    <!-- Active Deployments -->
-    <div class="glass-card mb-4" style="overflow: hidden;">
-        <h3 style="font-family: 'Outfit'; font-weight: 700; color: #1e293b; font-size: 1.2rem; margin-bottom: 1.5rem;">
-            <i class="fa-solid fa-user-clock" style="color: #2ecc71; margin-right: 8px;"></i>
-            Shaqaalaha Hadda Shaqada Ku Jira (Active Deployments)
-        </h3>
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th style="padding: 1rem; text-align: left; color: #64748b;">Askari</th>
-                    <th style="padding: 1rem; text-align: left; color: #64748b;">Goobta</th>
-                    <th style="padding: 1rem; text-align: left; color: #64748b;">Shift-ka</th>
-                    <th style="padding: 1rem; text-align: right; color: #64748b;">Xaaladda</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($active_deployments as $deployment)
-                <tr>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                             <img src="https://ui-avatars.com/api/?name={{ urlencode($deployment->user->name) }}&size=30&background=random" style="border-radius: 50%;">
-                            <span style="font-weight: 600;">{{ $deployment->user->name }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        {{ $deployment->station->station_name ?? ($deployment->facility->name ?? 'N/A') }}
-                    </td>
-                    <td>
-                        <span class="badge bg-info text-dark">{{ $deployment->shift }}</span>
-                    </td>
-                    <td style="text-align: right;">
-                        <span class="badge bg-success">On Duty</span>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="4" class="text-center py-3 text-muted">Ma jiraan ciidan hadda shaqada ku jira oo la diiwaangeliyay.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
     </div>
 </div>
 @endsection
