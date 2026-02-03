@@ -187,25 +187,26 @@ body {
 
 /* ==================== COLLAPSIBLE TOP BAR ==================== */
 .top-bar {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     height: 80px;
-    /* Default height */
+    z-index: 999;
+    --glass-border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.top-bar.collapsed {
+.top-bar.is-minimized {
     height: 60px;
-    padding: 0 1rem;
 }
 
-.top-bar.collapsed .greeting,
-.top-bar.collapsed .search-bar {
+.top-bar.is-minimized .greeting,
+.top-bar.is-minimized .search-bar {
     opacity: 0;
     pointer-events: none;
-    transform: translateY(-10px);
+    transform: translateY(-5px);
 }
 
 .top-bar-trigger {
