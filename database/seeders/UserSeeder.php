@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
         $adminRole = \App\Models\Role::where('slug', 'admin')->first();
         $station = \App\Models\Station::first();
 
-        \App\Models\User::firstOrCreate(
+        \App\Models\User::updateOrCreate(
             ['email' => 'admin@police.gov.so'],
             [
                 'name' => 'Admin User',
@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
 
         // Add an officer
         $officerRole = \App\Models\Role::where('slug', 'askari')->first();
-        \App\Models\User::firstOrCreate(
+        \App\Models\User::updateOrCreate(
             ['email' => 'officer@police.gov.so'],
             [
                 'name' => 'Askari Cali',
