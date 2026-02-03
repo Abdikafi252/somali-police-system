@@ -20,16 +20,14 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
         
-        <div class="sidebar-header" style="padding: 2rem 1.5rem; text-align: center;">
-            <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
+        <div class="sidebar-header" style="padding: 2.5rem 1.5rem; text-align: center;">
+            <div style="position: relative; display: inline-block;">
                 <div class="profile-glow"></div>
                 <img src="{{ auth()->user()->profile_image ? asset('storage/' . auth()->user()->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=6366f1&color=fff' }}" 
                      alt="Profile" class="profile-img" 
                      onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=6366f1&color=fff'"
-                     style="width: 80px; height: 80px; border-radius: 24px; border: 3px solid rgba(255,255,255,0.8); object-fit: cover; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; z-index: 2;">
+                     style="width: 90px; height: 90px; border-radius: 28px; border: 3px solid rgba(255,255,255,0.8); object-fit: cover; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; z-index: 2;">
             </div>
-            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: white;">{{ auth()->user()->name }}</h4>
-            <p style="margin: 4px 0 0; font-size: 0.8rem; opacity: 0.7; color: white; font-weight: 500;">{{ auth()->user()->role->name }}</p>
         </div>
 
         <nav class="nav-menu" style="padding: 0 1rem 2rem;">
