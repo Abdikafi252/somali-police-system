@@ -124,16 +124,12 @@
                 <button class="mobile-menu-toggle" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="greeting">
-                    <h2>{{ auth()->user()->name }}</h2>
-                    <p>{{ auth()->user()->role->name }}</p>
-                </div>
             </div>
             
-            <div class="search-bar">
+            <div class="search-bar" style="margin: 0 auto; flex: 0 1 400px;">
                 <form action="{{ route('search') }}" method="GET" style="width: 100%; display: flex; align-items: center;">
                     <i class="fa-solid fa-magnifying-glass" style="color: #636e72; margin-right: 10px;"></i>
-                    <input type="text" name="q" placeholder="Raadi..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent;">
+                    <input type="text" name="q" placeholder="Raadi..." value="{{ request('q') }}" style="border: none; outline: none; width: 100%; background: transparent; font-weight: 600;">
                 </form>
             </div>
 
