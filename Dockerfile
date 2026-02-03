@@ -58,6 +58,9 @@ RUN php artisan migrate --seed --force
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
+# Create symbolic link for storage
+RUN php artisan storage:link
+
 # Expose port 80 and start apache server
 EXPOSE 80
 CMD ["apache2-foreground"]
