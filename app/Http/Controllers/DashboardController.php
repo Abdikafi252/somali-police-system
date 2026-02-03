@@ -85,7 +85,11 @@ class DashboardController extends Controller
             ->get();
 
         // 1. Monthly Crime Trends (Line Chart) - Last 6 Months
-        $trends = PoliceCase::select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+        $monthQuery = DB::getDriverName() === 'sqlite' 
+            ? "strftime('%m', created_at) + 0" 
+            : "MONTH(created_at)";
+
+        $trends = PoliceCase::select(DB::raw("$monthQuery as month"), DB::raw('COUNT(*) as count'))
             ->where('created_at', '>=', now()->subMonths(6))
             ->groupBy('month')
             ->orderBy('month')
