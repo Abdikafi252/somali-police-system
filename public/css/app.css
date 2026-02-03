@@ -257,6 +257,8 @@ body {
     position: relative;
     overflow: hidden;
     letter-spacing: 0.5px;
+    margin: 0 auto;
+    /* Ensure centering in flex container */
 }
 
 .logout-btn-premium::before {
@@ -331,13 +333,16 @@ body {
         width: 44px !important;
         height: 44px !important;
         display: block !important;
-        min-width: 44px;
+        min-width: 44px !important;
         border-radius: 10px !important;
+        object-fit: cover !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
-    /* Allow table to scroll but keep images visible */
+    /* Ensure the table cell doesn't collapse */
     table td:first-child {
-        min-width: 150px;
+        min-width: 180px !important;
     }
 }
 
@@ -463,6 +468,12 @@ body {
 
     .greeting h2 {
         font-size: 1rem;
+    }
+
+    img {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
     }
 }
 

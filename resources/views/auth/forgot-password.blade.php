@@ -19,7 +19,7 @@
     body {
         font-family: 'Outfit', sans-serif;
         overflow: hidden;
-        background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 50%, #5a8f3a 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -68,7 +68,7 @@
     .icon-circle {
         width: 100px;
         height: 100px;
-        background: linear-gradient(135deg, #2d5016 0%, #3d6622 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         border-radius: 50%;
         margin: 0 auto;
         display: flex;
@@ -184,7 +184,7 @@
     .btn-submit {
         width: 100%;
         padding: 1rem;
-        background: linear-gradient(135deg, #2d5016 0%, #3d6622 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         border: none;
         border-radius: 8px;
         color: white;
