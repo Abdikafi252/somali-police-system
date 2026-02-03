@@ -137,8 +137,44 @@
                 </form>
             </div>
 
-            <div class="top-bar-trigger" onclick="toggleTopBar()">
-                <i class="fa-solid fa-chevron-down"></i>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" style="position: relative;">
+                    <i class="fa-regular fa-bell" style="cursor: pointer; color: var(--text-main); font-size: 1.1rem;" onclick="toggleNotifications()"></i>
+                    @if(auth()->user()->unreadNotifications->count() > 0)
+                        <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">
+                            {{ auth()->user()->unreadNotifications->count() }}
+                        </span>
+                    @endif
+
+                    <div id="notification-list" style="display: none; position: absolute; top: 35px; right: 0; background: white; width: 300px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); z-index: 1000; overflow: hidden;">
+                        <div style="padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); font-weight: 700; color: var(--sidebar-bg); display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+                            <span style="font-size: 0.85rem;">Notifications</span>
+                            <a href="{{ route('notifications.index') }}" style="font-size: 0.75rem; color: #6366f1; text-decoration: none;">View All</a>
+                        </div>
+                        <div style="max-height: 350px; overflow-y: auto;">
+                            @forelse(auth()->user()->unreadNotifications as $notification)
+                                <div style="padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.03); background: #fff; transition: 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                                    <div style="font-weight: 700; font-size: 0.8rem; color: #6366f1; margin-bottom: 2px;">
+                                        {{ $notification->data['message'] ?? 'New Alert' }}
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #94a3b8;">
+                                        {{ $notification->created_at->diffForHumans() }}
+                                    </div>
+                                </div>
+                            @empty
+                                <div style="padding: 30px 20px; text-align: center; color: var(--text-sub); font-size: 0.8rem;">
+                                    <i class="fa-solid fa-bell-slash" style="display: block; font-size: 1.5rem; margin-bottom: 8px; opacity: 0.3;"></i>
+                                    No new notifications
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <div class="top-bar-trigger" onclick="toggleTopBar()">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
             </div>
         </header>
         @endauth
