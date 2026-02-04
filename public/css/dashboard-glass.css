@@ -36,9 +36,9 @@ body {
 .edu-sidebar {
     width: var(--sidebar-width);
     background: var(--sidebar-bg);
-    height: 96vh;
-    margin: 2vh 0 2vh 2vh;
-    border-radius: var(--radius-lg);
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     margin-right: 0;
@@ -303,6 +303,7 @@ body {
     padding: 0.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow-soft);
+    color: #1F2937;
 }
 
 /* Overlay */

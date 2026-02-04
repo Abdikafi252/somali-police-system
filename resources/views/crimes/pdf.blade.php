@@ -1,108 +1,212 @@
-<!DOCTYPE html>
-<html lang="so">
-<head>
-    <meta charset="UTF-8">
-    <title>Warbixinta Kiiska - {{ $crime->case_number }}</title>
-    <style>
-        @page { margin: 20px; }
-        body { font-family: 'DejaVu Sans', sans-serif; color: #2c3e50; line-height: 1.6; }
-        .header { text-align: center; border-bottom: 3px solid #1e3a8a; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo { width: 80px; height: 80px; margin: 0 auto 15px; }
-        .title { font-size: 24px; font-weight: bold; color: #1e3a8a; margin: 10px 0; }
-        .subtitle { font-size: 14px; color: #64748b; }
-        .section { margin: 25px 0; }
-        .section-title { font-size: 16px; font-weight: bold; color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 15px; }
-        .info-grid { width: 100%; margin: 15px 0; border-collapse: collapse; }
-        .info-grid td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
-        .info-label { font-weight: bold; color: #475569; width: 35%; }
-        .info-value { color: #1e293b; }
-        .evidence-grid { width: 100%; border-collapse: separate; border-spacing: 15px; }
-        .evidence-item { text-align: center; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; vertical-align: top; width: 30%; }
-        .evidence-item img { max-width: 100%; height: auto; border-radius: 4px; }
-        .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .tag-red { background: #fee2e2; color: #dc2626; }
-        .tag-green { background: #dcfce7; color: #16a34a; }
-        .tag-blue { background: #dbeafe; color: #1e40af; }
-    </style>
-</head>
-<body>
-    <div style="height: 5px; background: #1e3a8a; position: absolute; top: 0; left: 0; right: 0;"></div>
-    <div class="header">
-        <div class="logo">
-            @php
-                $logoPath = public_path('images/police-logo.png');
-                $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
-            @endphp
-            @if($logoData)
-                <img src="data:image/png;base64,{{ $logoData }}" alt="Police Logo" style="width: 80px; height: 80px; object-fit: contain;">
-            @endif
+@extends('layouts.app')
+
+@section('title', 'Warbixinta Dambiga: ' . $crime->case_number)
+
+@section('css')
+<style>
+    @media print {
+        .sidebar, .top-bar, .no-print, .edu-sidebar, .edu-topbar, .mobile-toggle {
+            display: none !important;
+        }
+        .main-content {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+        .glass-card {
+            border: none !important;
+            box-shadow: none !important;
+            background: white !important;
+            padding: 0 !important;
+        }
+        body {
+            background: white !important;
+            overflow: visible !important;
+        }
+        .app-wrapper {
+            display: block !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+    }
+
+    .report-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: white;
+        padding: 3rem;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+
+    .report-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        border-bottom: 2px solid #1C1E26;
+        padding-bottom: 1.5rem;
+    }
+
+    .report-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        color: #1C1E26;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-item label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #8F95A2;
+        text-transform: uppercase;
+    }
+
+    .info-item span {
+        font-weight: 700;
+        color: #1C1E26;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+
+    .table th {
+        text-align: left;
+        background: #f9f9f9;
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #666;
+        border-bottom: 2px solid #eee;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+    }
+
+    .signature-section {
+        margin-top: 5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+    }
+
+    .sig-line {
+        border-top: 1px solid #000;
+        padding-top: 0.5rem;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .pill {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+    .pill-red { background: #fee2e2; color: #dc2626; }
+    .pill-green { background: #dcfce7; color: #16a34a; }
+    .pill-blue { background: #dbeafe; color: #1e40af; }
+</style>
+@endsection
+
+@section('content')
+<div class="no-print" style="max-width: 800px; margin: 1rem auto; display: flex; justify-content: space-between;">
+    <a href="{{ route('crimes.show', $crime->id) }}" class="btn" style="background: white; border: 1px solid rgba(0,0,0,0.1); text-decoration: none; padding: 0.5rem 1rem; border-radius: 5px; color: #666;">
+        <i class="fa-solid fa-arrow-left"></i> Ku laabo Dambiga
+    </a>
+    <button onclick="window.print()" class="btn-primary" style="background: #1C1E26; color: white; padding: 0.5rem 2rem; border-radius: 5px; border: none; cursor: pointer; font-weight: 600;">
+        <i class="fa-solid fa-print"></i> Daabac Warbixinta
+    </button>
+</div>
+
+<div class="report-container">
+    <div class="report-header">
+        <h2 style="margin: 0; font-family: 'Outfit'; color: #1C1E26;">JAMHUURIYADDA FEDERAALKA SOOMAALIYA</h2>
+        <h3 style="margin: 5px 0; color: #1C1E26;">CIIDANKA BOOLISKA SOOMAALIYEED</h3>
+        <h4 style="margin: 5px 0; color: #dc2626;">WARBIXINTA DAMBIGA (CRIME REPORT)</h4>
+        <div style="margin-top: 1rem; font-weight: 700; color: #666;">TAARIIKH: {{ now()->format('d/m/Y') }}</div>
+    </div>
+
+    <div class="report-section">
+        <div class="section-title">Xogta Guud ee Kiiska (Case Summary)</div>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Case Number</label>
+                <span>{{ $crime->case_number }}</span>
+            </div>
+            <div class="info-item">
+                <label>Nooca Dambiga (Crime Type)</label>
+                <span>{{ $crime->crime_type }}</span>
+            </div>
+            <div class="info-item">
+                <label>Goobta (Location)</label>
+                <span>{{ $crime->location }}</span>
+            </div>
+            <div class="info-item">
+                <label>Taariikhda Dambiga (Date & Time)</label>
+                <span>{{ \Carbon\Carbon::parse($crime->crime_date)->format('d/m/Y H:i') }}</span>
+            </div>
+            <div class="info-item">
+                <label>Xaalada (Status)</label>
+                <span class="pill {{ $crime->status == 'Baaris' ? 'pill-red' : ($crime->status == 'Xiran' ? 'pill-green' : 'pill-blue') }}">
+                    {{ $crime->status }}
+                </span>
+            </div>
+            <div class="info-item">
+                <label>Sarkaalka Diiwaangeliyay</label>
+                <span>{{ $crime->reporter->name ?? 'N/A' }}</span>
+            </div>
         </div>
-        <div class="title">BOOLISKA SOOMAALIYA</div>
-        <div class="subtitle">Somali National Police Force</div>
-        <div style="margin-top: 15px; font-size: 18px; font-weight: bold; color: #dc2626;">WARBIXINTA KIISKA</div>
     </div>
 
-    <div class="section">
-        <div class="section-title">XOGTA KIISKA</div>
-        <table class="info-grid">
-            <tr>
-                <td class="info-label">Lambarka Kiiska:</td>
-                <td class="info-value"><strong>{{ $crime->case_number }}</strong></td>
-            </tr>
-            <tr>
-                <td class="info-label">Nooca Dambiga:</td>
-                <td class="info-value">{{ $crime->crime_type }}</td>
-            </tr>
-            <tr>
-                <td class="info-label">Taariikhda:</td>
-                <td class="info-value">{{ \Carbon\Carbon::parse($crime->crime_date)->format('d/m/Y H:i') }}</td>
-            </tr>
-            <tr>
-                <td class="info-label">Goobta:</td>
-                <td class="info-value">{{ $crime->location }}</td>
-            </tr>
-            <tr>
-                <td class="info-label">Xaalada:</td>
-                <td class="info-value">
-                    <span class="tag {{ $crime->status == 'Baaris' ? 'tag-red' : ($crime->status == 'Xiran' ? 'tag-green' : 'tag-blue') }}">
-                        {{ $crime->status }}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="info-label">La Soo Sheegay:</td>
-                <td class="info-value">{{ $crime->reporter->name ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <div class="section-title">FAAHFAAHINTA DAMBIGA</div>
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; text-align: justify;">
+    <div class="report-section">
+        <div class="section-title">Faahfaahinta Dambiga (Description)</div>
+        <div style="line-height: 1.8; color: #333; text-align: justify; font-size: 0.95rem;">
             {{ $crime->description }}
         </div>
     </div>
 
     @if($crime->victims->count() > 0)
-    <div class="section">
-        <div class="section-title">DHIBANAYAASHA ({{ $crime->victims->count() }})</div>
-        <table width="100%" style="border-collapse: collapse; margin-top: 10px;">
+    <div class="report-section">
+        <div class="section-title">Dhibanayaasha (Victims)</div>
+        <table class="table">
             <thead>
-                <tr style="background: #f1f5f9; text-align: left;">
-                    <th style="padding: 10px; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px;">MAGACA</th>
-                    <th style="padding: 10px; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px;">DA'DA</th>
-                    <th style="padding: 10px; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px;">JINSIGA</th>
-                    <th style="padding: 10px; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px;">NOOCA DHAAWACA</th>
+                <tr>
+                    <th>Magaca</th>
+                    <th>Da'da</th>
+                    <th>Jinsiga</th>
+                    <th>Nooca Dhaawaca</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($crime->victims as $victim)
                 <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ $victim->name }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ $victim->age }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ $victim->gender }}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ $victim->injury_type }}</td>
+                    <td>{{ $victim->name }}</td>
+                    <td>{{ $victim->age }}</td>
+                    <td>{{ $victim->gender }}</td>
+                    <td>{{ $victim->injury_type }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -111,50 +215,43 @@
     @endif
 
     @if($crime->suspects->count() > 0)
-    <div class="section">
-        <div class="section-title">DAMBIILAYAASHA ({{ $crime->suspects->count() }})</div>
+    <div class="report-section">
+        <div class="section-title">Eedeysanayaasha (Suspects)</div>
         @foreach($crime->suspects as $suspect)
-        <div style="margin: 15px 0; padding: 15px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; display: table; width: 100%;">
-            <div style="display: table-row;">
-                @if($suspect->photo)
-                    @php
-                        $photoPath = storage_path('app/public/' . $suspect->photo);
-                        $photoData = file_exists($photoPath) ? base64_encode(file_get_contents($photoPath)) : '';
-                        $photoExt = pathinfo($suspect->photo, PATHINFO_EXTENSION);
-                    @endphp
-                    @if($photoData)
-                    <div style="display: table-cell; width: 100px; vertical-align: top; padding-right: 15px;">
-                        <img src="data:image/{{ $photoExt }};base64,{{ $photoData }}" alt="Suspect Photo" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 2px solid #dc2626;">
-                    </div>
-                    @endif
+        <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #eee;">
+            @if($suspect->photo)
+                @php
+                    $photoPath = storage_path('app/public/' . $suspect->photo);
+                    $photoUrl = file_exists($photoPath) 
+                        ? 'data:image/' . pathinfo($suspect->photo, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($photoPath))
+                        : null;
+                @endphp
+                @if($photoUrl)
+                <img src="{{ $photoUrl }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                @else
+                <div style="width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #ccc;">
+                    <i class="fa-solid fa-user"></i>
+                </div>
                 @endif
-                <div style="display: table-cell; vertical-align: top;">
-                    <table class="info-grid" style="margin: 0;">
-                        <tr>
-                            <td class="info-label" style="width: 30%;">Magaca:</td>
-                            <td class="info-value">{{ $suspect->name }} ({{ $suspect->nickname ?? '-' }})</td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Hooyada:</td>
-                            <td class="info-value">{{ $suspect->mother_name ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Da'da & Jinsiga:</td>
-                            <td class="info-value">{{ $suspect->age }} sano, {{ $suspect->gender }}</td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Xaalada:</td>
-                            <td class="info-value">
-                                <span class="tag {{ $suspect->arrest_status == 'arrested' ? 'tag-red' : 'tag-green' }}">
-                                    {{ ucfirst($suspect->arrest_status) }}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Cinwaanka:</td>
-                            <td class="info-value">{{ $suspect->address ?? 'N/A' }}</td>
-                        </tr>
-                    </table>
+            @else
+                <div style="width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #ccc;">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            @endif
+            
+            <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 1.1rem; color: #1C1E26; margin-bottom: 0.5rem;">
+                    {{ $suspect->name }} 
+                    @if($suspect->nickname)
+                        <span style="font-size: 0.9rem; font-weight: 400; color: #666;">("{{ $suspect->nickname }}")</span>
+                    @endif
+                </div>
+                <div class="info-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0;">
+                    <div class="info-item"><label>Da'da</label> <span>{{ $suspect->age ?? '-' }}</span></div>
+                    <div class="info-item"><label>Jinsiga</label> <span>{{ $suspect->gender ?? '-' }}</span></div>
+                    <div class="info-item"><label>Hooyada</label> <span>{{ $suspect->mother_name ?? '-' }}</span></div>
+                    <div class="info-item"><label>Xaalada</label> <span>{{ ucfirst($suspect->arrest_status) }}</span></div>
+                    <div class="info-item" style="grid-column: span 2;"><label>Cinwaanka</label> <span>{{ $suspect->address ?? '-' }}</span></div>
                 </div>
             </div>
         </div>
@@ -163,43 +260,48 @@
     @endif
 
     @if($crime->evidence->count() > 0)
-    <div class="section">
-        <div class="section-title">CADAYMAHA ({{ $crime->evidence->count() }})</div>
-        <table class="evidence-grid">
-            <tr>
-            @foreach($crime->evidence as $index => $evidence)
-                @if($index % 3 == 0 && $index != 0)
-                    </tr><tr>
-                @endif
-                <td class="evidence-item">
-                    @if($evidence->file_type == 'image')
-                        @php
-                            $evidencePath = storage_path('app/public/' . $evidence->file_path);
-                            $evidenceData = file_exists($evidencePath) ? base64_encode(file_get_contents($evidencePath)) : '';
-                            $evidenceExt = pathinfo($evidence->file_path, PATHINFO_EXTENSION);
-                        @endphp
-                        @if($evidenceData)
-                            <img src="data:image/{{ $evidenceExt }};base64,{{ $evidenceData }}" alt="Evidence">
-                        @else
-                           <div style="padding: 20px; color: #94a3b8;">Sawir lagama helin server-ka</div>
-                        @endif
+    <div class="report-section">
+        <div class="section-title">Cadeymaha (Evidence)</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            @foreach($crime->evidence as $ev)
+            <div style="border: 1px solid #eee; border-radius: 8px; padding: 1rem; text-align: center;">
+                @if($ev->file_type === 'image')
+                    @php
+                        $evPath = storage_path('app/public/' . $ev->file_path);
+                        $evUrl = file_exists($evPath) 
+                            ? 'data:image/' . pathinfo($ev->file_path, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($evPath))
+                            : null;
+                    @endphp
+                    @if($evUrl)
+                        <img src="{{ $evUrl }}" style="max-width: 100%; height: 100px; object-fit: cover; border-radius: 4px; margin-bottom: 0.5rem;">
                     @else
-                        <div style="padding: 20px; background: #f1f5f9; border-radius: 4px;">
-                            <div style="font-size: 24px; color: #64748b;">📄</div>
-                            <div style="font-size: 11px; color: #475569; margin-top: 5px;">Document</div>
-                        </div>
+                        <div style="height: 100px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; margin-bottom: 0.5rem;"><i class="fa-solid fa-image"></i> No Image</div>
                     @endif
-                    <div style="font-size: 10px; color: #64748b; margin-top: 5px;">{{ $evidence->notes ?? 'Cadayn #' . ($index + 1) }}</div>
-                </td>
+                @else
+                    <div style="height: 100px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; margin-bottom: 0.5rem; font-size: 2rem; color: #666;">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                @endif
+                <div style="font-size: 0.8rem; color: #666;">{{ $ev->notes ?? 'Cadeyn' }}</div>
+            </div>
             @endforeach
-            </tr>
-        </table>
+        </div>
     </div>
     @endif
 
-    <div class="footer">
-        <p><strong>Booliska Soomaaliya</strong> | Muqdisho, Soomaaliya</p>
-        <p>Warbixintan waxaa la soo saaray: {{ now()->format('d/m/Y H:i') }} | Waxaa soo saaray: {{ auth()->user()->name }}</p>
+    <div class="signature-section">
+        <div class="sig-column">
+            <div class="sig-line">Sarkaalka Diwangeliyay</div>
+            <div style="text-align: center; margin-top: 5px;">{{ $crime->reporter->name ?? '________________' }}</div>
+        </div>
+        <div class="sig-column">
+            <div class="sig-line">Taliyaha Saldhiga (Approval)</div>
+            <div style="text-align: center; margin-top: 5px;">________________________</div>
+        </div>
     </div>
-</body>
-</html>
+
+    <div style="margin-top: 4rem; text-align: center; font-size: 0.7rem; color: #777; border-top: 1px solid #eee; padding-top: 1rem;">
+        Warbixintan waxaa si otomaatig ah looga soo saaray Nidaamka Isku-dhafka ah ee Booliska Soomaaliyeed (SNP System).
+    </div>
+</div>
+@endsection
