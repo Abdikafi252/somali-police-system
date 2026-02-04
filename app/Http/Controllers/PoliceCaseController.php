@@ -204,10 +204,17 @@ class PoliceCaseController extends Controller
             }
 
             // 4. Create Police Case
-            // Generate Case Number based on User Name (e.g. ABDI-2026-X832)
-            $userName = strtoupper(substr(auth()->user()->name, 0, 3));
-            $uniqueCode = strtoupper(Str::random(4));
-            $caseNumber = $userName . '-' . date('Y') . '-' . $uniqueCode;
+            // Automated Case Number Generation: SNP-PC-YYYY-001
+            $year = date('Y');
+            $lastCase = PoliceCase::where('case_number', 'like', "SNP-PC-$year-%")->latest()->first();
+            $nextNumber = 1;
+            
+            if ($lastCase) {
+                $parts = explode('-', $lastCase->case_number);
+                $nextNumber = intval(end($parts)) + 1;
+            }
+            
+            $caseNumber = sprintf("SNP-PC-%s-%03d", $year, $nextNumber);
 
             // Determine Assigned Officer (Input or Current User)
             $assignedId = $request->filled('assigned_to') ? $request->assigned_to : auth()->id();
