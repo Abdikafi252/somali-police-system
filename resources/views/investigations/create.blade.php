@@ -139,7 +139,7 @@
             console.error(error);
         });
 
-    Document.getElementById('add-statement').addEventListener('click', function() {
+    document.getElementById('add-statement').addEventListener('click', function() {
         // Collect existing people from the case (passed from PHP)
         const suspects = @json($case->crime->suspects ?? []);
         // Note: Assuming we might have victims relation later, for now just suspects
