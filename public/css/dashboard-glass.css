@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 :root {
     /* Eduplex Theme Variables */
     --sidebar-bg: #1C1E26;
@@ -30,7 +34,8 @@ body {
     height: 100vh;
     width: 100%;
     overflow: hidden;
-    gap: 0;
+    gap: 0 !important;
+    justify-content: flex-start;
 }
 
 /* 1. Sidebar (Floating & Dark) */
@@ -138,6 +143,7 @@ body {
     overflow-y: auto;
     padding: 0 2rem 2vh 0 !important;
     padding-top: 0 !important;
+    min-width: 0;
 }
 
 /* Topbar */
