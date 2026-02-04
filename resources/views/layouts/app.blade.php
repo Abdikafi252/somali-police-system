@@ -112,7 +112,7 @@
                             <div class="badge">{{ auth()->user()->unreadNotifications->count() }}</div>
                         @endif
                         <!-- Notification Dropdown -->
-                        <div id="notification-list" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 50px; background: white; width: 300px; padding: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000; max-height: 400px; overflow-y: auto;">
+                        <div id="notification-list" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 50px; background: white; width: 300px; padding: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 9999; max-height: 400px; overflow-y: auto;">
                             <div style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Notifications</div>
                             @forelse(auth()->user()->unreadNotifications as $notification)
                                 <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f1f1f1;">
@@ -142,7 +142,7 @@
                         <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=C6F048&color=1C1E26" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-soft); cursor: pointer;">
                         
                         <!-- Dropdown Menu -->
-                        <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 60px; background: white; width: 200px; padding: 0.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid rgba(0,0,0,0.05);">
+                        <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 60px; background: white; width: 200px; padding: 0.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 9999; border: 1px solid rgba(0,0,0,0.05);">
                             <div style="padding: 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 0.5rem;">
                                 <div style="font-weight: 700; color: #1f2937;">{{ auth()->user()->name }}</div>
                                 <div style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">{{ auth()->user()->role->name }}</div>
