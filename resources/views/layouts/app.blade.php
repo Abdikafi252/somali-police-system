@@ -36,23 +36,48 @@
                 @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Operations</div>
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-folder-open"></i> <span>Cases</span>
+                    <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
                 </a>
                 <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-handcuffs"></i> <span>Crimes</span>
+                    <i class="fa-solid fa-handcuffs"></i> <span>Crimes (Dambiyada)</span>
                 </a>
                 <a href="{{ route('suspects.index') }}" class="nav-link {{ request()->is('suspects*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-secret"></i> <span>Suspects</span>
+                    <i class="fa-solid fa-user-secret"></i> <span>Suspects (Dambiilaha)</span>
+                </a>
+                <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i> <span>Investigations (Baaritaanka)</span>
+                </a>
+                <a href="{{ route('chat.index') }}" class="nav-link {{ request()->is('chat*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-comments"></i> <span>Chat (Wada-hadalka)</span>
                 </a>
                 @endif
 
                 @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Administration</div>
                 <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-building-shield"></i> <span>Stations</span>
+                    <i class="fa-solid fa-building-shield"></i> <span>Stations (Saldhigyada)</span>
+                </a>
+                <a href="{{ route('facilities.index') }}" class="nav-link {{ request()->is('facilities*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-building"></i> <span>Facilities (Xarumaha)</span>
                 </a>
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-group"></i> <span>Officers</span>
+                    <i class="fa-solid fa-user-group"></i> <span>Officers (Askarta)</span>
+                </a>
+                <a href="{{ route('station-commanders.index') }}" class="nav-link {{ request()->is('station-commanders*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-user-tie"></i> <span>Station Commanders</span>
+                </a>
+                <a href="{{ route('station-officers.index') }}" class="nav-link {{ request()->is('station-officers*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-users-viewfinder"></i> <span>Station Officers</span>
+                </a>
+                @endif
+                
+                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-ciidan']))
+                <div class="nav-section-title">Reporting</div>
+                <a href="{{ route('reports.index') }}" class="nav-link {{ request()->is('reports*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-file-chart-column"></i> <span>Reports (Warbixinada)</span>
+                </a>
+                <a href="{{ route('audit.index') }}" class="nav-link {{ request()->is('audit*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit Logs</span>
                 </a>
                 @endif
                 
