@@ -36,26 +36,37 @@ Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    Route::resource('crimes', CrimeController::class);
-    Route::get('/crimes/{crime}/pdf', [\App\Http\Controllers\CrimeController::class, 'exportPDF'])->name('crimes.pdf');
-    Route::resource('suspects', SuspectController::class);
-    Route::get('/cases/dashboard', [PoliceCaseController::class, 'dashboard'])->name('cases.dashboard');
-    Route::resource('cases', PoliceCaseController::class);
-    Route::resource('investigations', InvestigationController::class);
-    Route::resource('prosecutions', ProsecutionController::class);
-    Route::resource('court-cases', CourtCaseController::class);
-    Route::resource('deployments', DeploymentController::class);
-    Route::resource('facilities', FacilityController::class);
-    Route::resource('stations', StationController::class);
-    Route::resource('users', UserController::class);
-    Route::resource('station-commanders', \App\Http\Controllers\StationCommanderController::class);
-    Route::resource('station-officers', \App\Http\Controllers\StationOfficerController::class);
-    Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
-    Route::get('/audit/export', [AuditController::class, 'export'])->name('audit.export');
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
-    Route::get('/investigations/{id}/report', [InvestigationController::class, 'showReport'])->name('investigations.report');
-    Route::post('/investigation-logs', [InvestigationLogController::class, 'store'])->name('investigation-logs.store');
+    // Shared Operational Routes (Admin, CID, Askari)
+    Route::middleware(['role:admin,cid,askari,taliye-saldhig'])->group(function () {
+        Route::resource('crimes', CrimeController::class);
+        Route::get('/crimes/{crime}/pdf', [\App\Http\Controllers\CrimeController::class, 'exportPDF'])->name('crimes.pdf');
+        Route::resource('suspects', SuspectController::class);
+        Route::get('/cases/dashboard', [PoliceCaseController::class, 'dashboard'])->name('cases.dashboard');
+        Route::resource('cases', PoliceCaseController::class);
+        Route::resource('investigations', InvestigationController::class);
+        Route::get('/investigations/{id}/report', [InvestigationController::class, 'showReport'])->name('investigations.report');
+        Route::post('/investigation-logs', [InvestigationLogController::class, 'store'])->name('investigation-logs.store');
+    });
+
+    // Legal Routes (Prosecutor, Judge, Admin)
+    Route::middleware(['role:admin,prosecutor,judge'])->group(function () {
+        Route::resource('prosecutions', ProsecutionController::class);
+        Route::resource('court-cases', CourtCaseController::class);
+    });
+
+    // Administrative Routes (Admin only or Commanders)
+    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol'])->group(function () {
+        Route::resource('deployments', DeploymentController::class);
+        Route::resource('facilities', FacilityController::class);
+        Route::resource('stations', StationController::class);
+        Route::resource('users', UserController::class); // User management
+        Route::resource('station-commanders', \App\Http\Controllers\StationCommanderController::class);
+        Route::resource('station-officers', \App\Http\Controllers\StationOfficerController::class);
+        Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+        Route::get('/audit/export', [AuditController::class, 'export'])->name('audit.export');
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
+    });
     
     // User Profile
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
