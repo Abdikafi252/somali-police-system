@@ -35,14 +35,11 @@
 
                 @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Operations</div>
-                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
+                <a href="{{ route('cases.create-unified') }}" class="nav-link {{ request()->is('cases/create-unified*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>New Incident (Warbixin Cusub)</span>
+                </a>
+                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
-                </a>
-                <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-handcuffs"></i> <span>Crimes (Dambiyada)</span>
-                </a>
-                <a href="{{ route('suspects.index') }}" class="nav-link {{ request()->is('suspects*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-secret"></i> <span>Suspects (Dambiilaha)</span>
                 </a>
                 <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-magnifying-glass-chart"></i> <span>Investigations (Baaritaanka)</span>

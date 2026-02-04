@@ -111,24 +111,61 @@ class PoliceCaseController extends Controller
 
     public function update(Request $request, PoliceCase $case)
     {
-        $validated = $request->validate([
+        $request->validate([
             'assigned_to' => 'nullable|exists:users,id',
             'status' => 'required|string',
+            // Crime Fields
+            'crime_type' => 'required',
+            'location' => 'required',
+            'crime_date' => 'required|date',
+            'description' => 'required',
+            // Suspect Fields (updating the first suspect linked to crime)
+            'suspect_name' => 'required',
+            'suspect_gender' => 'required',
         ]);
 
-        // Check if assignment changed
-        $old_assigned_to = $case->assigned_to;
-        $case->update($validated);
+        \DB::transaction(function () use ($request, $case) {
+            // 1. Update Case
+            $old_assigned_to = $case->assigned_to;
+            $case->update([
+                'assigned_to' => $request->assigned_to,
+                'status' => $request->status,
+            ]);
 
-        if ($request->filled('assigned_to') && $request->assigned_to != $old_assigned_to) {
-            $officer = User::find($request->assigned_to);
-            if ($officer) {
-                $user = auth()->user();
-                $officer->notify(new \App\Notifications\CaseAssignedNotification($case, $user));
+            // 2. Update Crime
+            $case->crime->update([
+                'crime_type' => $request->crime_type,
+                'location' => $request->location,
+                'crime_date' => $request->crime_date,
+                'description' => $request->description,
+            ]);
+
+            // 3. Update Suspect (First one)
+            $suspect = $case->crime->suspects()->first();
+            if ($suspect) {
+                $suspect->update([
+                    'name' => $request->suspect_name,
+                    'nickname' => $request->suspect_nickname,
+                    'age' => $request->suspect_age,
+                    'mother_name' => $request->suspect_mother_name,
+                    'gender' => $request->suspect_gender,
+                    'residence' => $request->suspect_residence,
+                    'national_id' => $request->suspect_national_id,
+                    'arrest_status' => $request->suspect_status,
+                ]);
             }
-        }
 
-        return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo cusbooneysiiyay.');
+            // Notifications
+            if ($request->filled('assigned_to') && $request->assigned_to != $old_assigned_to) {
+                $officer = User::find($request->assigned_to);
+                if ($officer) {
+                    $user = auth()->user();
+                    $officer->notify(new \App\Notifications\CaseAssignedNotification($case, $user));
+                }
+            }
+        });
+
+        return redirect()->route('cases.index')->with('success', 'Kiiska iyo xogtiisa si guul leh ayaa loo cusbooneysiiyay.');
     }
 
     public function createUnified()
