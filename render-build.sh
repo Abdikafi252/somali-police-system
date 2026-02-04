@@ -6,7 +6,7 @@ set -o errexit
 composer install --no-dev --optimize-autoloader
 
 # Run database migrations
-# php artisan migrate --force
+php artisan migrate --force
 
 # php artisan config:cache
 # php artisan route:cache

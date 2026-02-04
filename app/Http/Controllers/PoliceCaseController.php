@@ -7,6 +7,8 @@ use App\Models\Crime;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PoliceCaseController extends Controller
 {
