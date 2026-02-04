@@ -87,9 +87,9 @@
 
                          <!-- Assignment Section (added as requested) -->
                          <div style="margin-bottom: 1rem;">
-                            <label style="font-weight: 600; font-size: 0.85rem; color: #4b5563;">Xilsaar Baare (Assign Investigator)</label>
+                            <label style="font-weight: 600; font-size: 0.85rem; color: #4b5563;">Sarkaalka Baarista (Investigating Officer)</label>
                             <select name="assigned_to" class="form-control" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;">
-                                <option value="">-- Dooro Baare (Optional) --</option>
+                                <option value="">-- Dooro Sarkaal (Optional) --</option>
                                 @if(isset($officers))
                                     @foreach($officers as $officer)
                                         <option value="{{ $officer->id }}" {{ auth()->id() == $officer->id ? 'selected' : '' }}>{{ $officer->name }} ({{ $officer->station->name ?? 'Headquarters' }})</option>

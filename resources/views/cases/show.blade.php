@@ -53,6 +53,10 @@
             </div>
              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div class="field-group">
+                    <span class="label">SARKAALKA BAARISTA</span>
+                    <span class="value">{{ $case->assignedOfficer->name ?? 'Lama Magacaabin' }}</span>
+                </div>
+                <div class="field-group">
                     <span class="label">GOOBTA</span>
                     <span class="value">{{ $case->crime->location }}</span>
                 </div>
