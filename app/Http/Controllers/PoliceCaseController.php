@@ -129,6 +129,11 @@ class PoliceCaseController extends Controller
         return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo cusbooneysiiyay.');
     }
 
+    public function createUnified()
+    {
+        return view('cases.create_unified');
+    }
+
     public function storeUnified(Request $request)
     {
         $request->validate([
