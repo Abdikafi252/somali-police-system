@@ -398,6 +398,7 @@ body {
     /* Show in menu */
     .nav-link {
         justify-content: flex-start;
+        padding: 0.75rem 1rem;
     }
 
     .sidebar-brand {
@@ -417,10 +418,10 @@ body {
     }
 
     .main-content {
-        padding: 1rem;
+        padding: 1rem !important;
         margin: 0;
         width: 100%;
-        padding-top: 80px;
+        padding-top: 80px !important;
     }
 
     .edu-topbar {
@@ -436,4 +437,15 @@ body {
     .welcome-text h1 {
         font-size: 1.5rem;
     }
+}
+
+/* Utility Classes */
+.glass-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 2rem;
+    width: 100% !important;
+    margin: 0 !important;
+    max-width: 100% !important;
 }
