@@ -15,7 +15,7 @@
     <div class="overlay" onclick="toggleSidebar()"></div>
 
     <!-- Mobile Toggle Button -->
-    <i class="fa-solid fa-bars mobile-toggle" style="display: none;" onclick="toggleSidebar()"></i>
+    <i class="fa-solid fa-bars mobile-toggle" onclick="toggleSidebar()"></i>
 
     <div class="app-wrapper">
         @auth
@@ -174,7 +174,7 @@
             overlay.classList.toggle('active');
         }
 
-        function toggleProfileMenu() {
+        function toggleUserMenu() {
             const menu = document.getElementById('profileDropdown');
             if (menu.style.display === 'none') {
                 menu.style.display = 'block';
@@ -210,10 +210,45 @@
     </script>
 
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <script>
         @auth
             const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
             document.body.setAttribute('data-theme', userTheme);
+
+            // Sound Effect (Simple Ding)
+            const notificationSound = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xaAAXbm50//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xaAAXbm50//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xaAAXbm50");
+
+            // Check for new notifications every 10 seconds
+            setInterval(() => {
+                fetch('{{ route("notifications.check") }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.count > 0) {
+                            // Play Sound
+                            notificationSound.play().catch(e => console.log('Audio play failed (interaction needed first):', e));
+                            
+                            // Show Toast
+                            Toastify({
+                                text: "🔔 " + data.count + " Ogeysiis cusub ayaa kuu soo dhacay!",
+                                duration: 5000,
+                                close: true,
+                                gravity: "top", // `top` or `bottom`
+                                position: "right", // `left`, `center` or `right`
+                                style: {
+                                    background: "#C6F048",
+                                    color: "#1C1E26",
+                                    fontWeight: "bold",
+                                    borderRadius: "8px",
+                                    boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+                                },
+                                onClick: function(){ window.location.href = "{{ route('notifications.index') }}"; } 
+                            }).showToast();
+                        }
+                    });
+            }, 10000); // Poll every 10s
         @endauth
     </script>
     @yield('js')

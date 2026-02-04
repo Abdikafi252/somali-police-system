@@ -211,6 +211,14 @@ class PoliceCaseController extends Controller
 
             $crime->update(['case_number' => $case->case_number]);
 
+            // Notify Admins & Commanders
+            $commanders = \App\Models\User::whereHas('role', function($q) {
+                $q->whereIn('slug', ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']);
+            })->get();
+
+            $reporter = auth()->user();
+            \Illuminate\Support\Facades\Notification::send($commanders, new \App\Notifications\NewIncidentNotification($case, $reporter));
+
             \DB::commit();
             
             // Success message emphasizing the "Code"
