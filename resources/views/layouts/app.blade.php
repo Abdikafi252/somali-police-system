@@ -106,32 +106,34 @@
                     </form>
 
                     <!-- Actions -->
-                    <button class="icon-btn" onclick="toggleNotifications()">
-                        <i class="fa-regular fa-bell"></i>
-                        @if(auth()->user()->unreadNotifications->count() > 0)
-                            <div class="badge">{{ auth()->user()->unreadNotifications->count() }}</div>
-                        @endif
+                    <div style="position: relative;">
+                        <button class="icon-btn" onclick="toggleNotifications()">
+                            <i class="fa-regular fa-bell"></i>
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                                <div class="badge">{{ auth()->user()->unreadNotifications->count() }}</div>
+                            @endif
+                        </button>
                         <!-- Notification Dropdown -->
-                        <div id="notification-list" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 50px; background: white; width: 300px; padding: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 9999; max-height: 400px; overflow-y: auto;">
-                            <div style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Notifications</div>
+                        <div id="notification-list" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 55px; background: white; width: 300px; padding: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 9999; max-height: 400px; overflow-y: auto;">
+                            <div style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Ogeysiisyada</div>
                             @forelse(auth()->user()->unreadNotifications as $notification)
                                 <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f1f1f1;">
                                     <div style="width: 8px; height: 8px; background: #C6F048; border-radius: 50%; margin-top: 5px;"></div>
                                     <div>
-                                        <div style="font-size: 0.85rem; font-weight: 600;">{{ $notification->data['message'] ?? 'New Notification' }}</div>
+                                        <div style="font-size: 0.85rem; font-weight: 600;">{{ $notification->data['message'] ?? 'Ogeysiin Cusub' }}</div>
                                         <div style="font-size: 0.75rem; color: #888;">{{ $notification->created_at->diffForHumans() }}</div>
                                     </div>
                                 </div>
                             @empty
-                                <div style="font-size: 0.8rem; color: #666; text-align: center; padding: 10px;">No new notifications</div>
+                                <div style="font-size: 0.8rem; color: #666; text-align: center; padding: 10px;">Ma jiraan ogeysiisyo cusub</div>
                             @endforelse
                             @if(auth()->user()->unreadNotifications->count() > 0)
                             <div style="text-align: center; margin-top: 10px;">
-                                <a href="{{ route('notifications.readAll') }}" style="font-size: 0.75rem; color: #3b82f6; text-decoration: none;">Mark all as read</a>
+                                <a href="{{ route('notifications.readAll') }}" style="font-size: 0.75rem; color: #3b82f6; text-decoration: none;">Dhamaan u calaamadee sidii la akhriyay</a>
                             </div>
                             @endif
                         </div>
-                    </button>
+                    </div>
                     
                     <button class="icon-btn">
                         <i class="fa-regular fa-calendar"></i>

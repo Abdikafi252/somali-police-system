@@ -74,9 +74,9 @@
                 <div class="form-group">
                     <label for="arrest_status" class="form-label">Xaaladda</label>
                     <select name="arrest_status" id="arrest_status" class="form-select">
-                        <option value="Baxsad">Baxsad</option>
-                        <option value="Xiran">Xiran</option>
-                        <option value="La Raadinayo">La Raadinayo</option>
+                        <option value="wanted">La Raadinayo (Wanted)</option>
+                        <option value="arrested">Xiran (Arrested)</option>
+                        <option value="escaped">Baxsad (Escaped)</option>
                     </select>
                 </div>
                 <div class="form-group">
