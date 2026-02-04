@@ -65,6 +65,24 @@ class CrimeController extends Controller
 
         \App\Services\AuditService::log('create', $crime, ['description' => "Registered new crime case: {$caseNumber} ({$request->crime_type})"]);
 
+        // Handle Suspect Creation (Combined Form)
+        if ($request->filled('suspect_name')) {
+            $suspectData = [
+                'crime_id' => $crime->id,
+                'name' => $request->suspect_name,
+                'age' => $request->suspect_age,
+                'gender' => $request->suspect_gender,
+                'national_id' => $request->national_id,
+                'arrest_status' => $request->arrest_status ?? 'Baxsad',
+            ];
+
+            if ($request->hasFile('suspect_photo')) {
+                $suspectData['photo'] = $request->file('suspect_photo')->store('suspects', 'public');
+            }
+
+            \App\Models\Suspect::create($suspectData);
+        }
+
         // Handle Evidence Upload
         if ($request->hasFile('evidence')) {
             foreach ($request->file('evidence') as $file) {

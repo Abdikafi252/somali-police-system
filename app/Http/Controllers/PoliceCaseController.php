@@ -7,8 +7,6 @@ use App\Models\Crime;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class PoliceCaseController extends Controller
 {
@@ -111,176 +109,37 @@ class PoliceCaseController extends Controller
 
     public function update(Request $request, PoliceCase $case)
     {
-        $request->validate([
+        $validated = $request->validate([
             'assigned_to' => 'nullable|exists:users,id',
             'status' => 'required|string',
-            // Crime Fields
-            'crime_type' => 'required',
-            'location' => 'required',
-            'crime_date' => 'required|date',
-            'description' => 'required',
-            // Suspect Fields (updating the first suspect linked to crime)
-            'suspect_name' => 'required',
-            'suspect_gender' => 'required',
         ]);
 
-        \DB::transaction(function () use ($request, $case) {
-            // 1. Update Case
-            $old_assigned_to = $case->assigned_to;
-            $case->update([
-                'assigned_to' => $request->assigned_to,
-                'status' => $request->status,
-            ]);
+        // Check if assignment changed
+        $old_assigned_to = $case->assigned_to;
+        $case->update($validated);
 
-            // 2. Update Crime
-            $case->crime->update([
-                'crime_type' => $request->crime_type,
-                'location' => $request->location,
-                'crime_date' => $request->crime_date,
-                'description' => $request->description,
-            ]);
-
-            // 3. Update Suspect (First one)
-            $suspect = $case->crime->suspects()->first();
-            if ($suspect) {
-                $suspect->update([
-                    'name' => $request->suspect_name,
-                    'nickname' => $request->suspect_nickname,
-                    'age' => $request->suspect_age,
-                    'mother_name' => $request->suspect_mother_name,
-                    'gender' => $request->suspect_gender,
-                    'residence' => $request->suspect_residence,
-                    'national_id' => $request->suspect_national_id,
-                    'arrest_status' => $request->suspect_status,
-                ]);
+        if ($request->filled('assigned_to') && $request->assigned_to != $old_assigned_to) {
+            $officer = User::find($request->assigned_to);
+            if ($officer) {
+                $user = auth()->user();
+                $officer->notify(new \App\Notifications\CaseAssignedNotification($case, $user));
             }
-
-            // Notifications
-            if ($request->filled('assigned_to') && $request->assigned_to != $old_assigned_to) {
-                $officer = User::find($request->assigned_to);
-                if ($officer) {
-                    $user = auth()->user();
-                    $officer->notify(new \App\Notifications\CaseAssignedNotification($case, $user));
-                }
-            }
-        });
-
-        return redirect()->route('cases.index')->with('success', 'Kiiska iyo xogtiisa si guul leh ayaa loo cusbooneysiiyay.');
-    }
-
-    public function createUnified()
-    {
-        // Fetch officers for assignment (CID or Investigators)
-        $cidRole = \App\Models\Role::whereIn('slug', ['cid', 'askari', 'taliye-saldhig'])->pluck('id');
-        $officers = \App\Models\User::whereIn('role_id', $cidRole)->get();
-        return view('cases.create_unified', compact('officers'));
-    }
-
-    public function storeUnified(Request $request)
-    {
-        $request->validate([
-            // Suspect
-            'suspect_name' => 'required',
-            'suspect_gender' => 'required',
-            'suspect_status' => 'required',
-            // Crime details (grouped with suspect)
-            'crime_type' => 'required',
-            'location' => 'required',
-            'crime_date' => 'required|date',
-            // Assignment
-            'assigned_to' => 'nullable|exists:users,id',
-            // Description
-            'description' => 'required',
-            // Victim (Optional)
-            'victim_name' => 'nullable|string',
-        ]);
-
-        try {
-            \DB::beginTransaction();
-
-            // 1. Create Crime
-            $crime = \App\Models\Crime::create([
-                'crime_type' => $request->crime_type,
-                'crime_date' => $request->crime_date,
-                'location' => $request->location,
-                'description' => $request->description,
-                'case_number' => 'REF-' . strtoupper(uniqid()),
-                'status' => 'Reported',
-                'reported_by' => auth()->id(),
-            ]);
-
-            // Handle Photo Upload
-            $photoPath = null;
-            if ($request->hasFile('suspect_photo')) {
-                $photoPath = $request->file('suspect_photo')->store('suspects', 'public');
-            }
-
-            // 2. Create Suspect
-            \App\Models\Suspect::create([
-                'crime_id' => $crime->id,
-                'name' => $request->suspect_name,
-                'nickname' => $request->suspect_nickname,
-                'age' => $request->suspect_age,
-                'mother_name' => $request->suspect_mother_name,
-                'gender' => $request->suspect_gender,
-                'residence' => $request->suspect_residence,
-                'national_id' => $request->suspect_national_id,
-                'arrest_status' => $request->suspect_status,
-                'photo' => $photoPath,
-            ]);
-
-            // 3. Create Victim (If provided)
-            if ($request->filled('victim_name')) {
-                \App\Models\Victim::create([
-                    'crime_id' => $crime->id,
-                    'name' => $request->victim_name,
-                    'age' => $request->victim_age,
-                    'gender' => $request->victim_gender,
-                    'injury_type' => $request->victim_injury,
-                ]);
-            }
-
-            // 4. Create Police Case
-            // Automated Case Number Generation: SNP-PC-YYYY-001
-            $year = date('Y');
-            $lastCase = PoliceCase::where('case_number', 'like', "SNP-PC-$year-%")->latest()->first();
-            $nextNumber = 1;
-            
-            if ($lastCase) {
-                $parts = explode('-', $lastCase->case_number);
-                $nextNumber = intval(end($parts)) + 1;
-            }
-            
-            $caseNumber = sprintf("SNP-PC-%s-%03d", $year, $nextNumber);
-
-            // Determine Assigned Officer (Input or Current User)
-            $assignedId = $request->filled('assigned_to') ? $request->assigned_to : auth()->id();
-
-            $case = PoliceCase::create([
-                'crime_id' => $crime->id,
-                'case_number' => $caseNumber,
-                'assigned_to' => $assignedId,
-                'status' => 'Open',
-            ]);
-
-            $crime->update(['case_number' => $case->case_number]);
-
-            // Notify Admins & Commanders
-            $commanders = \App\Models\User::whereHas('role', function($q) {
-                $q->whereIn('slug', ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']);
-            })->get();
-
-            $reporter = auth()->user();
-            \Illuminate\Support\Facades\Notification::send($commanders, new \App\Notifications\NewIncidentNotification($case, $reporter));
-
-            \DB::commit();
-            
-            // Success message emphasizing the "Code"
-            return redirect()->route('cases.index')->with('success', 'Incident recorded. Your Code: ' . $case->case_number);
-
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            return back()->with('error', $e->getMessage())->withInput();
         }
+
+        return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo cusbooneysiiyay.');
+    }
+
+    public function destroy(PoliceCase $case)
+    {
+        if ($case->investigation()->exists()) {
+            return redirect()->route('cases.index')->with('error', 'Kiiskan lama tirtiri karo sababtoo ah wuxuu leeyahay Baaris socota ama dhamaatay.');
+        }
+
+        if ($case->prosecution()->exists()) {
+            return redirect()->route('cases.index')->with('error', 'Kiiskan lama tirtiri karo sababtoo ah wuxuu yaalaa Xeer-Ilaalinta.');
+        }
+
+        $case->delete();
+        return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo tirtiray.');
     }
 }

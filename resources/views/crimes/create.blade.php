@@ -67,6 +67,49 @@
             <small style="color: var(--text-sub); font-size: 0.75rem;">Waxaad soo gelin kartaa sawiro badan ama PDF files (Max: 5MB)</small>
         </div>
 
+        <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border-color);">
+
+        <!-- Suspect Information (Optional) -->
+        <h3 style="font-size: 1.1rem; color: var(--sidebar-bg); margin-bottom: 1rem; font-weight: 700;">Xogta Dambiilaha (Haddii la hayo)</h3>
+        <div style="background: rgba(0,0,0,0.02); padding: 1.5rem; border-radius: 12px; border: 1px dashed var(--border-color);">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="suspect_name" class="form-label">Magaca Dambiilaha</label>
+                    <input type="text" name="suspect_name" id="suspect_name" class="form-control" placeholder="Magaca oo saddexan">
+                </div>
+                <div class="form-group">
+                    <label for="national_id" class="form-label">Numberka Aqoonsiga (National ID)</label>
+                    <input type="text" name="national_id" id="national_id" class="form-control" placeholder="Haddii la hayo">
+                </div>
+            </div>
+            <div class="grid-3" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="suspect_age" class="form-label">Da'da</label>
+                    <input type="number" name="suspect_age" id="suspect_age" class="form-control" placeholder="Sano">
+                </div>
+                <div class="form-group">
+                    <label for="suspect_gender" class="form-label">Jinsiga</label>
+                    <select name="suspect_gender" id="suspect_gender" class="form-select">
+                        <option value="">Dooro...</option>
+                        <option value="Male">Lab (Male)</option>
+                        <option value="Female">Dhedig (Female)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="arrest_status" class="form-label">Xaaladda</label>
+                    <select name="arrest_status" id="arrest_status" class="form-select">
+                        <option value="Baxsad">Baxsad (At Large)</option>
+                        <option value="Xiran">Xiran (Arrested)</option>
+                        <option value="La Raadinayo">La Raadinayo (Wanted)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 1rem;">
+                <label for="suspect_photo" class="form-label">Sawirka Dambiilaha</label>
+                <input type="file" name="suspect_photo" id="suspect_photo" class="form-control" accept="image/*">
+            </div>
+        </div>
+
         <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
             <a href="{{ route('crimes.index') }}" class="btn-secondary" style="text-decoration: none;">Jooji</a>
             <button type="submit" class="btn-primary">DIIWANGELI DAMBIGA</button>

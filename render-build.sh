@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# Exit on error
+# exit on error
 set -o errexit
 
-# Install PHP dependencies
-composer install --no-dev --optimize-autoloader --no-interaction
+# Run composer install
+composer install --no-dev --optimize-autoloader
 
-# Force remove public/storage to prevent "link exists" errors
-rm -rf public/storage
+# Run database migrations
+# php artisan migrate --force
 
-# Create storage link
+# php artisan config:cache
+# php artisan route:cache
+# php artisan view:cache
+
+# Create symbolic link for storage
 php artisan storage:link
-
-echo "Build finished!"

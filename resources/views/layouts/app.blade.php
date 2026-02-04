@@ -15,7 +15,7 @@
     <div class="overlay" onclick="toggleSidebar()"></div>
 
     <!-- Mobile Toggle Button -->
-    <i class="fa-solid fa-bars mobile-toggle" onclick="toggleSidebar()"></i>
+    <i class="fa-solid fa-bars mobile-toggle" style="display: none;" onclick="toggleSidebar()"></i>
 
     <div class="app-wrapper">
         @auth
@@ -35,20 +35,17 @@
 
                 @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Operations</div>
-                <a href="{{ route('cases.create-unified') }}" class="nav-link {{ request()->is('cases/create-unified*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-pen-to-square"></i> <span>New Incident (Warbixin Cusub)</span>
-                </a>
-                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases') ? 'active' : '' }}">
+                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
                 </a>
                 <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
                     <i class="fa-solid fa-handcuffs"></i> <span>Crimes (Dambiyada)</span>
                 </a>
                 <a href="{{ route('suspects.index') }}" class="nav-link {{ request()->is('suspects*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-secret"></i> <span>Suspects (Dambiilaha)</span>
+                    <i class="fa-solid fa-user-secret"></i> <span>Suspects (Dambiilayaasha)</span>
                 </a>
                 <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-magnifying-glass-chart"></i> <span>Investigations (Baaritaanka)</span>
+                    <i class="fa-solid fa-magnifying-glass"></i> <span>Investigations (Baaritaanka)</span>
                 </a>
                 <a href="{{ route('chat.index') }}" class="nav-link {{ request()->is('chat*') ? 'active' : '' }}">
                     <i class="fa-solid fa-comments"></i> <span>Chat (Wada-hadalka)</span>
@@ -63,24 +60,23 @@
                 <a href="{{ route('facilities.index') }}" class="nav-link {{ request()->is('facilities*') ? 'active' : '' }}">
                     <i class="fa-solid fa-building"></i> <span>Facilities (Xarumaha)</span>
                 </a>
+                 <div class="nav-section-title" style="margin-top: 0.5rem;">Personnel</div>
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-group"></i> <span>Officers (Askarta)</span>
+                    <i class="fa-solid fa-user-group"></i> <span>All Officers (Dhamaan)</span>
                 </a>
                 <a href="{{ route('station-commanders.index') }}" class="nav-link {{ request()->is('station-commanders*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-tie"></i> <span>Station Commanders</span>
+                    <i class="fa-solid fa-user-tie"></i> <span>Commanders (Taliyaasha)</span>
                 </a>
                 <a href="{{ route('station-officers.index') }}" class="nav-link {{ request()->is('station-officers*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-users-viewfinder"></i> <span>Station Officers</span>
+                    <i class="fa-solid fa-person-military-rifle"></i> <span>Station Officers (Askarta)</span>
                 </a>
-                @endif
-                
-                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-ciidan']))
-                <div class="nav-section-title">Reporting</div>
+
+                <div class="nav-section-title" style="margin-top: 0.5rem;">System</div>
                 <a href="{{ route('reports.index') }}" class="nav-link {{ request()->is('reports*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-file-chart-column"></i> <span>Reports (Warbixinada)</span>
+                    <i class="fa-solid fa-file-invoice"></i> <span>Reports (Warbixinada)</span>
                 </a>
                 <a href="{{ route('audit.index') }}" class="nav-link {{ request()->is('audit*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit Logs</span>
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit Logs (Keydka)</span>
                 </a>
                 @endif
                 
@@ -94,7 +90,12 @@
                 </div>
             </div>
 
-
+            <!-- Download App Promo -->
+            <div class="sidebar-promo">
+                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: white;">Download Mobile App</div>
+                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.8rem;">Get access to cases on the go.</div>
+                <button style="background: var(--accent-lime); color: var(--sidebar-bg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 100%;">Get App</button>
+            </div>
         </aside>
 
         <!-- Main Content (Right Side) -->
@@ -174,7 +175,7 @@
             overlay.classList.toggle('active');
         }
 
-        function toggleUserMenu() {
+        function toggleProfileMenu() {
             const menu = document.getElementById('profileDropdown');
             if (menu.style.display === 'none') {
                 menu.style.display = 'block';
@@ -210,45 +211,10 @@
     </script>
 
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
     <script>
         @auth
             const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
             document.body.setAttribute('data-theme', userTheme);
-
-            // Sound Effect (Simple Ding)
-            const notificationSound = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xaAAXbm50//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xaAAXbm50//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xaAAXbm50");
-
-            // Check for new notifications every 10 seconds
-            setInterval(() => {
-                fetch('{{ route("notifications.check") }}')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.count > 0) {
-                            // Play Sound
-                            notificationSound.play().catch(e => console.log('Audio play failed (interaction needed first):', e));
-                            
-                            // Show Toast
-                            Toastify({
-                                text: "🔔 " + data.count + " Ogeysiis cusub ayaa kuu soo dhacay!",
-                                duration: 5000,
-                                close: true,
-                                gravity: "top", // `top` or `bottom`
-                                position: "right", // `left`, `center` or `right`
-                                style: {
-                                    background: "#C6F048",
-                                    color: "#1C1E26",
-                                    fontWeight: "bold",
-                                    borderRadius: "8px",
-                                    boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
-                                },
-                                onClick: function(){ window.location.href = "{{ route('notifications.index') }}"; } 
-                            }).showToast();
-                        }
-                    });
-            }, 10000); // Poll every 10s
         @endauth
     </script>
     @yield('js')

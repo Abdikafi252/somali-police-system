@@ -11,14 +11,14 @@
         <p style="color: var(--text-sub);">{{ request()->has('assigned') ? 'Liiska kiisaska adiga laguu xilsaaray inaad baarto.' : 'Diiwaanka guud ee kiisaska boliska dalka.' }}</p>
     </div>
     <div style="display: flex; gap: 1rem;">
-        <a href="{{ route('cases.create-unified') }}" class="btn-primary" style="padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-            <i class="fa-solid fa-plus"></i> Diwaangali Dhacdo
-        </a>
         @if(request()->has('assigned'))
         <a href="{{ route('cases.index') }}" class="btn" style="text-decoration: none; border: 1px solid var(--border-soft); padding: 0.5rem 1rem; border-radius: 6px; color: var(--sidebar-bg); font-weight: 700;">
             <i class="fa-solid fa-list-ul"></i> Muuji dhammaan
         </a>
         @endif
+        <a href="{{ route('cases.dashboard') }}" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; background: #6c757d; border: none;">
+            <i class="fa-solid fa-chart-pie"></i> Dashboar-ka
+        </a>
     </div>
 </div>
 
