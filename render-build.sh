@@ -2,15 +2,14 @@
 # exit on error
 set -o errexit
 
-# Run composer install
-composer install --no-dev --optimize-autoloader
+# Run composer install (Safe mode)
+composer install --no-dev --optimize-autoloader --no-interaction
 
-# Run database migrations
+# Clear all caches (Fixes stale config/views issues)
+php artisan optimize:clear
+
+# Create symbolic link for storage (Skip if exists)
+php artisan storage:link || true
+
+# Run database migrations (Disabled for stability - Run manually in Shell if needed)
 # php artisan migrate --force
-
-# php artisan config:cache
-# php artisan route:cache
-# php artisan view:cache
-
-# Create symbolic link for storage
-php artisan storage:link
