@@ -2,6 +2,10 @@
 # Exit on error
 set -o errexit
 
+# Install PHP dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
-php artisan storage:link || true
-echo "Build Completed!"
+
+# Create storage link
+php artisan storage:link
+
+echo "Build finished!"
