@@ -8,7 +8,7 @@
     <p style="color: var(--text-sub);">Fadlan gali xogta dambiga si sax ah.</p>
 </div>
 
-<div class="glass-card" style="max-width: 900px; margin: 0 auto;">
+<div class="glass-card" style="width: 100%; margin: 0;">
     <form action="{{ route('crimes.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
