@@ -143,6 +143,15 @@
 
 <div class="report-container">
     <div class="report-header">
+        <div style="text-align: center; margin-bottom: 1rem;">
+            @php
+                $logoPath = public_path('images/logo.jpg');
+                $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
+            @endphp
+            @if($logoData)
+                <img src="data:image/jpeg;base64,{{ $logoData }}" style="width: 100px; height: auto;">
+            @endif
+        </div>
         <h2 style="margin: 0; font-family: 'Outfit'; color: #1C1E26;">JAMHUURIYADDA FEDERAALKA SOOMAALIYA</h2>
         <h3 style="margin: 5px 0; color: #1C1E26;">CIIDANKA BOOLISKA SOOMAALIYEED</h3>
         <h4 style="margin: 5px 0; color: #dc2626;">WARBIXINTA DAMBIGA (CRIME REPORT)</h4>
@@ -290,13 +299,20 @@
     @endif
 
     <div class="signature-section">
-        <div class="sig-column">
+        <div class="sig-column" style="text-align: center;">
             <div class="sig-line">Sarkaalka Diwangeliyay</div>
-            <div style="text-align: center; margin-top: 5px;">{{ $crime->reporter->name ?? '________________' }}</div>
+            <div style="margin-top: 5px;">{{ $crime->reporter->name ?? '________________' }}</div>
+            <div style="font-size: 0.8rem; color: #666;">Ciidanka Booliska Soomaaliyeed</div>
         </div>
-        <div class="sig-column">
+        <div class="sig-column" style="text-align: center;">
             <div class="sig-line">Taliyaha Saldhiga (Approval)</div>
-            <div style="text-align: center; margin-top: 5px;">________________________</div>
+            <div style="margin-top: 10px; font-family: 'Courier New', monospace; font-weight: bold; color: #1e3a8a; border: 2px solid #1e3a8a; padding: 10px; display: inline-block; transform: rotate(-2deg); opacity: 0.8;">
+                SALDHIGA BOOLISKA<br>
+                {{ strtoupper($crime->location) }}<br>
+                ANSIXINTA
+            </div>
+            <div style="margin-top: 5px;">Magaca & Saxiixa</div>
+            <div style="font-size: 0.8rem; color: #666;">Ciidanka Booliska Soomaaliyeed</div>
         </div>
     </div>
 

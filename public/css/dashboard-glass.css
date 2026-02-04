@@ -30,6 +30,8 @@ body {
     height: 100vh;
     width: 100%;
     overflow: hidden;
+    gap: 0 !important;
+    /* Ensure no gap in flex container */
 }
 
 /* 1. Sidebar (Floating & Dark) */
