@@ -33,7 +33,7 @@
                     <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
                 </a>
 
-                @if(auth()->user()->role->slug == 'admin' || auth()->user()->role->slug == 'cid' || auth()->user()->role->slug == 'askari')
+                @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Operations</div>
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases</span>
@@ -46,7 +46,7 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol']))
+                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Administration</div>
                 <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-building-shield"></i> <span>Stations</span>
@@ -85,23 +85,49 @@
 
                 <div style="display: flex; align-items: center; gap: 1.5rem;">
                     <!-- Search -->
-                    <div class="search-bar">
+                    <form action="{{ route('cases.index') }}" method="GET" class="search-bar">
                         <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                        <input type="text" placeholder="Search cases, suspects, files...">
-                    </div>
+                        <input type="text" name="search" placeholder="Search cases, suspects..." value="{{ request('search') }}">
+                    </form>
 
                     <!-- Actions -->
-                    <button class="icon-btn">
+                    <button class="icon-btn" onclick="toggleNotifications()">
                         <i class="fa-regular fa-bell"></i>
                         <div class="badge">3</div>
+                        <!-- Notification Dropdown -->
+                        <div id="notification-list" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 50px; background: white; width: 300px; padding: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000;">
+                            <div style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Notifications</div>
+                            <div style="font-size: 0.8rem; color: #666;">No new notifications</div>
+                        </div>
                     </button>
                     
                     <button class="icon-btn">
                         <i class="fa-regular fa-calendar"></i>
                     </button>
                     
-                    <div class="user-profile">
-                        <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=C6F048&color=1C1E26" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-soft);">
+                    <!-- Profile Dropdown -->
+                    <div class="user-profile" style="position: relative;" onclick="toggleProfileMenu()">
+                        <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=C6F048&color=1C1E26" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-soft); cursor: pointer;">
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 60px; background: white; width: 200px; padding: 0.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid rgba(0,0,0,0.05);">
+                            <div style="padding: 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 0.5rem;">
+                                <div style="font-weight: 700; color: #1f2937;">{{ auth()->user()->name }}</div>
+                                <div style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">{{ auth()->user()->role->name }}</div>
+                            </div>
+                            <a href="{{ route('profile.show') }}" style="display: block; padding: 0.6rem 1rem; color: #4b5563; text-decoration: none; font-size: 0.9rem; border-radius: 8px; transition: 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                                <i class="fa-solid fa-user" style="margin-right: 8px; color: #9ca3af;"></i> Profile
+                            </a>
+                            <a href="#" style="display: block; padding: 0.6rem 1rem; color: #4b5563; text-decoration: none; font-size: 0.9rem; border-radius: 8px; transition: 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                                <i class="fa-solid fa-gear" style="margin-right: 8px; color: #9ca3af;"></i> Settings
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST" style="margin-top: 5px; border-top: 1px solid #f3f4f6; padding-top: 5px;">
+                                @csrf
+                                <button type="submit" style="width: 100%; text-align: left; padding: 0.6rem 1rem; color: #ef4444; background: none; border: none; font-size: 0.9rem; cursor: pointer; border-radius: 8px; transition: 0.2s; display: flex; align-items: center;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='white'">
+                                    <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right: 8px;"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -124,15 +150,31 @@
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
         }
-    </script>
 
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script>
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileDropdown');
+            if (menu.style.display === 'none') {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
 
-        @auth
-            const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
-            document.body.setAttribute('data-theme', userTheme);
-        @endauth
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.user-profile')) {
+                const menu = document.getElementById('profileDropdown');
+                if (menu && menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                }
+            }
+            if (!event.target.closest('.icon-btn') && !event.target.matches('.fa-bell')) {
+                const notif = document.getElementById('notification-list');
+                 if (notif && notif.style.display === 'block') {
+                    notif.style.display = 'none';
+                }
+            }
+        }
 
         function toggleNotifications() {
             var list = document.getElementById('notification-list');
@@ -142,74 +184,15 @@
                 list.style.display = 'none';
             }
         }
-
-        // Close dropdown when clicking outside
-        window.onclick = function(event) {
-            if (!event.target.matches('.fa-bell') && !event.target.closest('.notification-dropdown')) {
-                var dropdowns = document.getElementsByClassName("notification-dropdown");
-                var list = document.getElementById('notification-list');
-                if (list && list.style.display === 'block') {
-                    list.style.display = 'none';
-                }
-            }
-        }
     </script>
-    
-    <script>
-        // Notification Sound Logic
-        (function() {
-            @auth
-            const soundEnabled = {{ auth()->user()->settings?->notification_sound ? 'true' : 'false' }};
-            const soundFile = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'); // Simple notification bell
-            
-            if (soundEnabled) {
-                setInterval(() => {
-                    fetch("{{ route('notifications.check') }}")
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.count > 0) {
-                                soundFile.play().catch(e => console.log('Audio play failed', e));
-                            }
-                        });
-                }, 30000); // Check every 30 seconds
-            }
-            @endauth
-        })();
 
-        // Sidebar Toggle (Mobile & Desktop)
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.querySelector('.sidebar-overlay');
-            const mainContent = document.querySelector('.main-content');
-            
-            if (window.innerWidth <= 1024) {
-                // Mobile behavior
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            } else {
-                // Desktop behavior
-                sidebar.classList.toggle('collapsed');
-                if (mainContent) {
-                    mainContent.classList.toggle('expanded');
-                }
-            }
-        }
-        
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            const overlay = document.querySelector('.sidebar-overlay');
-            
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(event.target) && !toggle.contains(event.target) && sidebar.classList.contains('active')) {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                }
-            }
-        });
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        @auth
+            const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
+            document.body.setAttribute('data-theme', userTheme);
+        @endauth
     </script>
     @yield('js')
 </body>
 </html>
-

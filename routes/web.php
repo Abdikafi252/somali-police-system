@@ -37,7 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Shared Operational Routes (Admin, CID, Askari)
-    Route::middleware(['role:admin,cid,askari,taliye-saldhig'])->group(function () {
+    // Added Regional Commander (taliye-gobol) and Army Commander (taliye-ciidan) to view all operations
+    Route::middleware(['role:admin,cid,askari,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
         Route::resource('crimes', CrimeController::class);
         Route::get('/crimes/{crime}/pdf', [\App\Http\Controllers\CrimeController::class, 'exportPDF'])->name('crimes.pdf');
         Route::resource('suspects', SuspectController::class);
@@ -49,13 +50,15 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Legal Routes (Prosecutor, Judge, Admin)
-    Route::middleware(['role:admin,prosecutor,judge'])->group(function () {
+    // Added Commanders to view legal proceedings
+    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan'])->group(function () {
         Route::resource('prosecutions', ProsecutionController::class);
         Route::resource('court-cases', CourtCaseController::class);
     });
 
     // Administrative Routes (Admin only or Commanders)
-    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol'])->group(function () {
+    // Added Taliye Ciidan to admin routes
+    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
         Route::resource('deployments', DeploymentController::class);
         Route::resource('facilities', FacilityController::class);
         Route::resource('stations', StationController::class);
