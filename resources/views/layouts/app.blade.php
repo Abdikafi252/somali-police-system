@@ -35,10 +35,7 @@
 
                 @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Operations</div>
-                <a href="{{ route('cases.create-unified') }}" class="nav-link {{ request()->is('cases/create-unified*') ? 'active' : '' }}" style="color: var(--accent-lime);">
-                    <i class="fa-solid fa-plus-circle"></i> <span>New Incident (Warbixin Cusub)</span>
-                </a>
-                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases') ? 'active' : '' }}">
+                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
                 </a>
                 <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">

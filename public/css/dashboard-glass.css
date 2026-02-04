@@ -96,10 +96,10 @@ body {
 }
 
 .nav-link.active {
-    background: var(--accent-lime);
-    color: var(--sidebar-bg);
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(198, 240, 72, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    /* Simpler active state */
+    color: white;
+    font-weight: 700;
 }
 
 /* Mobile App Promo (Bottom Sidebar) */
