@@ -189,8 +189,7 @@
                 (CID)<br>
                 ANSIXINTA
             </div>
-            <div style="margin-top: 5px;">Magaca & Saxiixa</div>
-            <div style="font-size: 0.8rem; color: #666;">Ciidanka Booliska Soomaaliyeed</div>
+            <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">Ciidanka Booliska Soomaaliyeed</div>
         </div>
     </div>
 
