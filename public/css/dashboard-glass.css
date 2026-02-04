@@ -142,7 +142,10 @@ body {
     height: 100vh;
     overflow-y: auto;
     padding: 0 2rem 2vh 0 !important;
-    padding-top: 0 !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    width: 100%;
     min-width: 0;
 }
 
