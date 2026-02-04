@@ -12,18 +12,22 @@ class FacilitySeeder extends Seeder
     {
         $admin = User::first();
 
-        Facility::create([
-            'name' => 'Saldhigga Degmada Hodan',
-            'type' => 'Station',
-            'location' => 'Hodan, Mogadishu',
-            'commander_id' => $admin->id,
-        ]);
+        Facility::firstOrCreate(
+            ['name' => 'Saldhigga Degmada Hodan'],
+            [
+                'type' => 'Station',
+                'location' => 'Hodan, Mogadishu',
+                'commander_id' => $admin->id,
+            ]
+        );
 
-        Facility::create([
-            'name' => 'Garoonka Aadan Cadde',
-            'type' => 'Checkpoint',
-            'location' => 'Abdiaziz, Mogadishu',
-            'commander_id' => $admin->id,
-        ]);
+        Facility::firstOrCreate(
+            ['name' => 'Garoonka Aadan Cadde'],
+            [
+                'type' => 'Checkpoint',
+                'location' => 'Abdiaziz, Mogadishu',
+                'commander_id' => $admin->id,
+            ]
+        );
     }
 }

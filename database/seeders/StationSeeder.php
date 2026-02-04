@@ -9,14 +9,14 @@ class StationSeeder extends Seeder
 {
     public function run(): void
     {
-        Station::create([
-            'station_name' => 'Saldhigga Bartamaha',
-            'location' => 'Waberi, Mogadishu',
-        ]);
+        Station::firstOrCreate(
+            ['station_name' => 'Saldhigga Bartamaha'],
+            ['location' => 'Waberi, Mogadishu']
+        );
 
-        Station::create([
-            'station_name' => 'Saldhigga Hodan',
-            'location' => 'Hodan, Mogadishu',
-        ]);
+        Station::firstOrCreate(
+            ['station_name' => 'Saldhigga Hodan'],
+            ['location' => 'Hodan, Mogadishu']
+        );
     }
 }
