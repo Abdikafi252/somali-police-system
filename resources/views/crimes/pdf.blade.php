@@ -27,6 +27,7 @@
     </style>
 </head>
 <body>
+    <div style="height: 5px; background: #1e3a8a; position: absolute; top: 0; left: 0; right: 0;"></div>
     <div class="header">
         <div class="logo">
             @php

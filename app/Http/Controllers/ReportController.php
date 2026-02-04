@@ -33,9 +33,13 @@ class ReportController extends Controller
             ->get();
 
         // Crime Trends (Monthly)
-        $monthQuery = \DB::getDriverName() === 'sqlite' 
-            ? "strftime('%Y-%m', created_at)" 
-            : "DATE_FORMAT(created_at, '%Y-%m')";
+        // Crime Trends (Monthly)
+        $driver = \DB::getDriverName();
+        $monthQuery = match ($driver) {
+            'sqlite' => "strftime('%Y-%m', created_at)",
+            'pgsql' => "to_char(created_at, 'YYYY-MM')",
+            default => "DATE_FORMAT(created_at, '%Y-%m')",
+        };
 
         $crimeTrends = Crime::selectRaw("$monthQuery as month, count(*) as total")
             ->whereBetween('created_at', [$startDate, $endDate])

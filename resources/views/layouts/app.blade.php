@@ -15,7 +15,7 @@
     <div class="overlay" onclick="toggleSidebar()"></div>
 
     <!-- Mobile Toggle Button -->
-    <i class="fa-solid fa-bars mobile-toggle" style="display: none;" onclick="toggleSidebar()"></i>
+    <i class="fa-solid fa-bars mobile-toggle" onclick="toggleSidebar()"></i>
 
     <div class="app-wrapper">
         @auth
