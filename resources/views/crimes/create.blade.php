@@ -8,8 +8,10 @@
     <p style="color: var(--text-sub);">Fadlan gali xogta dambiga si sax ah.</p>
 </div>
 
-<div class="glass-card" style="max-width: 800px;">
-    <form action="{{ route('crimes.store') }}" method="POST" enctype="multipart/form-data">
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+    <!-- Form Column -->
+    <div class="glass-card">
+        <form action="{{ route('crimes.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="grid-2">
             <div class="form-group">
@@ -115,6 +117,51 @@
             <button type="submit" class="btn-primary">DIIWANGELI DAMBIGA</button>
         </div>
     </form>
+</div>
+
+    <!-- Right Sidebar: Recent Crimes -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="glass-card" style="padding: 1.5rem; background: var(--sidebar-bg); color: white; border: none;">
+            <h4 style="margin-bottom: 1rem; font-family: 'Outfit'; font-size: 1.1rem;"><i class="fa-solid fa-list"></i> Dambiyada Hadda Jira</h4>
+            <p style="font-size: 0.85rem; opacity: 0.9; line-height: 1.6;">
+                Halkan waxaad ka arki kartaa dambiyadii ugu dambeeyay ee la diiwangeliyay. Tani waxay kaa caawinaysaa inaad iska ilaaliso ku celcelinta.
+            </p>
+        </div>
+
+        <div class="glass-card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 1rem; border-bottom: 1px solid var(--border-soft); background: #f8f9fc;">
+                <h5 style="margin: 0; font-weight: 700; color: var(--sidebar-bg); font-size: 0.9rem;">5-tii Dambi ee Ugu Dambeeyay</h5>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                @if(isset($recentCrimes) && $recentCrimes->count() > 0)
+                    @foreach($recentCrimes as $rc)
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--border-soft); display: flex; gap: 1rem; align-items: center;">
+                        <div style="width: 40px; height: 40px; background: #e3f2fd; color: #3498db; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                        <div style="flex: 1; overflow: hidden;">
+                            <h6 style="margin: 0; font-weight: 700; color: var(--sidebar-bg); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ $rc->crime_type }}
+                            </h6>
+                            <span style="font-size: 0.75rem; color: var(--text-sub);">{{ $rc->case_number }}</span>
+                        </div>
+                        <span style="font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: {{ $rc->status == 'Diiwaangelin' ? '#fff3e0' : '#e8f5e9' }}; color: {{ $rc->status == 'Diiwaangelin' ? '#e67e22' : '#27ae60' }};">
+                            {{ $rc->status }}
+                        </span>
+                    </div>
+                    @endforeach
+                    <a href="{{ route('crimes.index') }}" style="padding: 1rem; text-align: center; display: block; text-decoration: none; font-size: 0.85rem; font-weight: 700; color: #3498db;">
+                        Eeg Dhamaan Liiska <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                @else
+                    <div style="padding: 2rem; text-align: center; color: var(--text-sub);">
+                        <i class="fa-solid fa-folder-open" style="opacity: 0.3; font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                        <p style="font-size: 0.85rem;">Ma jiraan dambiyo hore</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 

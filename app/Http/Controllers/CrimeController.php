@@ -16,7 +16,9 @@ class CrimeController extends Controller
 
     public function create()
     {
-        return view('crimes.create');
+        // Fetch recent crimes to display on the creation page (User request: bring all data to New Incident)
+        $recentCrimes = Crime::latest()->take(5)->get();
+        return view('crimes.create', compact('recentCrimes'));
     }
 
     public function store(Request $request)
