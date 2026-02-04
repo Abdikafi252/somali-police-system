@@ -85,9 +85,14 @@ class DashboardController extends Controller
             ->get();
 
         // 1. Monthly Crime Trends (Line Chart) - Last 6 Months
-        $monthQuery = DB::getDriverName() === 'sqlite' 
-            ? "strftime('%m', created_at) + 0" 
-            : "MONTH(created_at)";
+        $driver = DB::getDriverName();
+        if ($driver === 'sqlite') {
+            $monthQuery = "strftime('%m', created_at) + 0";
+        } elseif ($driver === 'pgsql') {
+            $monthQuery = "EXTRACT(MONTH FROM created_at)";
+        } else {
+            $monthQuery = "MONTH(created_at)";
+        }
 
         $trends = PoliceCase::select(DB::raw("$monthQuery as month"), DB::raw('COUNT(*) as count'))
             ->where('created_at', '>=', now()->subMonths(6))
