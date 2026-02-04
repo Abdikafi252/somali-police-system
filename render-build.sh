@@ -2,11 +2,11 @@
 # exit on error
 set -o errexit
 
-# Run composer install (Safe mode)
-composer install --no-dev --optimize-autoloader --no-interaction
+# Run composer install
+composer install --no-dev --optimize-autoloader
 
-# Create symbolic link for storage (Skip if exists)
-php artisan storage:link || true
+# Create symbolic link for storage
+php artisan storage:link
 
 # Run database migrations (Disabled for stability - Run manually in Shell if needed)
 # php artisan migrate --force
