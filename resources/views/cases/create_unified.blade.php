@@ -82,15 +82,19 @@
                     <div style="margin-top: 1.5rem; border-top: 1px dashed #e5e7eb; padding-top: 1rem;">
                          <div style="margin-bottom: 1rem;">
                             <label style="font-weight: 600; font-size: 0.85rem; color: #4b5563;">Nuuca Dambiga (Crime Type)</label>
-                            <select name="crime_type" class="form-control" required style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;">
-                                <option value="">-- Dooro --</option>
-                                <option value="Theft">Xatooyo</option>
-                                <option value="Assault">Gacan qaad</option>
-                                <option value="Homicide">Dil</option>
-                                <option value="Fraud">Khayaano</option>
-                                <option value="Drug Offense">Maandooriye</option>
-                                <option value="Traffic">Gaadiid</option>
-                                <option value="Terrorism">Argagixiso</option>
+                            <input type="text" name="crime_type" class="form-control" required placeholder="Geli nooca dambiga (e.g. Xatooyo, Dil...)" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;">
+                         </div>
+
+                         <!-- Assignment Section (added as requested) -->
+                         <div style="margin-bottom: 1rem;">
+                            <label style="font-weight: 600; font-size: 0.85rem; color: #4b5563;">Xilsaar Baare (Assign Investigator)</label>
+                            <select name="assigned_to" class="form-control" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;">
+                                <option value="">-- Dooro Baare (Optional) --</option>
+                                @if(isset($officers))
+                                    @foreach($officers as $officer)
+                                        <option value="{{ $officer->id }}" {{ auth()->id() == $officer->id ? 'selected' : '' }}>{{ $officer->name }} ({{ $officer->station->name ?? 'Headquarters' }})</option>
+                                    @endforeach
+                                @endif
                             </select>
                          </div>
                          

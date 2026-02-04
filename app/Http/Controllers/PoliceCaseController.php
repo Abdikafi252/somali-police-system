@@ -133,7 +133,10 @@ class PoliceCaseController extends Controller
 
     public function createUnified()
     {
-        return view('cases.create_unified');
+        // Fetch officers for assignment (CID or Investigators)
+        $cidRole = \App\Models\Role::whereIn('slug', ['cid', 'askari', 'taliye-saldhig'])->pluck('id');
+        $officers = \App\Models\User::whereIn('role_id', $cidRole)->get();
+        return view('cases.create_unified', compact('officers'));
     }
 
     public function storeUnified(Request $request)
@@ -147,6 +150,8 @@ class PoliceCaseController extends Controller
             'crime_type' => 'required',
             'location' => 'required',
             'crime_date' => 'required|date',
+            // Assignment
+            'assigned_to' => 'nullable|exists:users,id',
             // Description
             'description' => 'required',
             // Victim (Optional)
@@ -204,10 +209,13 @@ class PoliceCaseController extends Controller
             $uniqueCode = strtoupper(Str::random(4));
             $caseNumber = $userName . '-' . date('Y') . '-' . $uniqueCode;
 
+            // Determine Assigned Officer (Input or Current User)
+            $assignedId = $request->filled('assigned_to') ? $request->assigned_to : auth()->id();
+
             $case = PoliceCase::create([
                 'crime_id' => $crime->id,
                 'case_number' => $caseNumber,
-                'assigned_to' => auth()->id(),
+                'assigned_to' => $assignedId,
                 'status' => 'Open',
             ]);
 
