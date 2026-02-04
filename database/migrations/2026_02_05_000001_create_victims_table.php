@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('victims', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('crime_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->integer('age')->nullable();
-            $table->string('gender')->nullable(); // Male, Female
-            $table->text('injury_type')->nullable(); // Dhaawaca, Dhimashada, etc.
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('victims')) {
+            Schema::create('victims', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('crime_id')->constrained()->cascadeOnDelete();
+                $table->string('name');
+                $table->integer('age')->nullable();
+                $table->string('gender')->nullable(); // Male, Female
+                $table->text('injury_type')->nullable(); // Dhaawaca, Dhimashada, etc.
+                $table->timestamps();
+            });
+        }
     }
 
     /**
