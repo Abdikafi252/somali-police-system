@@ -11,92 +11,120 @@
     @yield('css')
 </head>
 <body data-theme="dark">
-    @auth
-    <!-- Glass Sidebar -->
-    <aside class="glass-sidebar">
-        <div class="sidebar-logo">
-            <span style="color: var(--neon-blue);">Somali</span>Police
-        </div>
-        
-        <div class="sidebar-menu">
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 1rem 0 0.5rem 1rem; text-transform: uppercase;">Main</div>
-            <a href="{{ route('dashboard') }}" class="nav-item {{ request()->is('dashboard*') ? 'active' : '' }}">
-                <i class="fa-solid fa-house-chimney"></i> <span>Dashboard</span>
-            </a>
+    <!-- Mobile Overlay -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
 
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 1rem 0 0.5rem 1rem; text-transform: uppercase;">Operations</div>
-            
-            @if(auth()->user()->role->slug == 'admin' || auth()->user()->role->slug == 'cid' || auth()->user()->role->slug == 'askari')
-            <a href="{{ route('cases.index') }}" class="nav-item {{ request()->is('cases*') ? 'active' : '' }}">
-                <i class="fa-solid fa-folder-tree"></i> <span>Cases</span>
-            </a>
-            <a href="{{ route('crimes.index') }}" class="nav-item {{ request()->is('crimes*') ? 'active' : '' }}">
-                <i class="fa-solid fa-handcuffs"></i> <span>Crimes</span>
-            </a>
-            <a href="{{ route('suspects.index') }}" class="nav-item {{ request()->is('suspects*') ? 'active' : '' }}">
-                <i class="fa-solid fa-user-ninja"></i> <span>Suspects</span>
-            </a>
-            @endif
+    <!-- Mobile Toggle Button -->
+    <i class="fa-solid fa-bars mobile-toggle" style="display: none;" onclick="toggleSidebar()"></i>
 
-            @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol']))
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 1rem 0 0.5rem 1rem; text-transform: uppercase;">Management</div>
-            <a href="{{ route('deployments.index') }}" class="nav-item {{ request()->is('deployments*') ? 'active' : '' }}">
-                <i class="fa-solid fa-users-gear"></i> <span>Deployments</span>
-            </a>
-            <a href="{{ route('stations.index') }}" class="nav-item {{ request()->is('stations*') ? 'active' : '' }}">
-                <i class="fa-solid fa-building-shield"></i> <span>Stations</span>
-            </a>
-            @endif
-
-            <div style="margin-top: auto;">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="nav-item" style="width: 100%; border: none; background: transparent; cursor: pointer; color: #ef4444;">
-                        <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
-                    </button>
-                </form>
+    <div class="app-wrapper">
+        @auth
+        <!-- Eduplex Sidebar (Floating) -->
+        <aside class="edu-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-shield-cat"></i>
+                <span class="logo-text">Police<span style="color: var(--accent-lime);">System</span></span>
             </div>
-        </div>
-    </aside>
-
-    <!-- Glass Header (Topbar) -->
-    <header class="glass-header">
-        <!-- Search -->
-        <div class="search-box-glass">
-            <i class="fa-solid fa-magnifying-glass" style="color: var(--text-secondary);"></i>
-            <input type="text" placeholder="Search anything..." style="margin-left: 0.5rem; color: var(--text-primary);">
-        </div>
-
-        <!-- Right Side Icons -->
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <!-- Theme Toggle -->
-            <button onclick="toggleTheme()" style="background: transparent; border: none; cursor: pointer; color: var(--text-primary); font-size: 1.2rem;">
-                <i class="fa-solid fa-moon" id="theme-icon"></i>
-            </button>
             
-            <div style="width: 1px; height: 24px; background: var(--glass-border);"></div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="nav-section-title">Main Menu</div>
+                
+                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
+                </a>
 
-            <!-- Profile -->
-            <div style="display: flex; align-items: center; gap: 0.8rem;">
-                <div style="text-align: right; display: none; @media(min-width: 768px){display: block;}">
-                    <div style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem;">{{ auth()->user()->name }}</div>
-                    <div style="color: var(--text-secondary); font-size: 0.8rem;">{{ auth()->user()->role->name ?? 'Officer' }}</div>
+                @if(auth()->user()->role->slug == 'admin' || auth()->user()->role->slug == 'cid' || auth()->user()->role->slug == 'askari')
+                <div class="nav-section-title">Operations</div>
+                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-folder-open"></i> <span>Cases</span>
+                </a>
+                <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-handcuffs"></i> <span>Crimes</span>
+                </a>
+                <a href="{{ route('suspects.index') }}" class="nav-link {{ request()->is('suspects*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-user-secret"></i> <span>Suspects</span>
+                </a>
+                @endif
+
+                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol']))
+                <div class="nav-section-title">Administration</div>
+                <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-building-shield"></i> <span>Stations</span>
+                </a>
+                <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-user-group"></i> <span>Officers</span>
+                </a>
+                @endif
+                
+                <div style="margin-top: 1rem;">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="nav-link" style="width: 100%; border: none; background: transparent; cursor: pointer; color: #ef4444;">
+                            <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                        </button>
+                    </form>
                 </div>
-                <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=3b82f6&color=fff" style="width: 40px; height: 40px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1);">
             </div>
-        </div>
-    </header>
 
-    <!-- Main Content Wrapper -->
-    <main class="main-content">
-        @yield('content')
-    </main>
-    @else
-        <!-- Guest View (Login) -->
-        <main>
+            <!-- Download App Promo -->
+            <div class="sidebar-promo">
+                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: white;">Download Mobile App</div>
+                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.8rem;">Get access to cases on the go.</div>
+                <button style="background: var(--accent-lime); color: var(--sidebar-bg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 100%;">Get App</button>
+            </div>
+        </aside>
+
+        <!-- Main Content (Right Side) -->
+        <main class="main-content">
+            <!-- Topbar (Integrated) -->
+            <header class="edu-topbar">
+                <div class="welcome-text">
+                    <h1>Welcome back, {{ explode(' ', auth()->user()->name)[0] }} 👋</h1>
+                    <span>Here's what's happening in your jurisdiction today.</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <!-- Search -->
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                        <input type="text" placeholder="Search cases, suspects, files...">
+                    </div>
+
+                    <!-- Actions -->
+                    <button class="icon-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="badge">3</div>
+                    </button>
+                    
+                    <button class="icon-btn">
+                        <i class="fa-regular fa-calendar"></i>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=C6F048&color=1C1E26" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-soft);">
+                    </div>
+                </div>
+            </header>
+
             @yield('content')
         </main>
-    @endauth
+        @else
+            <!-- Guest View -->
+            <main style="flex: 1;">
+                @yield('content')
+            </main>
+        @endauth
+    </div>
+
+    <!-- JavaScript for Mobile Toggle -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
