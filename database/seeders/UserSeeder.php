@@ -27,21 +27,6 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // Add CID Officer (Baare)
-        $cidRole = \App\Models\Role::where('slug', 'cid')->first();
-        if($cidRole) {
-            \App\Models\User::updateOrCreate(
-                ['email' => 'cid@police.gov.so'],
-                [
-                    'name' => 'Baare CID',
-                    'password' => \Illuminate\Support\Facades\Hash::make('password'),
-                    'role_id' => $cidRole->id,
-                    'station_id' => $station->id,
-                    'region_id' => 'Banaadir',
-                    'status' => 'active',
-                ]
-            );
-        }
         $officerRole = \App\Models\Role::where('slug', 'askari')->first();
         \App\Models\User::updateOrCreate(
             ['email' => 'officer@police.gov.so'],
