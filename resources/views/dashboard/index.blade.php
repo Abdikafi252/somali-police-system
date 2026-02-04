@@ -71,30 +71,6 @@
 
 @section('content')
 <div class="dashboard-container" style="padding: 2rem;">
-    <!-- Top Header -->
-    <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <div>
-            <h1 style="font-size: 2rem; font-weight: 700; color: white; margin: 0;">Dashboard</h1>
-        </div>
-        
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <!-- Search -->
-            <div class="search-box-glass">
-                <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
-                <input type="text" placeholder="Search case, suspect, officer..." style="margin-left: 0.5rem;">
-            </div>
-            
-            <!-- Profile -->
-            <div style="display: flex; align-items: center; gap: 0.8rem;">
-                <div style="text-align: right;">
-                    <div style="color: white; font-weight: 600; font-size: 0.9rem;">{{ auth()->user()->name }}</div>
-                    <div style="color: #94a3b8; font-size: 0.8rem;">{{ auth()->user()->email }}</div>
-                </div>
-                <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=3b82f6&color=fff" style="width: 45px; height: 45px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1);">
-            </div>
-        </div>
-    </div>
-
     <!-- Main Grid -->
     <div class="dashboard-grid" style="display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 1.5rem;">
         
