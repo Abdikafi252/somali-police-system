@@ -77,6 +77,7 @@
                         <option value="wanted">La Raadinayo (Wanted)</option>
                         <option value="arrested">Xiran (Arrested)</option>
                         <option value="escaped">Baxsad (Escaped)</option>
+                        <option value="bailed">La Damiinte (Bailed)</option>
                     </select>
                 </div>
                 <div class="form-group">
