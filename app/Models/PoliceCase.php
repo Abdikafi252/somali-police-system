@@ -20,6 +20,12 @@ class PoliceCase extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    // Alias for assignedOfficer
+    public function assignedUser()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
     public function investigation()
     {
         return $this->hasOne(Investigation::class, 'case_id');
