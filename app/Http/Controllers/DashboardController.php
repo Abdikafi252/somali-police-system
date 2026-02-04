@@ -16,16 +16,53 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
+        // Determine if user has full access (admin, taliye-ciidan, taliye-gobol)
+        $hasFullAccess = in_array($user->role->slug, ['admin', 'taliye-ciidan', 'taliye-gobol']);
+        
+        // Base query filters based on role
+        $caseQuery = PoliceCase::query();
+        $crimeQuery = Crime::query();
+        $suspectQuery = \App\Models\Suspect::query();
+        
+        if (!$hasFullAccess) {
+            // Station-based filtering for station commanders and officers
+            if (in_array($user->role->slug, ['taliye-saldhig', 'askari'])) {
+                // Only see cases from their station
+                $caseQuery->whereHas('assignedUser', function($q) use ($user) {
+                    $q->where('station_id', $user->station_id);
+                });
+                $crimeQuery->whereHas('reporter', function($q) use ($user) {
+                    $q->where('station_id', $user->station_id);
+                });
+                $suspectQuery->whereHas('crime.reporter', function($q) use ($user) {
+                    $q->where('station_id', $user->station_id);
+                });
+            }
+            
+            // CID officers only see their assigned cases
+            if ($user->role->slug == 'cid') {
+                $caseQuery->where('assigned_to', $user->id);
+                $crimeQuery->whereHas('case', function($q) use ($user) {
+                    $q->where('assigned_to', $user->id);
+                });
+            }
+            
+            // Prosecutors only see cases in prosecution/court
+            if ($user->role->slug == 'prosecutor') {
+                $caseQuery->whereIn('status', ['Xeer-Ilaalinta', 'Maxkamadda', 'Xiran', 'Xukunsan']);
+            }
+        }
+        
         // Base Stats
         $case_stats = [
-            'total' => PoliceCase::count(),
-            'investigating' => PoliceCase::whereIn('status', ['assigned', 'Baaris', 'Baarista-CID'])->count(),
-            'prosecution' => PoliceCase::where('status', 'Xeer-Ilaalinta')->count(),
-            'court' => PoliceCase::where('status', 'Maxkamadda')->count(),
-            'closed' => PoliceCase::whereIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday'])->count(),
+            'total' => $caseQuery->count(),
+            'investigating' => (clone $caseQuery)->whereIn('status', ['assigned', 'Baaris', 'Baarista-CID'])->count(),
+            'prosecution' => (clone $caseQuery)->where('status', 'Xeer-Ilaalinta')->count(),
+            'court' => (clone $caseQuery)->where('status', 'Maxkamadda')->count(),
+            'closed' => (clone $caseQuery)->whereIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday'])->count(),
         ];
 
-        // My Personal Stats (for Investigative Officers or Prosecutors)
+        // My Personal Stats
         $my_stats = [];
         if ($user->role->slug == 'cid' || $user->role->slug == 'askari') {
             $my_stats = [
@@ -35,56 +72,59 @@ class DashboardController extends Controller
             ];
         } elseif ($user->role->slug == 'prosecutor') {
             $my_stats = [
-                'assigned' => PoliceCase::where('status', 'Xeer-Ilaalinta')->count(), // All cases pending prosecution
-                'active' => Prosecution::where('prosecutor_id', $user->id)->count(), // Cases I already started/submitted
+                'assigned' => PoliceCase::where('status', 'Xeer-Ilaalinta')->count(),
+                'active' => Prosecution::where('prosecutor_id', $user->id)->count(),
                 'completed' => PoliceCase::whereIn('status', ['Maxkamadda', 'Xiran'])->count(),
             ];
         }
 
-        $total_crimes = Crime::count();
-        $solved_cases = PoliceCase::whereIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday'])->count();
+        $total_crimes = $crimeQuery->count();
+        $solved_cases = (clone $caseQuery)->whereIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday'])->count();
         
         $stats = [
             'total_crimes' => $total_crimes,
-            'active_cases' => PoliceCase::whereNotIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday'])->count(),
-            'total_officers' => User::count(),
-            'pending_investigations' => PoliceCase::whereIn('status', ['assigned', 'Baaris', 'Baarista-CID'])->count(),
-            'total_suspects' => \App\Models\Suspect::count(),
-            'court_proceedings' => \App\Models\Prosecution::where('status', 'submitted')->count(),
-            'active_deployments' => \App\Models\Deployment::where('status', 'on_duty')->count(),
+            'active_cases' => (clone $caseQuery)->whereNotIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday'])->count(),
+            'total_officers' => $hasFullAccess ? User::count() : User::where('station_id', $user->station_id)->count(),
+            'pending_investigations' => (clone $caseQuery)->whereIn('status', ['assigned', 'Baaris', 'Baarista-CID'])->count(),
+            'total_suspects' => $suspectQuery->count(),
+            'court_proceedings' => \App\Models\Prosecution::when(!$hasFullAccess, function($q) use ($user) {
+                return $q->whereHas('case.assignedUser', function($sq) use ($user) {
+                    $sq->where('station_id', $user->station_id);
+                });
+            })->where('status', 'submitted')->count(),
+            'active_deployments' => \App\Models\Deployment::when(!$hasFullAccess, function($q) use ($user) {
+                return $q->where('station_id', $user->station_id);
+            })->where('status', 'on_duty')->count(),
             'solved_percent' => $total_crimes > 0 ? ($solved_cases / $total_crimes) * 100 : 0,
         ];
 
-        $recent_crimes = Crime::with('reporter');
-        
-        // If CID, prioritize their assigned crimes or recent crimes in general
-        if ($user->role->slug == 'cid') {
-            $recent_crimes = $recent_crimes->latest()->take(5)->get();
-        } else {
-            $recent_crimes = $recent_crimes->latest()->take(5)->get();
-        }
+        $recent_crimes = (clone $crimeQuery)->with('reporter')->latest()->take(5)->get();
 
         // Crime Type Distribution
-        $crime_types = Crime::select('crime_type', DB::raw('count(*) as count'))
+        $crime_types = (clone $crimeQuery)->select('crime_type', DB::raw('count(*) as count'))
             ->groupBy('crime_type')
             ->orderBy('count', 'desc')
             ->take(5)
             ->get();
 
-        // Get stations with officer counts (Top 5)
-        $stations_with_counts = Station::withCount('activeStationOfficers')
+        // Get stations with officer counts
+        $stations_with_counts = Station::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->where('id', $user->station_id);
+        })->withCount('activeStationOfficers')
             ->orderBy('active_station_officers_count', 'desc')
             ->take(5)
             ->get();
 
         // Get user distribution by rank
-        $users_by_rank = User::select('rank', DB::raw('count(*) as count'))
+        $users_by_rank = User::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->where('station_id', $user->station_id);
+        })->select('rank', DB::raw('count(*) as count'))
             ->whereNotNull('rank')
             ->groupBy('rank')
             ->orderBy('count', 'desc')
             ->get();
 
-        // 1. Monthly Crime Trends (Line Chart) - Last 6 Months
+        // Monthly Crime Trends
         $driver = DB::getDriverName();
         if ($driver === 'sqlite') {
             $monthQuery = "strftime('%m', created_at) + 0";
@@ -94,7 +134,7 @@ class DashboardController extends Controller
             $monthQuery = "MONTH(created_at)";
         }
 
-        $trends = PoliceCase::select(DB::raw("$monthQuery as month"), DB::raw('COUNT(*) as count'))
+        $trends = (clone $caseQuery)->select(DB::raw("$monthQuery as month"), DB::raw('COUNT(*) as count'))
             ->where('created_at', '>=', now()->subMonths(6))
             ->groupBy('month')
             ->orderBy('month')
@@ -104,20 +144,24 @@ class DashboardController extends Controller
         $trend_counts = [];
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i)->month;
-            $monthName = now()->subMonths($i)->format('M'); // Jan, Feb...
+            $monthName = now()->subMonths($i)->format('M');
             $months[] = $monthName;
             $trend_counts[] = $trends[$month] ?? 0;
         }
 
-        // 2. Top Officers (Most cases assigned)
-        $top_officers = User::withCount('cases')
+        // Top Officers
+        $top_officers = User::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->where('station_id', $user->station_id);
+        })->withCount('cases')
             ->whereHas('cases')
             ->orderBy('cases_count', 'desc')
             ->take(5)
             ->get();
 
-        // 3. Station Performance (Solved Cases) - New Enhancement
-        $station_performance = Station::with(['users.cases' => function($query) {
+        // Station Performance
+        $station_performance = Station::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->where('id', $user->station_id);
+        })->with(['users.cases' => function($query) {
                 $query->whereIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday']);
             }])
             ->get()
@@ -134,60 +178,86 @@ class DashboardController extends Controller
             ->sortByDesc('solved')
             ->take(5);
 
-        // 3. Recent Activities (Audit Logs)
-        $activities = \App\Models\AuditLog::with('user')
+        // Recent Activities
+        $activities = \App\Models\AuditLog::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->where('user_id', $user->id)
+                ->orWhereHas('user', function($sq) use ($user) {
+                    $sq->where('station_id', $user->station_id);
+                });
+        })->with('user')
             ->latest()
             ->take(6)
             ->get();
 
-        // 4. Wanted Suspects (Simply filter by status 'wanted')
-        $wanted_suspects = \App\Models\Suspect::with('crime')
+        // Wanted Suspects
+        $wanted_suspects = (clone $suspectQuery)->with('crime')
             ->where('arrest_status', 'wanted')
             ->latest()
             ->take(8)
             ->get();
 
-        // 5. Active Deployments (On Duty)
-        $active_deployments = \App\Models\Deployment::with(['user', 'station', 'facility'])
+        // Active Deployments
+        $active_deployments = \App\Models\Deployment::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->where('station_id', $user->station_id);
+        })->with(['user', 'station', 'facility'])
             ->where('status', 'on_duty')
             ->latest()
             ->take(6)
             ->get();
 
-        // 6. Facilities Summary
-        $facility_stats = \App\Models\Facility::select('type', DB::raw('count(*) as count'))
+        // Facilities Summary
+        $facility_stats = \App\Models\Facility::when(!$hasFullAccess, function($q) use ($user) {
+            // If station-based, only show facilities in their region/station
+            return $q->where('location', 'LIKE', '%' . ($user->station->location ?? '') . '%');
+        })->select('type', DB::raw('count(*) as count'))
             ->groupBy('type')
             ->get();
 
-        // 7. Upcoming Court Hearings & Outcomes
-        $upcoming_hearings = \App\Models\CourtCase::with(['prosecution.suspect', 'judge'])
+        // Upcoming Court Hearings
+        $upcoming_hearings = \App\Models\CourtCase::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->whereHas('prosecution.case.assignedUser', function($sq) use ($user) {
+                $sq->where('station_id', $user->station_id);
+            });
+        })->with(['prosecution.suspect', 'judge'])
             ->where('hearing_date', '>=', now())
             ->orderBy('hearing_date', 'asc')
             ->take(5)
             ->get();
             
-        $court_stats = \App\Models\CourtCase::select('status', DB::raw('count(*) as count'))
+        $court_stats = \App\Models\CourtCase::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->whereHas('prosecution.case.assignedUser', function($sq) use ($user) {
+                $sq->where('station_id', $user->station_id);
+            });
+        })->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->get();
 
-        // 8. Recent Evidence Uploads
-        $recent_evidence = \App\Models\Evidence::with('crime')
+        // Recent Evidence Uploads
+        $recent_evidence = \App\Models\Evidence::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->whereHas('crime.reporter', function($sq) use ($user) {
+                $sq->where('station_id', $user->station_id);
+            });
+        })->with('crime')
             ->latest()
             ->take(6)
             ->get();
 
-        // 9. New Extra Stats (Requested by User)
-        $today_cases = PoliceCase::whereDate('created_at', now()->today())->count();
-        $week_cases = PoliceCase::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        // Extra Stats
+        $today_cases = (clone $caseQuery)->whereDate('created_at', now()->today())->count();
+        $week_cases = (clone $caseQuery)->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
         
         // Suspect Gender Stats
-        $suspect_gender = \App\Models\Suspect::select('gender', DB::raw('count(*) as count'))
+        $suspect_gender = (clone $suspectQuery)->select('gender', DB::raw('count(*) as count'))
             ->whereNotNull('gender')
             ->groupBy('gender')
             ->get();
 
-        // Crimes by Station (Regional) - Derived from Assigned Officer's Station
-        $crimes_by_station = PoliceCase::join('users', 'cases.assigned_to', '=', 'users.id')
+        // Crimes by Station
+        $crimes_by_station = PoliceCase::when(!$hasFullAccess, function($q) use ($user) {
+            return $q->whereHas('assignedUser', function($sq) use ($user) {
+                $sq->where('station_id', $user->station_id);
+            });
+        })->join('users', 'cases.assigned_to', '=', 'users.id')
             ->join('stations', 'users.station_id', '=', 'stations.id')
             ->select('stations.station_name', 'stations.location', DB::raw('count(*) as total'))
             ->groupBy('stations.id', 'stations.station_name', 'stations.location')
