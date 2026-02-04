@@ -72,6 +72,9 @@ class CrimeController extends Controller
             $suspectData = [
                 'crime_id' => $crime->id,
                 'name' => $request->suspect_name,
+                'nickname' => $request->suspect_nickname,
+                'mother_name' => $request->suspect_mother_name,
+                'address' => $request->suspect_address,
                 'age' => $request->suspect_age,
                 'gender' => $request->suspect_gender,
                 'national_id' => $request->national_id,
@@ -83,6 +86,17 @@ class CrimeController extends Controller
             }
 
             \App\Models\Suspect::create($suspectData);
+        }
+
+        // Handle Victim Creation
+        if ($request->filled('victim_name')) {
+            \App\Models\Victim::create([
+                'crime_id' => $crime->id,
+                'name' => $request->victim_name,
+                'age' => $request->victim_age,
+                'gender' => $request->victim_gender,
+                'injury_type' => $request->victim_injury,
+            ]);
         }
 
         // Handle Evidence Upload
