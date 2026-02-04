@@ -192,9 +192,14 @@ class PoliceCaseController extends Controller
             }
 
             // 4. Create Police Case
+            // Generate Case Number based on User Name (e.g. ABDI-2026-X832)
+            $userName = strtoupper(substr(auth()->user()->name, 0, 3));
+            $uniqueCode = strtoupper(Str::random(4));
+            $caseNumber = $userName . '-' . date('Y') . '-' . $uniqueCode;
+
             $case = PoliceCase::create([
                 'crime_id' => $crime->id,
-                'case_number' => 'CASE-' . date('Y') . '-' . rand(1000, 9999),
+                'case_number' => $caseNumber,
                 'assigned_to' => auth()->id(),
                 'status' => 'Open',
             ]);
@@ -202,7 +207,9 @@ class PoliceCaseController extends Controller
             $crime->update(['case_number' => $case->case_number]);
 
             \DB::commit();
-            return redirect()->route('cases.index')->with('success', 'Incident recorded successfully. Case #' . $case->case_number);
+            
+            // Success message emphasizing the "Code"
+            return redirect()->route('cases.index')->with('success', 'Incident recorded. Your Code: ' . $case->case_number);
 
         } catch (\Exception $e) {
             \DB::rollBack();
