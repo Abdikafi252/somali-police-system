@@ -16,9 +16,6 @@
             <i class="fa-solid fa-list-ul"></i> Muuji dhammaan
         </a>
         @endif
-        <a href="{{ route('cases.dashboard') }}" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; background: #6c757d; border: none;">
-            <i class="fa-solid fa-chart-pie"></i> Dashboar-ka
-        </a>
     </div>
 </div>
 
