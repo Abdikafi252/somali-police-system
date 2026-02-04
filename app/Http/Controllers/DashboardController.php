@@ -159,11 +159,15 @@ class DashboardController extends Controller
             ->groupBy('type')
             ->get();
 
-        // 7. Upcoming Court Hearings
+        // 7. Upcoming Court Hearings & Outcomes
         $upcoming_hearings = \App\Models\CourtCase::with(['prosecution.suspect', 'judge'])
             ->where('hearing_date', '>=', now())
             ->orderBy('hearing_date', 'asc')
             ->take(5)
+            ->get();
+            
+        $court_stats = \App\Models\CourtCase::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
             ->get();
 
         // 8. Recent Evidence Uploads
@@ -172,12 +176,32 @@ class DashboardController extends Controller
             ->take(6)
             ->get();
 
+        // 9. New Extra Stats (Requested by User)
+        $today_cases = PoliceCase::whereDate('created_at', now()->today())->count();
+        $week_cases = PoliceCase::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        
+        // Suspect Gender Stats
+        $suspect_gender = \App\Models\Suspect::select('gender', DB::raw('count(*) as count'))
+            ->whereNotNull('gender')
+            ->groupBy('gender')
+            ->get();
+
+        // Crimes by Station (Regional)
+        $crimes_by_station = PoliceCase::select('station_id', DB::raw('count(*) as total'))
+            ->with('station')
+            ->whereNotNull('station_id')
+            ->groupBy('station_id')
+            ->orderBy('total', 'desc')
+            ->take(5)
+            ->get();
+
         return view('dashboard.index', compact(
             'stats', 'case_stats', 'my_stats', 'recent_crimes', 
             'stations_with_counts', 'users_by_rank', 'crime_types', 
             'months', 'trend_counts', 'top_officers', 'activities', 
             'station_performance', 'wanted_suspects', 'active_deployments', 'facility_stats',
-            'upcoming_hearings', 'recent_evidence'
+            'upcoming_hearings', 'recent_evidence',
+            'today_cases', 'week_cases', 'court_stats', 'suspect_gender', 'crimes_by_station'
         ));
     }
     public function markRead()

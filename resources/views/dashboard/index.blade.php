@@ -132,71 +132,70 @@
         </div>
 
         <!-- Right Column -->
+        </div>
+
+        <!-- Right Column -->
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
             
-            <!-- Chart Widget (Replaces "Statistics") -->
+            <!-- Quick Actions / Reports -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <a href="{{ route('reports.export', ['type' => 'pdf']) }}" class="glass-card-dark" style="text-decoration: none; padding: 1rem; display: flex; align-items: center; gap: 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div style="width: 35px; height: 35px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #10B981;">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <div style="color: white; font-size: 0.9rem; font-weight: 500;">Export Report</div>
+                </a>
+                <a href="{{ route('reports.index') }}" class="glass-card-dark" style="text-decoration: none; padding: 1rem; display: flex; align-items: center; gap: 0.8rem; border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <div style="width: 35px; height: 35px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #3B82F6;">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div style="color: white; font-size: 0.9rem; font-weight: 500;">Analytics</div>
+                </a>
+            </div>
+
+            <!-- Case Trends Chart -->
             <div class="glass-card-dark">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <div style="color: white; font-weight: 600;">Case Trends</div>
-                    <select style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 2px 8px; border-radius: 6px; font-size: 0.8rem;">
-                        <option>Last 6 Months</option>
-                    </select>
+                    <div style="display: flex; gap: 10px;">
+                        <span style="font-size: 0.75rem; color: #10B981; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 12px;">+{{ $today_cases }} Today</span>
+                        <span style="font-size: 0.75rem; color: #3B82F6; background: rgba(59, 130, 246, 0.1); padding: 2px 8px; border-radius: 12px;">+{{ $week_cases }} This Week</span>
+                    </div>
                 </div>
                 <div id="trendChart"></div>
             </div>
 
-            <!-- Spaces (Status Cards) -->
-            <div class="spaces-grid">
-                <!-- Card 1 -->
-                <div class="glass-card-dark" style="padding: 1.2rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <div style="width: 35px; height: 35px; background: rgba(59, 130, 246, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #60a5fa;">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                        <i class="fa-solid fa-ellipsis" style="color: #64748b;"></i>
-                    </div>
-                    <div style="color: white; font-size: 1.5rem; font-weight: 700;">{{ $stats['total_suspects'] }}</div>
-                    <div style="color: #94a3b8; font-size: 0.8rem;">Suspects</div>
-                    <div style="margin-top: 0.5rem; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
-                        <div style="width: 45%; height: 100%; background: #60a5fa; border-radius: 2px;"></div>
-                    </div>
+            <!-- New Charts Grid: Gender & Crime Types -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <!-- Gender Chart -->
+                <div class="glass-card-dark" style="padding: 1rem;">
+                    <h4 style="color: white; font-size: 0.9rem; margin-bottom: 1rem;">Suspects by Gender</h4>
+                    <div id="genderChart" style="min-height: 150px;"></div>
                 </div>
-
-                <!-- Card 2 -->
-                <div class="glass-card-dark" style="padding: 1.2rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <div style="width: 35px; height: 35px; background: rgba(244, 63, 94, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fb7185;">
-                            <i class="fa-solid fa-gavel"></i>
-                        </div>
-                        <i class="fa-solid fa-ellipsis" style="color: #64748b;"></i>
-                    </div>
-                    <div style="color: white; font-size: 1.5rem; font-weight: 700;">{{ $stats['court_proceedings'] }}</div>
-                    <div style="color: #94a3b8; font-size: 0.8rem;">Hearings</div>
-                    <div style="margin-top: 0.5rem; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
-                        <div style="width: 80%; height: 100%; background: #fb7185; border-radius: 2px;"></div>
-                    </div>
+                <!-- Crime Types Chart -->
+                <div class="glass-card-dark" style="padding: 1rem;">
+                    <h4 style="color: white; font-size: 0.9rem; margin-bottom: 1rem;">Crime Distribution</h4>
+                    <div id="crimeTypeChart" style="min-height: 150px;"></div>
                 </div>
             </div>
 
-            <!-- Storage Access (Team / Officers) -->
+            <!-- Regional Stats (Top Stations) -->
             <div class="glass-card-dark">
-                <h3 style="color: white; margin: 0 0 1rem 0; font-size: 1rem;">Active Departments</h3>
-                
-                @foreach($stations_with_counts as $station)
+                <h3 style="color: white; margin: 0 0 1rem 0; font-size: 1rem;">Highest Crime Areas (By Station)</h3>
+                @foreach($crimes_by_station as $stat)
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        <div style="width: 35px; height: 35px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #10B981; font-weight: 700; font-size: 0.8rem;">
-                            {{ substr($station->station_name, 0, 1) }}
+                        <div style="width: 35px; height: 35px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #EF4444; font-weight: 700; font-size: 0.8rem;">
+                            {{ substr($stat->station->station_name ?? 'U', 0, 1) }}
                         </div>
                         <div>
-                            <div style="color: white; font-size: 0.9rem;">{{ Str::limit($station->station_name, 15) }}</div>
-                            <div style="color: #94a3b8; font-size: 0.75rem;">{{ $station->active_station_officers_count }} Officers</div>
+                            <div style="color: white; font-size: 0.9rem;">{{ Str::limit($stat->station->station_name ?? 'Unknown', 15) }}</div>
+                            <div style="color: #94a3b8; font-size: 0.75rem;">{{ $stat->station->location ?? 'N/A' }}</div>
                         </div>
                     </div>
-                    <button style="padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; font-size: 0.75rem;">View</button>
+                    <div style="color: #EF4444; font-weight: 700;">{{ $stat->total }} Cases</div>
                 </div>
                 @endforeach
-
             </div>
 
         </div>
@@ -252,5 +251,39 @@
 
     var chart = new ApexCharts(document.querySelector("#trendChart"), options);
     chart.render();
+
+    // Gender Donut Chart
+    var genderOptions = {
+        series: @json($suspect_gender->pluck('count')),
+        chart: {
+            type: 'donut',
+            height: 180,
+            background: 'transparent'
+        },
+        labels: @json($suspect_gender->pluck('gender')),
+        colors: ['#3b82f6', '#ec4899', '#10b981'],
+        dataLabels: { enabled: false },
+        legend: { show: false },
+        stroke: { show: false },
+        theme: { mode: 'dark' }
+    };
+    new ApexCharts(document.querySelector("#genderChart"), genderOptions).render();
+
+    // Crime Types Pie Chart
+    var crimeTypeOptions = {
+        series: @json($crime_types->pluck('count')),
+        chart: {
+            type: 'pie',
+            height: 180,
+            background: 'transparent'
+        },
+        labels: @json($crime_types->pluck('crime_type')),
+        colors: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'],
+        dataLabels: { enabled: false },
+        legend: { show: false },
+        stroke: { show: false },
+        theme: { mode: 'dark' }
+    };
+    new ApexCharts(document.querySelector("#crimeTypeChart"), crimeTypeOptions).render();
 </script>
 @endsection
