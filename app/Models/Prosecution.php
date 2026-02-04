@@ -13,6 +13,12 @@ class Prosecution extends Model
         return $this->belongsTo(PoliceCase::class, 'case_id');
     }
 
+    // Alias for policeCase
+    public function case()
+    {
+        return $this->belongsTo(PoliceCase::class, 'case_id');
+    }
+
     public function prosecutor()
     {
         return $this->belongsTo(User::class, 'prosecutor_id');
@@ -26,5 +32,10 @@ class Prosecution extends Model
     public function courtCase()
     {
         return $this->hasOne(CourtCase::class);
+    }
+
+    public function suspect()
+    {
+        return $this->hasOneThrough(Suspect::class, PoliceCase::class, 'id', 'crime_id', 'case_id', 'crime_id');
     }
 }
