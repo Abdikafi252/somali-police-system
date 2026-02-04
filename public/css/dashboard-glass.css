@@ -36,11 +36,12 @@ body {
 .edu-sidebar {
     width: var(--sidebar-width);
     background: var(--sidebar-bg);
-    height: 100vh;
-    margin: 0;
-    border-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin-right: 0 !important;
     margin-right: 0;
     display: flex;
     flex-direction: column;
@@ -134,7 +135,7 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow-y: auto;
-    padding: 2vh 2rem 2vh 0;
+    padding: 2vh 2rem 2vh 0 !important;
 }
 
 /* Topbar */
@@ -303,7 +304,15 @@ body {
     padding: 0.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow-soft);
-    color: #1F2937;
+    color: #1F2937 !important;
+    display: block !important;
+    /* Force display for debugging */
+}
+
+@media (min-width: 1025px) {
+    .mobile-toggle {
+        display: none !important;
+    }
 }
 
 /* Overlay */
