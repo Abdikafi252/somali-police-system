@@ -90,12 +90,6 @@
                 </div>
             </div>
 
-            <!-- Download App Promo -->
-            <div class="sidebar-promo">
-                <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: white;">Download Mobile App</div>
-                <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.8rem;">Get access to cases on the go.</div>
-                <button style="background: var(--accent-lime); color: var(--sidebar-bg); border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; width: 100%;">Get App</button>
-            </div>
         </aside>
 
         <!-- Main Content (Right Side) -->

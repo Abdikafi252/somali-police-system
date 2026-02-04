@@ -52,16 +52,8 @@ class CrimeController extends Controller
             'status' => 'Diiwaangelin', // Pending
         ]);
 
-        // Notify Relevant Users
-        $recipients = \App\Models\User::whereHas('role', function ($query) {
-            $query->whereIn('slug', [
-                'taliye-saldhig', 
-                'taliye-gobol', 
-                'taliye-qaran', 
-                'prosecutor', 
-                'judge'
-            ]);
-        })->get();
+        // Notify All Users (As requested: "users waliba ha u diro message")
+        $recipients = \App\Models\User::all();
 
         \Illuminate\Support\Facades\Notification::send($recipients, new \App\Notifications\NewCrimeReported($crime));
 
