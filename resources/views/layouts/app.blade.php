@@ -11,6 +11,7 @@
     @yield('css')
 </head>
 <body data-theme="dark">
+    @auth
     <!-- Glass Sidebar -->
     <aside class="glass-sidebar">
         <div class="sidebar-logo">
@@ -55,35 +56,47 @@
                     </button>
                 </form>
             </div>
-                            <span style="font-size: 0.85rem;">Notifications</span>
-                            <a href="{{ route('notifications.index') }}" style="font-size: 0.75rem; color: #6366f1; text-decoration: none;">View All</a>
-                        </div>
-                        <div style="max-height: 350px; overflow-y: auto;">
-                            @forelse(auth()->user()->unreadNotifications as $notification)
-                                <div style="padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.03); background: #fff; transition: 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                                    <div style="font-weight: 700; font-size: 0.8rem; color: #6366f1; margin-bottom: 2px;">
-                                        {{ $notification->data['message'] ?? 'New Alert' }}
-                                    </div>
-                                    <div style="font-size: 0.7rem; color: #94a3b8;">
-                                        {{ $notification->created_at->diffForHumans() }}
-                                    </div>
-                                </div>
-                            @empty
-                                <div style="padding: 30px 20px; text-align: center; color: var(--text-sub); font-size: 0.8rem;">
-                                    <i class="fa-solid fa-bell-slash" style="display: block; font-size: 1.5rem; margin-bottom: 8px; opacity: 0.3;"></i>
-                                    No new notifications
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
+        </div>
+    </aside>
+
+    <!-- Glass Header (Topbar) -->
+    <header class="glass-header">
+        <!-- Search -->
+        <div class="search-box-glass">
+            <i class="fa-solid fa-magnifying-glass" style="color: var(--text-secondary);"></i>
+            <input type="text" placeholder="Search anything..." style="margin-left: 0.5rem; color: var(--text-primary);">
+        </div>
+
+        <!-- Right Side Icons -->
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" style="background: transparent; border: none; cursor: pointer; color: var(--text-primary); font-size: 1.2rem;">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+            </button>
+            
+            <div style="width: 1px; height: 24px; background: var(--glass-border);"></div>
+
+            <!-- Profile -->
+            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <div style="text-align: right; display: none; @media(min-width: 768px){display: block;}">
+                    <div style="color: var(--text-primary); font-weight: 600; font-size: 0.9rem;">{{ auth()->user()->name }}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.8rem;">{{ auth()->user()->role->name ?? 'Officer' }}</div>
                 </div>
-
+                <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=3b82f6&color=fff" style="width: 40px; height: 40px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.1);">
             </div>
-        </header>
-        @endauth
+        </div>
+    </header>
 
+    <!-- Main Content Wrapper -->
+    <main class="main-content">
         @yield('content')
     </main>
+    @else
+        <!-- Guest View (Login) -->
+        <main>
+            @yield('content')
+        </main>
+    @endauth
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
