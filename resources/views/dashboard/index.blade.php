@@ -186,11 +186,11 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
                         <div style="width: 35px; height: 35px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #EF4444; font-weight: 700; font-size: 0.8rem;">
-                            {{ substr($stat->station->station_name ?? 'U', 0, 1) }}
+                            {{ substr($stat->station_name ?? 'U', 0, 1) }}
                         </div>
                         <div>
-                            <div style="color: white; font-size: 0.9rem;">{{ Str::limit($stat->station->station_name ?? 'Unknown', 15) }}</div>
-                            <div style="color: #94a3b8; font-size: 0.75rem;">{{ $stat->station->location ?? 'N/A' }}</div>
+                            <div style="color: white; font-size: 0.9rem;">{{ Str::limit($stat->station_name ?? 'Unknown', 15) }}</div>
+                            <div style="color: #94a3b8; font-size: 0.75rem;">{{ $stat->location ?? 'N/A' }}</div>
                         </div>
                     </div>
                     <div style="color: #EF4444; font-weight: 700;">{{ $stat->total }} Cases</div>

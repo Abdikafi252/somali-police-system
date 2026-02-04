@@ -186,11 +186,11 @@ class DashboardController extends Controller
             ->groupBy('gender')
             ->get();
 
-        // Crimes by Station (Regional)
-        $crimes_by_station = PoliceCase::select('station_id', DB::raw('count(*) as total'))
-            ->with('station')
-            ->whereNotNull('station_id')
-            ->groupBy('station_id')
+        // Crimes by Station (Regional) - Derived from Assigned Officer's Station
+        $crimes_by_station = PoliceCase::join('users', 'cases.assigned_to', '=', 'users.id')
+            ->join('stations', 'users.station_id', '=', 'stations.id')
+            ->select('stations.station_name', 'stations.location', DB::raw('count(*) as total'))
+            ->groupBy('stations.id', 'stations.station_name', 'stations.location')
             ->orderBy('total', 'desc')
             ->take(5)
             ->get();
