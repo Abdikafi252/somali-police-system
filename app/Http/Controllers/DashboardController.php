@@ -290,15 +290,20 @@ class DashboardController extends Controller
             ->get();
 
         // 2. Crime Severity Levels
-        $crime_severity = (clone $crimeQuery)->select('severity', DB::raw('count(*) as count'))
-            ->whereNotNull('severity')
-            ->groupBy('severity')
-            ->orderByRaw("CASE 
-                WHEN severity = 'Critical' THEN 1
-                WHEN severity = 'High' THEN 2
-                WHEN severity = 'Medium' THEN 3
-                ELSE 4 END")
-            ->get();
+        try {
+            $crime_severity = (clone $crimeQuery)->select('severity', DB::raw('count(*) as count'))
+                ->whereNotNull('severity')
+                ->groupBy('severity')
+                ->orderByRaw("CASE 
+                    WHEN severity = 'Critical' THEN 1
+                    WHEN severity = 'High' THEN 2
+                    WHEN severity = 'Medium' THEN 3
+                    ELSE 4 END")
+                ->get();
+        } catch (\Exception $e) {
+            // If severity column doesn't exist, return empty collection
+            $crime_severity = collect([]);
+        }
 
         // 3. Average Response Time (in hours)
         $avg_response_time = (clone $caseQuery)->whereNotNull('assigned_at')
