@@ -39,6 +39,9 @@ body {
     height: 96vh;
     margin: 2vh 0 2vh 2vh;
     border-radius: var(--radius-lg);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: 0;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
@@ -131,7 +134,7 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow-y: auto;
-    padding: 2vh 2rem 2vh 0.5rem;
+    padding: 2vh 2rem 2vh 0;
 }
 
 /* Topbar */
