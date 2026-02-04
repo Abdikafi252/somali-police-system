@@ -12,6 +12,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        
         $adminRole = \App\Models\Role::where('slug', 'admin')->first();
         $station = \App\Models\Station::first();
 
