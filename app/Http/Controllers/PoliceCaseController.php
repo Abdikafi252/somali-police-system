@@ -90,7 +90,13 @@ class PoliceCaseController extends Controller
 
     public function show(PoliceCase $case)
     {
-        $case->load(['crime', 'assignedOfficer', 'investigation', 'prosecution']);
+        $case->load([
+            'crime.suspects', 
+            'assignedOfficer', 
+            'investigation.statements', 
+            'prosecution.courtCase',
+            'logs.officer'
+        ]);
         return view('cases.show', compact('case'));
     }
 

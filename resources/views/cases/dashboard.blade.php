@@ -1,144 +1,257 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard-ka Kiisaska')
+@section('title', 'Dashboard')
+
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/dashboard-glass.css') }}">
+<!-- ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+@endsection
 
 @section('content')
-<div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <div>
-        <h1 style="font-weight: 800; color: var(--sidebar-bg); font-family: 'Outfit';">DASHBOARD-KA KIISASKA</h1>
-        <p style="color: var(--text-sub);">Guud ahaan xaaladda iyo horumarka kiisaska boliska.</p>
-    </div>
-    <div style="display: flex; gap: 1rem;">
-        <a href="{{ route('crimes.create') }}" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; background: #e67e22; border: none;">
-            <i class="fa-solid fa-file-circle-plus"></i> Diwaangeli Dambi
-        </a>
-        <a href="{{ route('cases.index') }}" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-list-check"></i> Liiska Kiisaska
-        </a>
-    </div>
-</div>
-
-<!-- Stats Grid -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-    <div class="glass-card" style="padding: 1.5rem; border-left: 5px solid #3498db;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <p style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600;">GUUD AHAAN</p>
-                <h2 style="font-size: 2rem; margin: 0.5rem 0;">{{ $stats['total'] }}</h2>
+<div class="dashboard-container">
+    <div class="dashboard-grid">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Subax Wanaagsan,</p>
+                <h1>{{ auth()->user()->name }}</h1>
             </div>
-            <div style="background: rgba(52, 152, 219, 0.1); padding: 0.8rem; border-radius: 12px; color: #3498db;">
-                <i class="fa-solid fa-folder-open fa-2x"></i>
+            
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div class="search-box-glass">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-secondary);"></i>
+                    <input type="text" placeholder="Raadi fayl, kiis, ama warbixin...">
+                    <span style="font-size: 0.7rem; color: var(--text-secondary); border: 1px solid var(--glass-border); padding: 2px 6px; border-radius: 4px;">ALT+F</span>
+                </div>
+                
+                <a href="{{ route('profile.show') }}" class="glass-card-dark" style="padding: 0.8rem; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 14px; color: var(--text-primary);">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
             </div>
         </div>
-    </div>
 
-    <div class="glass-card" style="padding: 1.5rem; border-left: 5px solid #f1c40f;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <p style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600;">BAARISTA CID</p>
-                <h2 style="font-size: 2rem; margin: 0.5rem 0;">{{ $stats['investigating'] }}</h2>
+        <!-- Hero Stats Card (Left Large) -->
+        <div class="hero-stat-card glass-card-dark">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 2; position: relative;">
+                <div>
+                    <h3 style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">GUUD AHAAN KIISASKA</h3>
+                    <div class="stat-value-large">{{ $stats['total'] }}</div>
+                </div>
+                
+                <div style="background: rgba(30, 41, 59, 0.5); padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.8rem; color: var(--neon-cyan); border: 1px solid var(--glass-border);">
+                    Updated: Now
+                </div>
             </div>
-            <div style="background: rgba(241, 196, 15, 0.1); padding: 0.8rem; border-radius: 12px; color: #f1c40f;">
-                <i class="fa-solid fa-magnifying-glass fa-2x"></i>
+
+            <!-- Area Chart Container -->
+            <div id="mainAreaChart" style="position: absolute; bottom: 0; left: 0; right: 0; height: 150px; z-index: 1;"></div>
+            
+            <div style="position: relative; z-index: 2; margin-top: 2rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Heerka Xalinta (Clearance Rate)</span>
+                    <span style="color: white; font-weight: 700;">
+                        @php
+                            $rate = $stats['total'] > 0 ? round(($stats['closed'] / $stats['total']) * 100) : 0;
+                        @endphp
+                        {{ $rate }}%
+                    </span>
+                </div>
+                <div class="progress-bar-custom">
+                    <div class="progress-fill" style="width: {{ $rate }}%"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="glass-card" style="padding: 1.5rem; border-left: 5px solid #e67e22;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <p style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600;">XEER ILAALINTA</p>
-                <h2 style="font-size: 2rem; margin: 0.5rem 0;">{{ $stats['prosecution'] }}</h2>
-            </div>
-            <div style="background: rgba(230, 126, 34, 0.1); padding: 0.8rem; border-radius: 12px; color: #e67e22;">
-                <i class="fa-solid fa-scale-balanced fa-2x"></i>
+        <!-- Quick Access / Spaces (Right Top) -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="glass-card-dark">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 style="margin: 0; font-size: 1.1rem; color: white;">Qaybaha (Spaces)</h3>
+                    <button style="background: var(--neon-blue); border: none; width: 30px; height: 30px; border-radius: 8px; color: white; cursor: pointer;">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <div class="spaces-grid">
+                    <a href="{{ route('cases.index', ['status' => 'Baaris']) }}" class="space-card">
+                        <div class="icon-box" style="color: var(--neon-purple);">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: white;">{{ $stats['investigating'] }}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">CID Investigations</div>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('cases.index', ['status' => 'Xeer-Ilaalinta']) }}" class="space-card">
+                        <div class="icon-box" style="color: var(--neon-cyan);">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: white;">{{ $stats['prosecution'] }}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Xeer Ilaalinta</div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="glass-card" style="padding: 1.5rem; border-left: 5px solid #9b59b6;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <p style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600;">MAXKAMADDA</p>
-                <h2 style="font-size: 2rem; margin: 0.5rem 0;">{{ $stats['court'] }}</h2>
+        <!-- Recent Activity (Bottom Left) -->
+        <div class="glass-card-dark" style="grid-column: 1 / 2;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; font-size: 1.2rem; color: white;">Diiwaangelintii Ugu Dambeeyay</h3>
+                <i class="fa-solid fa-ellipsis" style="color: var(--text-secondary); cursor: pointer;"></i>
             </div>
-            <div style="background: rgba(155, 89, 182, 0.1); padding: 0.8rem; border-radius: 12px; color: #9b59b6;">
-                <i class="fa-solid fa-gavel fa-2x"></i>
-            </div>
-        </div>
-    </div>
 
-    <div class="glass-card" style="padding: 1.5rem; border-left: 5px solid #2ecc71;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <p style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600;">XIRAN</p>
-                <h2 style="font-size: 2rem; margin: 0.5rem 0;">{{ $stats['closed'] }}</h2>
-            </div>
-            <div style="background: rgba(46, 204, 113, 0.1); padding: 0.8rem; border-radius: 12px; color: #2ecc71;">
-                <i class="fa-solid fa-check-double fa-2x"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-    <!-- Recent Cases Table -->
-    <div class="glass-card" style="padding: 1.5rem;">
-        <h3 style="margin-bottom: 1.5rem; color: var(--sidebar-bg); display: flex; align-items: center; gap: 0.6rem;">
-            <i class="fa-solid fa-clock-rotate-left"></i> Kiisaskii ugu dambeeyay
-        </h3>
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="border-bottom: 2px solid var(--border-soft); text-align: left;">
-                    <th style="padding: 1rem; color: var(--text-sub);">Case Number</th>
-                    <th style="padding: 1rem; color: var(--text-sub);">Dambiga</th>
-                    <th style="padding: 1rem; color: var(--text-sub);">Heerka</th>
-                    <th style="padding: 1rem; color: var(--text-sub);">Sarkaalka</th>
-                </tr>
-            </thead>
-            <tbody>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 @foreach($recentCases as $case)
-                <tr style="border-bottom: 1px solid var(--border-soft);">
-                    <td style="padding: 1rem; font-weight: 700;">{{ $case->case_number }}</td>
-                    <td style="padding: 1rem;">{{ $case->crime->crime_type }}</td>
-                    <td style="padding: 1rem;">
-                        <span style="
-                            padding: 0.3rem 0.6rem; 
-                            border-radius: 20px; 
-                            font-size: 0.75rem; 
-                            font-weight: 700;
-                            background: {{ $case->status == 'Xiran' ? '#d4edda' : '#e3f2fd' }};
-                            color: {{ $case->status == 'Xiran' ? '#155724' : '#0d47a1' }};
+                <div class="case-list-item">
+                    <div class="file-icon">
+                        <i class="fa-regular fa-folder-open fa-lg"></i>
+                    </div>
+                    <div class="case-meta">
+                        <div class="case-title">{{ $case->case_number }}</div>
+                        <div class="case-sub">{{ $case->crime->crime_type }} • {{ $case->created_at->diffForHumans() }}</div>
+                    </div>
+                    
+                    <!-- Progress / Status Pill -->
+                    <div style="text-align: right;">
+                        <span class="status-badge" style="
+                            background: {{ $case->status == 'Xiran' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)' }};
+                            color: {{ $case->status == 'Xiran' ? '#10b981' : '#3b82f6' }};
                         ">
                             {{ $case->status }}
                         </span>
-                    </td>
-                    <td style="padding: 1rem; color: var(--text-sub);">{{ $case->assignedOfficer->name ?? 'Lama magacaabin' }}</td>
-                </tr>
+                    </div>
+                </div>
                 @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Activity Feed / Quick Info -->
-    <div class="glass-card" style="padding: 1.5rem;">
-        <h3 style="margin-bottom: 1.5rem; color: var(--sidebar-bg); display: flex; align-items: center; gap: 0.6rem;">
-            <i class="fa-solid fa-circle-info"></i> Macluumaad Degdeg ah
-        </h3>
-        <div style="display: flex; flex-direction: column; gap: 1.2rem;">
-            <div style="padding: 1rem; background: rgba(52, 152, 219, 0.05); border-radius: 12px; border: 1px dashed var(--border-soft);">
-                <p style="font-weight: 700; margin-bottom: 0.3rem;">Warbixinta Maanta</p>
-                <p style="font-size: 0.85rem; color: var(--text-sub);">Waxaa la diwaangeliyay {{ $stats['total'] }} kiis cusub mudo dhow ah.</p>
             </div>
+        </div>
+
+        <!-- Storage Access / Team (Bottom Right) -->
+        <div class="glass-card-dark">
+            <h3 style="margin: 0 0 1.5rem 0; font-size: 1.2rem; color: white;">Status Overview</h3>
             
-            <div style="padding: 1rem; background: rgba(46, 204, 113, 0.05); border-radius: 12px; border: 1px dashed var(--border-soft);">
-                <p style="font-weight: 700; margin-bottom: 0.3rem;">Guusha Xalinta</p>
-                @php
-                    $rate = $stats['total'] > 0 ? round(($stats['closed'] / $stats['total']) * 100) : 0;
-                @endphp
-                <p style="font-size: 0.85rem; color: var(--text-sub);">Heerka xirista kiisaska waa <strong>{{ $rate }}%</strong>.</p>
+            <!-- Radial Bar Chart -->
+            <div id="statusChart" style="min-height: 250px; display: flex; align-items: center; justify-content: center;"></div>
+            
+            <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem; background: rgba(255,255,255,0.03); border-radius: 12px;">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=random" style="width: 35px; height: 35px; border-radius: 50%;"> 
+                        <div style="color: white; font-size: 0.9rem;">Closed Cases</div>
+                    </div>
+                    <button style="padding: 0.4rem 1rem; border-radius: 20px; border: none; background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.8rem; cursor: pointer;">View</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+    // Main Area Chart (Wave)
+    var optionsArea = {
+        series: [{
+            name: 'Cases',
+            data: [10, 25, 15, 30, 20, 45, 35, 55, 40, 60] // Dummy data for waveform visual
+        }],
+        chart: {
+            height: 180,
+            type: 'area',
+            toolbar: { show: false },
+            zoom: { enabled: false },
+            sparkline: { enabled: true }
+        },
+        dataLabels: { enabled: false },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.5,
+                opacityTo: 0.0,
+                stops: [0, 90, 100]
+            }
+        },
+        colors: ['#06b6d4'],
+        tooltip: {
+            theme: 'dark',
+            x: { show: false }
+        }
+    };
+
+    var chartArea = new ApexCharts(document.querySelector("#mainAreaChart"), optionsArea);
+    chartArea.render();
+
+    // Radial Bar Chart (Status)
+    var optionsRadial = {
+        series: [{{ $rate }}],
+        chart: {
+            height: 280,
+            type: 'radialBar',
+        },
+        plotOptions: {
+            radialBar: {
+                startAngle: -135,
+                endAngle: 135,
+                hollow: {
+                    margin: 15,
+                    size: '60%',
+                    background: 'transparent',
+                    image: undefined,
+                },
+                track: {
+                    background: 'rgba(255,255,255,0.1)',
+                    strokeWidth: '100%',
+                    margin: 15, // margin is in pixels
+                },
+                dataLabels: {
+                    show: true,
+                    name: {
+                        offsetY: -10,
+                        show: true,
+                        color: '#94a3b8',
+                        fontSize: '14px'
+                    },
+                    value: {
+                        offsetY: 5,
+                        color: '#fff',
+                        fontSize: '24px',
+                        show: true,
+                        formatter: function (val) {
+                            return val + "%";
+                        }
+                    }
+                }
+            }
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'dark',
+                type: 'horizontal',
+                shadeIntensity: 0.5,
+                gradientToColors: ['#8b5cf6'],
+                inverseColors: true,
+                opacityFrom: 1,
+                opacityTo: 1,
+                stops: [0, 100]
+            }
+        },
+        stroke: {
+            lineCap: 'round'
+        },
+        labels: ['Success Rate'],
+        colors: ['#3b82f6'],
+    };
+
+    var chartRadial = new ApexCharts(document.querySelector("#statusChart"), optionsRadial);
+    chartRadial.render();
+</script>
 @endsection
