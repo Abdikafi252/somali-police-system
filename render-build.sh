@@ -6,11 +6,10 @@ set -o errexit
 composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 
 # Run database migrations
-# php artisan migrate --force
-
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Skip cache commands during build (Environment vars may not be ready)
+# php artisan config:cache
+# php artisan route:cache
+# php artisan view:cache
 
 # Create symbolic link for storage
 php artisan storage:link
