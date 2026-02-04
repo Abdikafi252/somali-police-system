@@ -14,6 +14,18 @@
         </p>
     </div>
     <div style="display: flex; gap: 1rem;">
+        @if($case->investigation)
+            <a href="{{ route('investigations.show', $case->investigation->id) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: var(--accent-color);">
+                <i class="fa-solid fa-file-contract"></i> Eeg Baaritaanka
+            </a>
+        @else
+            @if(in_array(auth()->user()->role->slug, ['cid', 'admin', 'taliye-saldhig']))
+            <a href="{{ route('investigations.create', ['case_id' => $case->id]) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: #9b59b6; border-color: #9b59b6;">
+                <i class="fa-solid fa-magnifying-glass-plus"></i> Soo Gali Natiijada
+            </a>
+            @endif
+        @endif
+
         @if(in_array($case->status, ['Open', 'Assigned']))
         <a href="{{ route('cases.edit', $case) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
             <i class="fa-solid fa-pen-to-square"></i> Edit Case
