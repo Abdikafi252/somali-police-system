@@ -101,6 +101,9 @@
         <a href="{{ route('investigations.index') }}" class="btn" style="background: #f1f2f6; color: var(--text-sub); text-decoration: none; padding: 0.8rem 2rem; border-radius: 8px; font-weight: 600;">
             <i class="fa-solid fa-arrow-left"></i> Dib u noqo
         </a>
+        <a href="{{ route('investigations.report', $investigation->id) }}" target="_blank" class="btn-primary" style="padding: 0.8rem 2rem; text-decoration: none; background: #2c3e50;">
+            <i class="fa-solid fa-print"></i> Daabac Warbixinta
+        </a>
         <a href="{{ route('investigations.edit', $investigation->id) }}" class="btn-primary" style="padding: 0.8rem 2rem; text-decoration: none;">
             <i class="fa-solid fa-pen-to-square"></i> Wax ka bedel
         </a>

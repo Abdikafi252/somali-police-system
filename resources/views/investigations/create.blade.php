@@ -139,13 +139,29 @@
             console.error(error);
         });
 
-    document.getElementById('add-statement').addEventListener('click', function() {
+    Document.getElementById('add-statement').addEventListener('click', function() {
+        // Collect existing people from the case (passed from PHP)
+        const suspects = @json($case->crime->suspects ?? []);
+        // Note: Assuming we might have victims relation later, for now just suspects
+        
+        let suspectOptions = '';
+        if(suspects.length > 0) {
+            suspectOptions = `<div style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">`;
+            suspects.forEach(s => {
+                suspectOptions += `<button type="button" class="btn-sm btn-outline-secondary" style="font-size: 0.7rem; padding: 2px 6px; border: 1px solid #ddd; background: #eee; border-radius: 4px; cursor: pointer;" onclick="this.closest('.statement-row').querySelector('input[name=\\'statement_names[]\\']').value = '${s.name}'; this.closest('.statement-row').querySelector('select[name=\\'statement_types[]\\']').value = 'Eedeysane';">
+                    <i class="fa-solid fa-user-plus"></i> ${s.name} (Eedeysane)
+                </button>`;
+            });
+            suspectOptions += `</div>`;
+        }
+
         const container = document.getElementById('statements-container');
         const statementHtml = `
             <div class="statement-row" style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid var(--border-soft); position: relative;">
                 <button type="button" class="remove-statement" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1.2rem;">
                     <i class="fa-solid fa-circle-xmark"></i>
                 </button>
+                ${suspectOptions}
                 <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div>
                         <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-sub); margin-bottom: 0.5rem;">MAGACA QOFKA</label>
