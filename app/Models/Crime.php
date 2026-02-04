@@ -32,4 +32,8 @@ class Crime extends Model
     {
         return $this->hasMany(Evidence::class);
     }
+    public function victims()
+    {
+        return $this->hasMany(Victim::class);
+    }
 }

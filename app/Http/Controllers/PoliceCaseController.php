@@ -129,17 +129,84 @@ class PoliceCaseController extends Controller
         return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo cusbooneysiiyay.');
     }
 
-    public function destroy(PoliceCase $case)
+    public function storeUnified(Request $request)
     {
-        if ($case->investigation()->exists()) {
-            return redirect()->route('cases.index')->with('error', 'Kiiskan lama tirtiri karo sababtoo ah wuxuu leeyahay Baaris socota ama dhamaatay.');
-        }
+        $request->validate([
+            // Suspect
+            'suspect_name' => 'required',
+            'suspect_gender' => 'required',
+            'suspect_status' => 'required',
+            // Crime details (grouped with suspect)
+            'crime_type' => 'required',
+            'location' => 'required',
+            'crime_date' => 'required|date',
+            // Description
+            'description' => 'required',
+            // Victim (Optional)
+            'victim_name' => 'nullable|string',
+        ]);
 
-        if ($case->prosecution()->exists()) {
-            return redirect()->route('cases.index')->with('error', 'Kiiskan lama tirtiri karo sababtoo ah wuxuu yaalaa Xeer-Ilaalinta.');
-        }
+        try {
+            \DB::beginTransaction();
 
-        $case->delete();
-        return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo tirtiray.');
+            // 1. Create Crime
+            $crime = \App\Models\Crime::create([
+                'crime_type' => $request->crime_type,
+                'crime_date' => $request->crime_date,
+                'location' => $request->location,
+                'description' => $request->description,
+                'case_number' => 'REF-' . strtoupper(uniqid()),
+                'status' => 'Reported',
+                'reported_by' => auth()->id(),
+            ]);
+
+            // Handle Photo Upload
+            $photoPath = null;
+            if ($request->hasFile('suspect_photo')) {
+                $photoPath = $request->file('suspect_photo')->store('suspects', 'public');
+            }
+
+            // 2. Create Suspect
+            \App\Models\Suspect::create([
+                'crime_id' => $crime->id,
+                'name' => $request->suspect_name,
+                'nickname' => $request->suspect_nickname,
+                'age' => $request->suspect_age,
+                'mother_name' => $request->suspect_mother_name,
+                'gender' => $request->suspect_gender,
+                'residence' => $request->suspect_residence,
+                'national_id' => $request->suspect_national_id,
+                'arrest_status' => $request->suspect_status,
+                'photo' => $photoPath,
+            ]);
+
+            // 3. Create Victim (If provided)
+            if ($request->filled('victim_name')) {
+                \App\Models\Victim::create([
+                    'crime_id' => $crime->id,
+                    'name' => $request->victim_name,
+                    'age' => $request->victim_age,
+                    'gender' => $request->victim_gender,
+                    'injury_type' => $request->victim_injury,
+                ]);
+            }
+
+            // 4. Create Police Case
+            $case = PoliceCase::create([
+                'crime_id' => $crime->id,
+                'case_number' => 'CASE-' . date('Y') . '-' . rand(1000, 9999),
+                'assigned_to' => auth()->id(),
+                'status' => 'Open',
+            ]);
+
+            $crime->update(['case_number' => $case->case_number]);
+
+            \DB::commit();
+            return redirect()->route('cases.index')->with('success', 'Incident recorded successfully. Case #' . $case->case_number);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return back()->with('error', $e->getMessage())->withInput();
+        }
     }
 }

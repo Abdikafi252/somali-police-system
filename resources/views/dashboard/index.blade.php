@@ -85,20 +85,7 @@
 
     <!-- Right Column -->
     <div class="right-column">
-        <!-- New Course / Promo Card Style -->
-        <div class="edu-card" style="background: #1C1E26; color: white; border: none;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <h3 style="margin: 0 0 0.5rem 0; color: white;">Advance Mode</h3>
-                    <p style="font-size: 0.8rem; color: #9ca3af; margin: 0 0 1.2rem 0; line-height: 1.5;">Access AI predictions and detailed forensics.</p>
-                    <button style="background: var(--accent-lime); color: #1C1E26; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem;">Upgrade</button>
-                </div>
-                <!-- Simple icon instead of external image to avoid loading issues -->
-                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                     <i class="fa-solid fa-rocket" style="font-size: 1.5rem; color: var(--accent-lime);"></i>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Gender Chart -->
         <div class="edu-card">

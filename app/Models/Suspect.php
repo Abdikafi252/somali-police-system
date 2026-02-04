@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Suspect extends Model
 {
-    protected $fillable = ['name', 'age', 'gender', 'national_id', 'crime_id', 'arrest_status', 'photo'];
+    protected $fillable = ['name', 'nickname', 'age', 'mother_name', 'gender', 'residence', 'national_id', 'crime_id', 'arrest_status', 'photo'];
 
     public function crime()
     {

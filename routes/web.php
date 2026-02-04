@@ -43,6 +43,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/crimes/{crime}/pdf', [\App\Http\Controllers\CrimeController::class, 'exportPDF'])->name('crimes.pdf');
         Route::resource('suspects', SuspectController::class);
         Route::get('/cases/dashboard', [PoliceCaseController::class, 'dashboard'])->name('cases.dashboard');
+        
+        // Unified Incident Creation (Crime + Suspect + Case)
+        Route::get('/cases/create-unified', [PoliceCaseController::class, 'createUnified'])->name('cases.create-unified');
+        Route::post('/cases/store-unified', [PoliceCaseController::class, 'storeUnified'])->name('cases.store-unified');
+
         Route::resource('cases', PoliceCaseController::class);
         Route::resource('investigations', InvestigationController::class);
         Route::get('/investigations/{id}/report', [InvestigationController::class, 'showReport'])->name('investigations.report');
