@@ -16,6 +16,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\UserController;
 
+use App\Http\Controllers\InvestigationLogController;
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -53,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     Route::get('/investigations/{id}/report', [InvestigationController::class, 'showReport'])->name('investigations.report');
-    // Route::post('/investigation-logs', [InvestigationLogController::class, 'store'])->name('investigation-logs.store');
+    Route::post('/investigation-logs', [InvestigationLogController::class, 'store'])->name('investigation-logs.store');
     
     // User Profile
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
