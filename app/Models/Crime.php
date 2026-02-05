@@ -18,6 +18,12 @@ class Crime extends Model
         return $this->hasMany(PoliceCase::class);
     }
 
+    // Alias for policeCases (singular)
+    public function case()
+    {
+        return $this->hasOne(PoliceCase::class);
+    }
+
     public function suspects()
     {
         return $this->hasMany(Suspect::class);
