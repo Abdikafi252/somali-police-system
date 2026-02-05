@@ -245,8 +245,6 @@ class DashboardController extends Controller
         // Extra Stats
         $today_cases = (clone $caseQuery)->whereDate('created_at', now()->today())->count();
         $week_cases = (clone $caseQuery)->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
-        $month_cases = (clone $caseQuery)->whereMonth('created_at', now()->month)->count();
-        $last_month_cases = (clone $caseQuery)->whereMonth('created_at', now()->subMonth()->month)->count();
         
         // Suspect Gender Stats (Normalized)
         $suspect_gender = (clone $suspectQuery)->select('gender', DB::raw('count(*) as count'))
@@ -281,176 +279,13 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // NEW WIDGETS (10+ Additional)
-        
-        // 1. Arrest Status Breakdown
-        $arrest_status_stats = (clone $suspectQuery)->select('arrest_status', DB::raw('count(*) as count'))
-            ->whereNotNull('arrest_status')
-            ->groupBy('arrest_status')
-            ->get();
-
-        // 2. Crime Severity Levels
-        try {
-            $crime_severity = (clone $crimeQuery)->select('severity', DB::raw('count(*) as count'))
-                ->whereNotNull('severity')
-                ->groupBy('severity')
-                ->orderByRaw("CASE 
-                    WHEN severity = 'Critical' THEN 1
-                    WHEN severity = 'High' THEN 2
-                    WHEN severity = 'Medium' THEN 3
-                    ELSE 4 END")
-                ->get();
-        } catch (\Exception $e) {
-            // If severity column doesn't exist, return empty collection
-            $crime_severity = collect([]);
-        }
-
-        // 3. Average Response Time (in hours)
-        try {
-            $avg_response_time = (clone $caseQuery)->whereNotNull('assigned_at')
-                ->selectRaw('AVG(EXTRACT(EPOCH FROM (assigned_at - created_at))/3600) as avg_hours')
-                ->value('avg_hours') ?? 0;
-        } catch (\Exception $e) {
-            // If assigned_at column doesn't exist, return 0
-            $avg_response_time = 0;
-        }
-
-        // 4. Case Age Distribution
-        $case_age_distribution = [
-            'new' => (clone $caseQuery)->where('created_at', '>=', now()->subDays(7))->count(),
-            'recent' => (clone $caseQuery)->whereBetween('created_at', [now()->subDays(30), now()->subDays(7)])->count(),
-            'old' => (clone $caseQuery)->whereBetween('created_at', [now()->subDays(90), now()->subDays(30)])->count(),
-            'very_old' => (clone $caseQuery)->where('created_at', '<', now()->subDays(90))->count(),
-        ];
-
-        // 5. Monthly Comparison (This month vs Last month)
-        $monthly_comparison = [
-            'current' => $month_cases,
-            'previous' => $last_month_cases,
-            'change_percent' => $last_month_cases > 0 ? (($month_cases - $last_month_cases) / $last_month_cases) * 100 : 0
-        ];
-
-        // 6. Top Crime Types (Detailed)
-        $top_crime_types = (clone $crimeQuery)->select('crime_type', DB::raw('count(*) as count'))
-            ->groupBy('crime_type')
-            ->orderBy('count', 'desc')
-            ->take(10)
-            ->get();
-
-        // 7. Evidence Collection Stats
-        $evidence_stats = [
-            'total' => \App\Models\Evidence::when(!$hasFullAccess, function($q) use ($user) {
-                return $q->whereHas('crime.reporter', function($sq) use ($user) {
-                    $sq->where('station_id', $user->station_id);
-                });
-            })->count(),
-            'this_week' => \App\Models\Evidence::when(!$hasFullAccess, function($q) use ($user) {
-                return $q->whereHas('crime.reporter', function($sq) use ($user) {
-                    $sq->where('station_id', $user->station_id);
-                });
-            })->where('created_at', '>=', now()->startOfWeek())->count(),
-        ];
-
-        // 8. Victim Statistics
-        $victim_stats = [
-            'total' => \App\Models\Victim::when(!$hasFullAccess, function($q) use ($user) {
-                return $q->whereHas('crime.reporter', function($sq) use ($user) {
-                    $sq->where('station_id', $user->station_id);
-                });
-            })->count(),
-        ];
-
-        // 9. Officer Workload Distribution
-        $officer_workload = User::when(!$hasFullAccess, function($q) use ($user) {
-            return $q->where('station_id', $user->station_id);
-        })->withCount(['cases' => function($q) {
-                $q->whereNotIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday']);
-            }])
-            ->having('cases_count', '>', 0)
-            ->orderBy('cases_count', 'desc')
-            ->take(10)
-            ->get();
-
-        // 10. Investigation Success Rate by Officer
-        $investigation_success = User::when(!$hasFullAccess, function($q) use ($user) {
-            return $q->where('station_id', $user->station_id);
-        })->withCount([
-                'cases as total_cases',
-                'cases as solved_cases' => function($q) {
-                    $q->whereIn('status', ['Xiran', 'Xukunsan', 'Dhamaaday']);
-                }
-            ])
-            ->having('total_cases', '>', 0)
-            ->get()
-            ->map(function($officer) {
-                $officer->success_rate = $officer->total_cases > 0 
-                    ? ($officer->solved_cases / $officer->total_cases) * 100 
-                    : 0;
-                return $officer;
-            })
-            ->sortByDesc('success_rate')
-            ->take(5);
-
-        // 11. Daily Activity Timeline (Last 7 days)
-        $daily_activity = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $daily_activity[] = [
-                'date' => $date->format('M d'),
-                'cases' => (clone $caseQuery)->whereDate('created_at', $date)->count(),
-                'arrests' => (clone $suspectQuery)->where('arrest_status', 'arrested')
-                    ->whereDate('updated_at', $date)->count(),
-            ];
-        }
-
-        // 12. Court Case Outcomes
-        $court_outcomes = \App\Models\CourtCase::when(!$hasFullAccess, function($q) use ($user) {
-            return $q->whereHas('prosecution.case.assignedUser', function($sq) use ($user) {
-                $sq->where('station_id', $user->station_id);
-            });
-        })->select('verdict', DB::raw('count(*) as count'))
-            ->whereNotNull('verdict')
-            ->groupBy('verdict')
-            ->get();
-
-        // 13. Pending Tasks Summary
-        $pending_tasks = [
-            'unassigned_cases' => PoliceCase::when(!$hasFullAccess, function($q) use ($user) {
-                if ($user->role->slug == 'taliye-saldhig') {
-                    return $q->whereHas('crime.reporter', function($sq) use ($user) {
-                        $sq->where('station_id', $user->station_id);
-                    });
-                }
-            })->whereNull('assigned_to')->count(),
-            'pending_prosecution' => (clone $caseQuery)->where('status', 'Xeer-Ilaalinta')->count(),
-            'pending_hearings' => \App\Models\CourtCase::when(!$hasFullAccess, function($q) use ($user) {
-                return $q->whereHas('prosecution.case.assignedUser', function($sq) use ($user) {
-                    $sq->where('station_id', $user->station_id);
-                });
-            })->where('hearing_date', '>=', now())
-                ->where('status', 'scheduled')
-                ->count(),
-        ];
-
-        // 14. Regional Crime Heatmap Data
-        $regional_crimes = (clone $crimeQuery)->select('location', DB::raw('count(*) as count'))
-            ->whereNotNull('location')
-            ->groupBy('location')
-            ->orderBy('count', 'desc')
-            ->take(10)
-            ->get();
-
         return view('dashboard.index', compact(
             'stats', 'case_stats', 'my_stats', 'recent_crimes', 
             'stations_with_counts', 'users_by_rank', 'crime_types', 
             'months', 'trend_counts', 'top_officers', 'activities', 
             'station_performance', 'wanted_suspects', 'active_deployments', 'facility_stats',
             'upcoming_hearings', 'recent_evidence',
-            'today_cases', 'week_cases', 'month_cases', 'court_stats', 'suspect_gender', 'crimes_by_station',
-            'arrest_status_stats', 'crime_severity', 'avg_response_time', 'case_age_distribution',
-            'monthly_comparison', 'top_crime_types', 'evidence_stats', 'victim_stats',
-            'officer_workload', 'investigation_success', 'daily_activity', 'court_outcomes',
-            'pending_tasks', 'regional_crimes'
+            'today_cases', 'week_cases', 'court_stats', 'suspect_gender', 'crimes_by_station'
         ));
     }
 
