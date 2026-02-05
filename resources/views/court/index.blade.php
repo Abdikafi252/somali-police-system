@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="header" style="margin-bottom: 2rem;">
-    <h1 style="font-weight: 800; color: var(--sidebar-bg); font-family: 'Outfit'; uppercase">XAFIISKA GARSOORKA (JUDICIAL OFFICE)</h1>
+    <h1 style="font-weight: 800; color: var(--sidebar-bg); font-family: 'Outfit'; text-transform: uppercase;">XAFIISKA GARSOORKA (JUDICIAL OFFICE)</h1>
     <p style="color: var(--text-sub);">Maamulka dacwadaha horyaala maxkamadda iyo soo saarista xukunada rasmiga ah.</p>
 </div>
 
@@ -54,6 +54,7 @@
         @endforeach
     </div>
 </div>
+@endif
 
 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
     <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.1rem; margin: 0;">
