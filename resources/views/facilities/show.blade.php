@@ -33,12 +33,36 @@
                 <div>
                     <div style="font-weight: 700; color: var(--sidebar-bg);">{{ $facility->commander->name }}</div>
                     <div style="font-size: 0.85rem; color: var(--text-sub);">{{ $facility->commander->rank }}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-sub);">{{ $facility->commander->email }}</div>
                 </div>
             </div>
         @else
             <div style="color: var(--text-sub); font-style: italic;">Lama magacaabin taliye.</div>
         @endif
+    </div>
+
+    <!-- Official Registry Data -->
+    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid #e2e8f0;">
+        <h4 style="margin-top: 0; color: var(--sidebar-bg); border-bottom: 2px solid #ddd; padding-bottom: 0.5rem; margin-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase;">
+             <i class="fa-solid fa-file-contract" style="color: #667eea;"></i> XOGTA DIIWAANGELINTA RASMIGA AH
+        </h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+            <div>
+                <span style="color: #94a3b8; font-weight: 600;">Digital Record ID:</span>
+                <div style="font-weight: 800; color: var(--sidebar-bg); font-family: monospace;">#FAC-REG-{{ str_pad($facility->id, 5, '0', STR_PAD_LEFT) }}</div>
+            </div>
+            <div>
+                <span style="color: #94a3b8; font-weight: 600;">Taariikhda Diiwaanka:</span>
+                <div style="font-weight: 800; color: var(--sidebar-bg);">{{ $facility->created_at->format('M d, Y H:i:s') }}</div>
+            </div>
+            <div>
+                <span style="color: #94a3b8; font-weight: 600;">Nooca Xafiiska:</span>
+                <div style="font-weight: 800; color: #2980b9;">{{ strtoupper($facility->type) }}</div>
+            </div>
+            <div>
+                <span style="color: #94a3b8; font-weight: 600;">Status:</span>
+                <div style="font-weight: 800; color: #27ae60;">VALIDATED / SHAQAYNAYA</div>
+            </div>
+        </div>
     </div>
 
     <div style="display: flex; gap: 1rem;">

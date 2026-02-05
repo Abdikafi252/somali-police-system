@@ -72,14 +72,14 @@
                 @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Administration</div>
                 <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-building-shield"></i> <span>Stations (Saldhigyada)</span>
+                    <i class="fa-solid fa-building-shield"></i> <span>Saldhigyada (Registry)</span>
                 </a>
                 <a href="{{ route('facilities.index') }}" class="nav-link {{ request()->is('facilities*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-building"></i> <span>Facilities (Xarumaha)</span>
+                    <i class="fa-solid fa-building"></i> <span>Xarumaha (Registry)</span>
                 </a>
-                 <div class="nav-section-title" style="margin-top: 0.5rem;">Personnel</div>
+                 <div class="nav-section-title" style="margin-top: 0.5rem;">Maamulka & Shaqaalaha</div>
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-user-group"></i> <span>All Officers (Dhamaan)</span>
+                    <i class="fa-solid fa-user-group"></i> <span>Dhamaan Shaqaalaha</span>
                 </a>
                 <a href="{{ route('station-commanders.index') }}" class="nav-link {{ request()->is('station-commanders*') ? 'active' : '' }}">
                     <i class="fa-solid fa-user-tie"></i> <span>Commanders (Taliyaasha)</span>

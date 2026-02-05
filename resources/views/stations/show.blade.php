@@ -65,6 +65,29 @@
             </div>
             @endif
         </div>
+
+        <!-- Registration Metadata Card -->
+        <div class="glass-card" style="padding: 1.5rem; border-radius: 25px; border-left: 5px solid #d4af37; background: linear-gradient(to right, #ffffff, #fffdf0);">
+            <h5 style="font-weight: 800; color: var(--sidebar-bg); margin-bottom: 1rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">
+                <i class="fa-solid fa-scroll" style="margin-right: 0.5rem; color: #d4af37;"></i> Xogta Diiwaangelinta
+            </h5>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-weight: 600;">Digital ID:</span>
+                    <span style="color: var(--sidebar-bg); font-weight: 800; font-family: monospace;">#STN-{{ str_pad($station->id, 5, '0', STR_PAD_LEFT) }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-weight: 600;">Taariikhda:</span>
+                    <span style="color: var(--sidebar-bg); font-weight: 800;">{{ $station->created_at->format('d M, Y (H:i)') }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-weight: 600;">Status-ka Registry:</span>
+                    <span style="color: #27ae60; font-weight: 900; text-transform: uppercase;">Rasmiga ah</span>
+                </div>
+                <hr style="border: none; border-top: 1px solid #eee;">
+                <p style="margin: 0; color: #7f8c8d; font-size: 0.75rem; font-style: italic;">Saldhiggan wuxuu ka mid yahay diiwaanka rasmiga ah ee Ciidanka Booliska Soomaaliyeed.</p>
+            </div>
+        </div>
     </div>
 
     <!-- Right Column: Staff List -->
