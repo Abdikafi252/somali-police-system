@@ -119,10 +119,10 @@
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 1.5rem;">
-                    <!-- Search -->
-                    <form action="{{ route('cases.index') }}" method="GET" class="search-bar">
+                    <!-- Global Search -->
+                    <form action="{{ route('search') }}" method="GET" class="search-bar">
                         <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                        <input type="text" name="search" placeholder="Search cases, suspects..." value="{{ request('search') }}">
+                        <input type="text" name="q" placeholder="Raadi kiisaska, ciidanka..." value="{{ request('q') }}">
                     </form>
 
                     <!-- Actions -->

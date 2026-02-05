@@ -21,7 +21,7 @@ class UserController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('name', 'LIKE', "%$search%")
                   ->orWhere('rank', 'LIKE', "%$search%")
-                  ->orWhere('id', 'LIKE', "%$search%");
+                  ->orWhereRaw('CAST(id AS TEXT) LIKE ?', ["%$search%"]);
             });
         }
 
