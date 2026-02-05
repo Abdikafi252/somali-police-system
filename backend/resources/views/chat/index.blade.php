@@ -343,6 +343,9 @@
 </style>
 <!-- FontAwesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Pusher & Echo -->
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
 @endsection
 
 @section('content')
@@ -431,12 +434,65 @@
     };
     let receiverId = null;
 
+    // --- PUSHER SETUP ---
+    window.Pusher = Pusher;
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: '{{ env("PUSHER_APP_KEY") }}',
+        cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+        forceTLS: true
+    });
+
+    // Listen to Private Channel (Direct Messages)
+    window.Echo.private(`chat.${authId}`)
+        .listen('.message.sent', (e) => {
+            console.log('New Private Message:', e.message);
+            // Only append if the chat is open with this sender
+            if (receiverId == e.message.sender_id) {
+                appendMessage(e.message, 'recv');
+            }
+        });
+
+    // Listen to Global Chat
+    window.Echo.channel('global-chat')
+        .listen('.message.sent', (e) => {
+            console.log('New Global Message:', e.message);
+            if (receiverId === null && e.message.sender_id !== authId) {
+                appendMessage(e.message, 'recv');
+            }
+        });
+
     // Load users initially
     loadUsers();
-    // Poll users every 10s
+    // Poll users every 10s (for active status)
     setInterval(loadUsers, 10000);
-    // Poll for new messages every 3s
-    setInterval(() => loadMessages(false), 3000);
+
+    function appendMessage(m, type) {
+        let date = new Date(m.created_at);
+        let time = date.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        let checkIcon = type === 'sent' ? `<i class="fa-solid fa-check-double" style="color:#53bdeb; font-size:10px;"></i>` : '';
+
+        let html = `
+        <div class="message-row ${type}">
+            <div class="bubble ${type}">
+                ${m.message}
+                <span class="bubble-meta">
+                    ${time} ${checkIcon}
+                </span>
+            </div>
+        </div>`;
+
+        // append to msgBox
+        let box = document.getElementById('msgsBox');
+        if (box) {
+            box.insertAdjacentHTML('beforeend', html);
+            // Auto scroll
+            box.scrollTop = box.scrollHeight;
+        }
+    }
 
     function loadUsers() {
         fetch("{{ route('chat.users') }}")
@@ -456,11 +512,10 @@
                         `<img src="/storage/${u.profile_image}" class="u-avatar">` :
                         `<div class="u-avatar" style="background:#ccc">${u.name[0]}</div>`;
 
-                    // Simple online indicator check (if last_seen within 5 mins?)
-                    let activeClass = (receiverId === u.id) ? 'active' : '';
+                    let active = (receiverId === u.id) ? 'active' : '';
 
                     html += `
-                    <div class="user-item ${activeClass}" onclick="openChat(${u.id}, '${u.name.replace("'","\\'")}', null)">
+                    <div class="user-item ${active}" onclick="openChat(${u.id}, '${u.name.replace("'","\\'")}', null)">
                         ${avatar}
                         <div class="u-info">
                             <div class="u-name">${u.name}</div>
@@ -479,13 +534,14 @@
         receiverId = id;
         document.getElementById('headerName').innerText = name;
 
+        let av = document.getElementById('headerAvatar');
         if (id === null) {
-            document.getElementById('headerAvatar').innerHTML = "G";
-            document.getElementById('headerAvatar').style.background = "#008069";
+            av.innerHTML = "G";
+            av.style.background = "#008069";
             document.getElementById('headerStatus').innerText = "online";
         } else {
-            document.getElementById('headerAvatar').innerHTML = name[0];
-            document.getElementById('headerAvatar').style.background = "#ccc";
+            av.innerHTML = name[0];
+            av.style.background = "#ccc";
             document.getElementById('headerStatus').innerText = "online";
         }
 
@@ -501,7 +557,6 @@
     }
 
     function loadMessages(forceScroll = false) {
-        // If query param needed logic for correct route
         let url = "{{ route('chat.messages') }}";
         if (receiverId) url += `?receiver_id=${receiverId}`;
 
@@ -509,13 +564,11 @@
             .then(r => r.json())
             .then(msgs => {
                 let html = '';
-                // Basic date grouping can be added here
 
                 msgs.forEach(m => {
                     let isMe = (m.sender_id === authId);
                     let type = isMe ? 'sent' : 'recv';
 
-                    // Format time: HH:MM
                     let date = new Date(m.created_at);
                     let time = date.toLocaleTimeString([], {
                         hour: '2-digit',
@@ -536,12 +589,13 @@
                 });
 
                 let box = document.getElementById('msgsBox');
-                // rudimentary check to see if we should render
-                // in real app, compare ID or length
-                if (box.innerHTML.length !== html.length || forceScroll) {
-                    box.innerHTML = html;
-                    if (forceScroll || (box.scrollHeight - box.scrollTop) < box.clientHeight + 200) {
-                        box.scrollTop = box.scrollHeight;
+                if (box) {
+                    // If content differs or force scroll
+                    if (box.innerHTML.length !== html.length || forceScroll) {
+                        box.innerHTML = html;
+                        if (forceScroll || (box.scrollHeight - box.scrollTop) < box.clientHeight + 200) {
+                            box.scrollTop = box.scrollHeight;
+                        }
                     }
                 }
             });
@@ -551,6 +605,15 @@
         let input = document.getElementById('msgInput');
         let txt = input.value.trim();
         if (!txt) return;
+
+        // Optimistic UI
+        let tempMsg = {
+            message: txt,
+            sender_id: authId,
+            created_at: new Date().toISOString()
+        };
+        appendMessage(tempMsg, 'sent');
+        input.value = '';
 
         fetch("{{ route('chat.send') }}", {
             method: 'POST',
@@ -562,9 +625,6 @@
                 message: txt,
                 receiver_id: receiverId
             })
-        }).then(() => {
-            input.value = '';
-            loadMessages(true);
         });
     }
 </script>

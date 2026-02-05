@@ -58,11 +58,13 @@ class ChatController extends Controller
             'receiver_id' => 'nullable'
         ]);
 
-        Message::create([
+        $msg = Message::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $request->receiver_id,
             'message' => $request->message
         ]);
+
+        broadcast(new \App\Events\MessageSent($msg))->toOthers();
 
         return response()->json(['success' => true]);
     }
