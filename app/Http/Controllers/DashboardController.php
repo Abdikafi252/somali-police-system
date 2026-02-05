@@ -358,11 +358,6 @@ class DashboardController extends Controller
                     $sq->where('station_id', $user->station_id);
                 });
             })->count(),
-            'injured' => \App\Models\Victim::when(!$hasFullAccess, function($q) use ($user) {
-                return $q->whereHas('crime.reporter', function($sq) use ($user) {
-                    $sq->where('station_id', $user->station_id);
-                });
-            })->where('injury_status', 'injured')->count(),
         ];
 
         // 9. Officer Workload Distribution
