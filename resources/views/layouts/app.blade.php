@@ -41,6 +41,9 @@
                 <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
                     <i class="fa-solid fa-handcuffs"></i> <span>Crimes (Dambiyada)</span>
                 </a>
+                <a href="{{ route('chat.index') }}" class="nav-link {{ request()->is('chat*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-comments"></i> <span>Chat (Wada-hadalka)</span>
+                </a>
                 @endif
 
                 @if(auth()->user()->role->slug == 'prosecutor')
