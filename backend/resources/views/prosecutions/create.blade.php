@@ -1,0 +1,196 @@
+@extends('layouts.app')
+
+@section('title', 'Oogidda Dacwadda Cusub')
+
+@section('content')
+<div class="header" style="margin-bottom: 2rem;">
+    <h1 style="font-weight: 800; color: var(--sidebar-bg); font-family: 'Outfit'; uppercase">OOGIDDA DACWADDA (PROSECUTION)</h1>
+    <p style="color: var(--text-sub);">U diyaarinta dacwadda kiiska: <strong style="color: var(--sidebar-bg);">{{ $case->case_number }}</strong></p>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- CID Investigation Full Report -->
+        <div class="glass-card" style="padding: 2rem; border-left: 5px solid #27ae60; background: #fff;">
+            <h3 style="margin-bottom: 1.5rem; color: #34495e; font-family: 'Outfit'; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                <i class="fa-solid fa-file-shield" style="color: #27ae60;"></i> WARBIXINTA BAARISTA CID (FULL REPORT)
+            </h3>
+            
+            <div class="report-section" style="margin-bottom: 2rem;">
+                <h5 style="color: #27ae60; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-clipboard-list"></i> Natiijada Baaritaanka (Findings)
+                </h5>
+                <div style="background: rgba(39, 174, 96, 0.05); padding: 1.5rem; border-radius: 12px; line-height: 1.8; color: #2c3e50;">
+                    {!! $case->investigation->findings !!}
+                </div>
+            </div>
+
+            @if($case->investigation->evidence_list || ($case->investigation->files && count($case->investigation->files) > 0))
+            <div class="report-section" style="margin-bottom: 2rem;">
+                <h5 style="color: #e67e22; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-box-archive"></i> Caddeymada & Lifaaqyada (Evidence)
+                </h5>
+                <p style="margin-bottom: 1rem; color: #576574;">{{ $case->investigation->evidence_list }}</p>
+                
+                @if($case->investigation->files && count($case->investigation->files) > 0)
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem;">
+                    @foreach($case->investigation->files as $file)
+                    <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border-soft);">
+                        <a href="{{ asset('storage/' . $file) }}" target="_blank">
+                            <img src="{{ asset('storage/' . $file) }}" style="width: 100%; height: 80px; object-fit: cover;">
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+            @endif
+
+            @if($case->investigation->statements->count() > 0)
+            <div class="report-section">
+                <h5 style="color: #9b59b6; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-comments"></i> Hadalladii la Qoray (Statements)
+                </h5>
+                <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    @foreach($case->investigation->statements as $statement)
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 10px; border-left: 3px solid #9b59b6;">
+                        <div style="font-weight: 800; font-size: 0.85rem; color: #2d3436; margin-bottom: 0.3rem;">
+                            {{ $statement->person_name }} ({{ $statement->person_type }})
+                        </div>
+                        <p style="margin: 0; font-size: 0.85rem; line-height: 1.5; color: #4b6584; font-style: italic;">"{{ $statement->statement }}"</p>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+        </div>
+
+        <!-- Prosecution Form -->
+        <div class="glass-card" style="padding: 2.5rem;">
+            <form action="{{ route('prosecutions.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="case_id" value="{{ $case->id }}">
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label for="court_id" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase;">
+                        <i class="fa-solid fa-building-columns" style="color: #3498db; margin-right: 0.5rem;"></i> Maxkamadda (Select Court)
+                    </label>
+                    <div style="position: relative; width: 100%;">
+                        <select name="court_id" id="court_id" required class="form-control" style="
+                            width: 100% !important;
+                            height: 60px !important;
+                            background-color: #ffffff !important;
+                            color: #1a1a1a !important;
+                            border: 3px solid #3498db !important;
+                            border-radius: 12px !important;
+                            padding: 0 1.5rem !important;
+                            font-weight: 700 !important;
+                            font-size: 1.1rem !important;
+                            display: block !important;
+                            visibility: visible !important;
+                            opacity: 1 !important;
+                            -webkit-appearance: menulist !important;
+                            -moz-appearance: menulist !important;
+                            appearance: menulist !important;
+                            cursor: pointer !important;
+                            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.15) !important;
+                        ">
+                            <option value="" {{ !$selectedCourt ? 'selected' : '' }} style="color: #666; background: #fff;">
+                                Choose Court / Dooro Maxkamadda (Found: {{ $courts->count() }})
+                            </option>
+                            
+                            @php
+                                $courtTypes = [
+                                    'Degmada' => 'Maxkamadda Degmada (District Court)',
+                                    'Gobolka' => 'Maxkamadda Gobolka (Regional Court)',
+                                    'Racfaanka' => 'Maxkamadda Racfaanka (Appeal Court)',
+                                    'Sare' => 'Maxkamadda Sare (Supreme Court)',
+                                    'Militariga' => 'Maxkamadda Militariga (Military Court)'
+                                ];
+                            @endphp
+
+                            @foreach($courtTypes as $key => $label)
+                                <optgroup label="{{ $label }}" style="background: #f8f9fa; font-weight: 800; color: #1c1e26;">
+                                    @foreach($courts as $court)
+                                        @if(stripos($court->name, $key) !== false)
+                                            <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
+                                                {{ $court->name }} - {{ $court->location }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+
+                            <optgroup label="Maxkamado Kale (Other Courts)" style="background: #f8f9fa;">
+                                @foreach($courts as $court)
+                                    @php 
+                                        $found = false; 
+                                        foreach($courtTypes as $k => $l) if(stripos($court->name, $k) !== false) $found = true;
+                                    @endphp
+                                    @if(!$found)
+                                        <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
+                                            {{ $court->name }} - {{ $court->location }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    @if($selectedCourt)
+                    @php $selectedObj = $courts->firstWhere('id', $selectedCourt); @endphp
+                    <div style="margin-top: 1rem; background: rgba(39, 174, 96, 0.05); border: 1px solid rgba(39, 174, 96, 0.2); padding: 1rem; border-radius: 12px;">
+                        <span style="display: block; color: #27ae60; font-weight: 800; font-size: 0.95rem;">
+                            <i class="fa-solid fa-circle-check"></i> MAXKAMADDA AYAA SI OTOMATIG AH LOO DOORTAY:
+                        </span>
+                        <p style="margin: 5px 0 0 0; color: #2d3436; font-weight: 600; font-size: 0.9rem;">
+                            <strong>{{ $selectedObj ? $selectedObj->name : '' }}</strong> waxaa loo doortay sababtoo ah kiiskan wuxuu ka dhacay ama laga diwaangeliyay degmada: 
+                            <span style="color: #3498db; text-decoration: underline;">{{ $case->crime->location }}</span>.
+                        </p>
+                        <small style="display: block; margin-top: 0.5rem; color: #7f8c8d; font-style: italic;">
+                            <i class="fa-solid fa-info-circle"></i> Waxaad bedeli kartaa maxkamadda haddii aad u baahato inaad u gudbiso maxkamad kale.
+                        </small>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label for="charges" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase;">
+                        <i class="fa-solid fa-gavel" style="color: #8e44ad; margin-right: 0.5rem;"></i> Eedeymaha Rasmiga ah (Charges)
+                    </label>
+                    <textarea name="charges" id="charges" class="form-control" rows="8" required 
+                        style="border: 2px solid var(--border-soft); border-radius: 12px; padding: 1.2rem; font-size: 1rem; line-height: 1.6; transition: all 0.3s ease;" 
+                        placeholder="Gali eedeymaha rasmiga ah ee lagu soo oogayo dambiilaha..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn-primary" style="padding: 1rem 3rem; font-weight: 800; border-radius: 10px; border: none; background: #8e44ad; box-shadow: 0 10px 20px rgba(142, 68, 173, 0.2);">
+                        <i class="fa-solid fa-paper-plane"></i> GUDBI MAXKAMADDA
+                    </button>
+                    <a href="{{ route('cases.show', $case) }}" class="btn" style="padding: 1rem 2rem; background: #f1f2f6; color: var(--text-sub); border-radius: 10px; font-weight: 700; text-decoration: none;">
+                        Jooji
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar Info -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="glass-card" style="padding: 1.5rem; background: #f8fafc; border: 1px dashed var(--border-soft);">
+            <h4 style="color: var(--sidebar-bg); margin-bottom: 1rem; font-family: 'Outfit';">Xogta Kiiska</h4>
+            <div style="font-size: 0.9rem; color: var(--text-sub); display: flex; flex-direction: column; gap: 0.8rem;">
+                <p style="margin: 0;"><strong style="color: var(--sidebar-bg);">Dambiga:</strong> {{ $case->crime->crime_type }}</p>
+                <p style="margin: 0;"><strong style="color: var(--sidebar-bg);">Case #:</strong> {{ $case->case_number }}</p>
+            </div>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem; background: #8e44ad; color: white; border: none;">
+            <h4 style="margin-bottom: 1rem; font-family: 'Outfit';">Doorka Xeer Ilaalinta</h4>
+            <p style="font-size: 0.85rem; line-height: 1.6; opacity: 0.9;">
+                Tallaabadani waxay kiiska u wareejineysaa <strong style="color: #f1c40f;">Maxkamadda</strong>. Hubi in eedeymuhu ay yihiin kuwo waafaqsan sharciga iyo caddeymaha la hayo.
+            </p>
+        </div>
+    </div>
+</div>
+@endsection
