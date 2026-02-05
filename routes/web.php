@@ -96,6 +96,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/users', [\App\Http\Controllers\ChatController::class, 'fetchUsers'])->name('chat.users');
     Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
     Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+    
+    // Call System Signals
+    Route::post('/chat/call/initiate', [\App\Http\Controllers\ChatController::class, 'initiateCall'])->name('chat.call.initiate');
+    Route::get('/chat/call/check', [\App\Http\Controllers\ChatController::class, 'checkIncomingCall'])->name('chat.call.check');
+    Route::post('/chat/call/respond', [\App\Http\Controllers\ChatController::class, 'respondToCall'])->name('chat.call.respond');
+    Route::post('/chat/call/end', [\App\Http\Controllers\ChatController::class, 'endCall'])->name('chat.call.end');
+    Route::post('/chat/call/signal', [\App\Http\Controllers\ChatController::class, 'sendSignal'])->name('chat.call.signal');
+    Route::get('/chat/call/signal', [\App\Http\Controllers\ChatController::class, 'getSignal'])->name('chat.call.get_signal');
     // Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [App\Http\Controllers\SettingsController::class, 'index'])->name('index');

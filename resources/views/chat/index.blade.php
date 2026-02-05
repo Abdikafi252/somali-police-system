@@ -387,7 +387,7 @@
     </div>
 </div>
 
-<!-- Calling Modal -->
+<!-- Calling Modal (Outgoing) -->
 <div id="callingModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(20px);">
     <div style="text-align: center; color: white;">
         <div id="callingAvatar" style="margin-bottom: 2rem;">
@@ -400,15 +400,35 @@
             <button onclick="endCall()" style="width: 70px; height: 70px; border-radius: 50%; background: #ef4444; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa-solid fa-phone-slash"></i>
             </button>
-            <div style="width: 70px; height: 70px; border-radius: 50%; background: #2ecc71; border: none; color: white; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; opacity: 0.5; cursor: not-allowed;">
-                <i class="fa-solid fa-microphone"></i>
-            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incoming Call Modal -->
+<div id="incomingCallModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 10001; align-items: center; justify-content: center; backdrop-filter: blur(15px);">
+    <div style="text-align: center; color: white; background: rgba(255,255,255,0.1); padding: 3rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); width: 350px;">
+        <div id="incomingAvatar" style="margin-bottom: 2rem;">
+            <div class="user-avatar-placeholder" style="width: 100px; height: 100px; font-size: 2.5rem; margin: 0 auto; border: 4px solid #2ecc71;">?</div>
+        </div>
+        <h3 id="incomingName" style="font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 800;">Incoming Call...</h3>
+        <p style="color: #cbd5e1; margin-bottom: 2.5rem;">Wicitaan cusub ayaa kuu soo dhacaya...</p>
+        
+        <div style="display: flex; gap: 1.5rem; justify-content: center;">
+            <button onclick="acceptCall()" style="width: 65px; height: 65px; border-radius: 50%; background: #2ecc71; border: none; color: white; font-size: 1.3rem; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fa-solid fa-phone"></i>
+            </button>
+            <button onclick="declineCall()" style="width: 65px; height: 65px; border-radius: 50%; background: #ef4444; border: none; color: white; font-size: 1.3rem; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
         </div>
     </div>
 </div>
 
 <audio id="ringSound" loop preload="auto">
     <source src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" type="audio/mpeg">
+</audio>
+<audio id="incomingRingSound" loop preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/1355/1355-preview.mp3" type="audio/mpeg">
 </audio>
 
 @endsection
@@ -426,6 +446,12 @@
 
     // Start polling messages every 3 seconds
     setInterval(fetchMessages, 3000);
+    
+    // Start polling for calls every 2 seconds
+    setInterval(checkIncomingCall, 2000);
+
+    let activeCallId = null;
+    let isCallAccepted = false;
 
     function fetchUsers() {
         const isSearching = document.getElementById('userSearch').value.length > 0;
@@ -609,16 +635,103 @@
         const avatar = document.getElementById('activeUserAvatar').innerHTML;
         
         document.getElementById('callingName').innerText = name;
-        document.getElementById('callingAvatar').innerHTML = avatar.replace('width: 40px; height: 40px;', 'width: 120px; height: 120px; font-size: 3rem; margin: 0 auto; border: 4px solid #667eea; box-shadow: 0 0 40px rgba(102, 126, 234, 0.5);');
+        document.getElementById('callingAvatar').innerHTML = avatar;
         
         document.getElementById('callingModal').style.display = 'flex';
         document.getElementById('ringSound').play();
+
+        // Initiate Call in DB
+        fetch("{{ route('chat.call.initiate') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+            body: JSON.stringify({ receiver_id: currentReceiverId, signal: 'init-voip' })
+        })
+        .then(res => res.json())
+        .then(call => {
+            activeCallId = call.id;
+            // Now start polling to see if they accept
+            trackCallStatus();
+        });
+    }
+
+    function checkIncomingCall() {
+        if (activeCallId || document.getElementById('incomingCallModal').style.display === 'flex') return;
+
+        fetch("{{ route('chat.call.check') }}")
+            .then(res => res.json())
+            .then(call => {
+                if (call && call.status === 'ringing') {
+                    activeCallId = call.id;
+                    document.getElementById('incomingName').innerText = call.caller.name;
+                    document.getElementById('incomingCallModal').style.display = 'flex';
+                    document.getElementById('incomingRingSound').play();
+                }
+            });
+    }
+
+    function trackCallStatus() {
+        if (!activeCallId) return;
+        
+        fetch(`{{ url('/chat/call/signal') }}?call_id=${activeCallId}`)
+            .then(res => res.json())
+            .then(call => {
+                if (call.status === 'accepted') {
+                   document.getElementById('callingStatus').innerText = "Wicitaanku waa socdaa... (Connected)";
+                   document.getElementById('ringSound').pause();
+                   // In a real app, WebRTC would start here
+                } else if (call.status === 'declined' || call.status === 'ended') {
+                   endCall();
+                }
+                
+                if (activeCallId && !isCallAccepted) {
+                    setTimeout(trackCallStatus, 2000);
+                }
+            });
+    }
+
+    function acceptCall() {
+        fetch("{{ route('chat.call.respond') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+            body: JSON.stringify({ call_id: activeCallId, status: 'accepted', signal: 'answer-voip' })
+        })
+        .then(() => {
+            document.getElementById('incomingRingSound').pause();
+            document.getElementById('incomingCallModal').style.display = 'none';
+            // Show "Connected" UI
+            document.getElementById('callingModal').style.display = 'flex';
+            document.getElementById('callingStatus').innerText = "Wicitaanku waa socdaa... (Connected)";
+            isCallAccepted = true;
+        });
+    }
+
+    function declineCall() {
+        fetch("{{ route('chat.call.respond') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+            body: JSON.stringify({ call_id: activeCallId, status: 'declined' })
+        })
+        .then(() => {
+            document.getElementById('incomingRingSound').pause();
+            document.getElementById('incomingCallModal').style.display = 'none';
+            activeCallId = null;
+        });
     }
 
     function endCall() {
+        if (activeCallId) {
+            fetch("{{ route('chat.call.end') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+                body: JSON.stringify({ call_id: activeCallId })
+            });
+        }
         document.getElementById('callingModal').style.display = 'none';
+        document.getElementById('incomingCallModal').style.display = 'none';
         document.getElementById('ringSound').pause();
-        document.getElementById('ringSound').currentTime = 0;
+        document.getElementById('incomingRingSound').pause();
+        activeCallId = null;
+        isCallAccepted = false;
     }
 </script>
 @endsection
