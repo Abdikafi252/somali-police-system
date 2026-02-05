@@ -8,6 +8,16 @@ use Illuminate\Support\Str;
 
 class CrimeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->check() && auth()->user()->role->slug === 'cid') {
+                abort(403, 'Baaraha (CID) looma ogola inuu galo qaybtan dambiyada.');
+            }
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         $query = Crime::with('reporter');

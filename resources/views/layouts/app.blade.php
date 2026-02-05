@@ -38,9 +38,11 @@
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
                 </a>
+                @if(auth()->user()->role->slug != 'cid')
                 <a href="{{ route('crimes.index') }}" class="nav-link {{ request()->is('crimes*') ? 'active' : '' }}">
                     <i class="fa-solid fa-handcuffs"></i> <span>Crimes (Dambiyada)</span>
                 </a>
+                @endif
                 <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-magnifying-glass"></i> <span>Investigations (Baaritaanka)</span>
                 </a>
