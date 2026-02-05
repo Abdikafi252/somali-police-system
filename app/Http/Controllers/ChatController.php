@@ -191,5 +191,16 @@ class ChatController extends Controller
         $call = Call::findOrFail($request->call_id);
         return response()->json($call);
     }
+
+    public function deleteMessage(Request $request)
+    {
+        $message = Message::where('id', $request->message_id)
+            ->where('sender_id', auth()->id())
+            ->firstOrFail();
+
+        $message->update(['is_deleted' => true, 'message' => 'Fariintaan waa la tirtiray']);
+        
+        return response()->json(['status' => 'Fariinta waa la tirtiray!']);
+    }
 }
 

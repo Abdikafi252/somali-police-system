@@ -97,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/users', [\App\Http\Controllers\ChatController::class, 'fetchUsers'])->name('chat.users');
     Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
     Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/delete', [\App\Http\Controllers\ChatController::class, 'deleteMessage'])->name('chat.delete');
     
     // Call System Signals
     Route::post('/chat/call/initiate', [\App\Http\Controllers\ChatController::class, 'initiateCall'])->name('chat.call.initiate');
