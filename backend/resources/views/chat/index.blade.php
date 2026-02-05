@@ -668,7 +668,14 @@
                 <div style="display:flex; gap:25px; color:#54656f; font-size:18px;">
                     <i class="fa-solid fa-video" onclick="initiateCall('video')" style="cursor:pointer;" title="Video Call"></i>
                     <i class="fa-solid fa-phone" onclick="initiateCall('audio')" style="cursor:pointer;" title="Audio Call"></i>
-                    <i class="fa-solid fa-ellipsis-vertical" style="cursor:pointer;"></i>
+                    <div style="position:relative;">
+                        <i class="fa-solid fa-ellipsis-vertical" style="cursor:pointer;" onclick="toggleChatMenu()"></i>
+                        <div id="chatMenu" style="display:none; position:absolute; right:0; top:30px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.1); border-radius:8px; width:150px; z-index:100; overflow:hidden;">
+                            <div onclick="clearChat()" style="padding:10px 15px; cursor:pointer; color:#ef4444; font-size:14px; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-trash"></i> Delete Chat
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -919,6 +926,46 @@
                     closeCallOverlay();
                 }
             });
+    }
+
+    function toggleChatMenu() {
+        const menu = document.getElementById('chatMenu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('chatMenu');
+        const icon = document.querySelector('.fa-ellipsis-vertical');
+        if (menu && menu.style.display === 'block' && !menu.contains(e.target) && e.target !== icon) {
+            menu.style.display = 'none';
+        }
+    });
+
+    async function clearChat() {
+        if (!confirm('Ma hubtaa inaad tirtirto dhamaan wada hadalkan? (Are you sure you want to delete this specific chat?)')) return;
+
+        try {
+            const res = await fetch("{{ route('chat.clear') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    receiver_id: currentReceiverId
+                })
+            });
+
+            const data = await res.json();
+            if (data.status === 'Chat cleared') {
+                loadMessages(); // Reload (should be empty)
+                toggleChatMenu();
+                // Optionally show a toast
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function showCallOverlay(mode, name, avatar) {

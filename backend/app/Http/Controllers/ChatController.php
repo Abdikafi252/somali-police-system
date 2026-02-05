@@ -206,4 +206,24 @@ class ChatController extends Controller
 
         return response()->json(['status' => 'Fariinta waa la tirtiray!']);
     }
+
+    public function clearConversation(Request $request)
+    {
+        $receiverId = $request->receiver_id;
+        $authId = auth()->id();
+
+        // Mark all messages as deleted for this user
+        // Note: In a real app, we might soft delete or use a pivot. 
+        // Here we just mark 'is_deleted' for simplicity or delete records if allowed.
+        // Let's assume we hard delete for "Clean" request or soft delete.
+        // "Chat dhan delete" implies removing them from view. 
+
+        Message::where(function ($q) use ($authId, $receiverId) {
+            $q->where('sender_id', $authId)->where('receiver_id', $receiverId);
+        })->orWhere(function ($q) use ($authId, $receiverId) {
+            $q->where('sender_id', $receiverId)->where('receiver_id', $authId);
+        })->delete(); // Hard delete suitable for "Chat dhan delete" request
+
+        return response()->json(['status' => 'Chat cleared']);
+    }
 }
