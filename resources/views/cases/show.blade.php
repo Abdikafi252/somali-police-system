@@ -15,12 +15,12 @@
     </div>
     <div style="display: flex; gap: 1rem;">
         @if($case->investigation)
-            <a href="{{ route('investigations.show', $case->investigation->id) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: var(--accent-color);">
+            <a href="{{ route('investigations.show', $case->investigation->id) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: var(--accent-color); color: #000;">
                 <i class="fa-solid fa-file-contract"></i> Eeg Baaritaanka
             </a>
         @else
             @if(in_array(auth()->user()->role->slug, ['cid', 'admin', 'taliye-saldhig']))
-            <a href="{{ route('investigations.create', ['case_id' => $case->id]) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: #9b59b6; border-color: #9b59b6;">
+            <a href="{{ route('investigations.create', ['case_id' => $case->id]) }}" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; background: #9b59b6; color: white;">
                 <i class="fa-solid fa-magnifying-glass-plus"></i> Soo Gali Natiijada
             </a>
             @endif
@@ -34,6 +34,56 @@
         <a href="{{ route('cases.index') }}" class="btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">
             Back to List
         </a>
+    </div>
+</div>
+
+<!-- CASE LIFECYCLE PROGRESS -->
+<div class="glass-card" style="margin-bottom: 2rem; padding: 2rem;">
+    <h5 style="margin: 0 0 2rem 0; color: var(--sidebar-bg); font-weight: 800; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-diagram-next" style="color: #667eea;"></i> Geeddi-socodka Kiiska (Case Lifecycle)
+    </h5>
+    
+    <div style="display: flex; justify-content: space-between; position: relative; margin: 0 40px;">
+        <!-- Background Track -->
+        <div style="position: absolute; top: 20px; left: 0; right: 0; height: 4px; background: #e2e8f0; z-index: 1;"></div>
+        
+        @php
+            $status = strtolower($case->status);
+            $stages = [
+                'saldhig' => ['label' => 'Diiwaangelin', 'icon' => 'fa-building-shield', 'active' => true],
+                'cid' => ['label' => 'Baarista CID', 'icon' => 'fa-magnifying-glass-chart', 'active' => ($case->investigation || in_array($status, ['cid', 'baaris socoto', 'xeer-ilaalinta', 'maxkamadda', 'xiran']))],
+                'xeer' => ['label' => 'Xeer-ilaalinta', 'icon' => 'fa-scale-balanced', 'active' => ($status == 'xeer-ilaalinta' || in_array($status, ['maxkamadda', 'xiran']))],
+                'maxkamad' => ['label' => 'Maxkamadda', 'icon' => 'fa-gavel', 'active' => ($status == 'maxkamadda' || $status == 'xiran')]
+            ];
+        @endphp
+
+        @foreach($stages as $key => $stage)
+        <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 100px;">
+            <div style="
+                width: 45px; 
+                height: 45px; 
+                border-radius: 50%; 
+                background: {{ $stage['active'] ? 'var(--sidebar-bg)' : '#fff' }}; 
+                color: {{ $stage['active'] ? '#fff' : '#94a3b8' }}; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                border: 3px solid {{ $stage['active'] ? 'var(--accent-lime)' : '#e2e8f0' }};
+                box-shadow: {{ $stage['active'] ? '0 0 15px rgba(198, 240, 72, 0.4)' : 'none' }};
+                transition: 0.3s;
+            ">
+                <i class="fa-solid {{ $stage['icon'] }}"></i>
+            </div>
+            <span style="margin-top: 0.8rem; font-size: 0.75rem; font-weight: 800; color: {{ $stage['active'] ? 'var(--sidebar-bg)' : '#94a3b8' }}; text-transform: uppercase; text-align: center;">
+                {{ $stage['label'] }}
+            </span>
+            @if($stage['active'])
+            <div style="font-size: 0.65rem; color: #27ae60; font-weight: 700; margin-top: 2px;">
+                <i class="fa-solid fa-circle-check"></i> {{ $key == 'maxkamad' && $status == 'xiran' ? 'Dhamaaday' : 'Socda' }}
+            </div>
+            @endif
+        </div>
+        @endforeach
     </div>
 </div>
 

@@ -25,6 +25,7 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout']); // Fallback for GET request
 
 // Password Reset Routes
 Route::get('/password/reset', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');

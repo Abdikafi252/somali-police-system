@@ -4,11 +4,63 @@
 
 @section('content')
 <div class="header" style="margin-bottom: 2rem;">
-    <h1 style="font-weight: 800; color: var(--sidebar-bg); font-family: 'Outfit'; uppercase">DIIWAANKA MAXKAMADDA</h1>
-    <p style="color: var(--text-sub);">Diiwaanka rasmiga ah ee xukunada iyo go'aanada Maxkamadda.</p>
+    <h1 style="font-weight: 800; color: var(--sidebar-bg); font-family: 'Outfit'; uppercase">XAFIISKA GARSOORKA (JUDICIAL OFFICE)</h1>
+    <p style="color: var(--text-sub);">Maamulka dacwadaha horyaala maxkamadda iyo soo saarista xukunada rasmiga ah.</p>
 </div>
 
-<div class="glass-card" style="padding: 1.5rem;">
+@if(count($pending_judgments) > 0)
+<!-- Pending Judgment Section -->
+<div style="margin-bottom: 3rem;">
+    <h3 style="font-family: 'Outfit'; font-weight: 700; color: #d4af37; font-size: 1.1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem;">
+        <i class="fa-solid fa-gavel"></i> KIISASKA SUGAYA GO'AANKA (PENDING JUDGMENT)
+        <span style="background: #d4af37; color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem;">{{ count($pending_judgments) }}</span>
+    </h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.5rem;">
+        @foreach($pending_judgments as $pros)
+        <div class="glass-card" style="padding: 1.8rem; border-top: 4px solid #d4af37; position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(255,255,255,1) 100%);">
+            <div style="position: absolute; right: -15px; top: -15px; font-size: 5rem; opacity: 0.05; color: #d4af37; transform: rotate(15deg);">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.2rem;">
+                <div>
+                    <h5 style="margin: 0; font-family: 'Outfit'; font-weight: 800; color: var(--sidebar-bg); font-size: 1.1rem;">{{ $pros->policeCase->case_number }}</h5>
+                    <span style="font-size: 0.75rem; color: #d4af37; font-weight: 700;">Gudbis: {{ $pros->created_at->format('d M, Y') }}</span>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.65rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase;">Xeer-Ilaalinta</div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--sidebar-bg);">{{ $pros->prosecutor->name }}</div>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.02); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <p style="font-size: 0.85rem; font-weight: 700; color: var(--sidebar-bg); margin-bottom: 0.4rem;">Tuhunka Dambiga:</p>
+                <div style="font-size: 0.9rem; color: #c0392b; font-weight: 800;">{{ $pros->policeCase->crime->crime_type }}</div>
+                <hr style="border: none; border-top: 1px solid rgba(0,0,0,0.05); margin: 0.8rem 0;">
+                <p style="font-size: 0.85rem; font-weight: 700; color: var(--sidebar-bg); margin-bottom: 0.4rem;">Eedaha (Charges):</p>
+                <p style="font-size: 0.85rem; color: var(--text-main); line-height: 1.4;">{{ Str::limit($pros->charges, 120) }}</p>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <a href="{{ route('court-cases.create', ['prosecution_id' => $pros->id]) }}" class="btn-primary" style="flex: 2; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #2c3e50; border: none; font-size: 0.85rem; font-weight: 800; padding: 0.9rem;">
+                    <i class="fa-solid fa-gavel"></i> SOO SAAR XUKUN
+                </a>
+                <a href="{{ route('cases.show', $pros->policeCase->id) }}" class="btn-secondary" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; padding: 0.9rem;">
+                    Eeg Kiiska
+                </a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+    <h3 style="font-family: 'Outfit'; font-weight: 700; color: var(--sidebar-bg); font-size: 1.1rem; margin: 0;">
+        <i class="fa-solid fa-list-check"></i> KAYDKA XUKUNADA (VERDICT HISTORY)
+    </h3>
+    <div style="flex: 1; height: 1px; background: var(--border-soft);"></div>
+</div>
     <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>

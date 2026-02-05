@@ -11,8 +11,14 @@ class CourtCaseController extends Controller
 {
     public function index()
     {
+        // Cases waiting for judgment (submitted by prosecutor but no court verdict yet)
+        $pending_judgments = Prosecution::with(['policeCase.crime', 'prosecutor', 'court'])
+            ->where('status', 'Gudbis')
+            ->latest()
+            ->get();
+
         $courtCases = CourtCase::with(['prosecution.policeCase.crime', 'judge'])->latest()->paginate(10);
-        return view('court.index', compact('courtCases'));
+        return view('court.index', compact('courtCases', 'pending_judgments'));
     }
 
     public function create(Request $request)
