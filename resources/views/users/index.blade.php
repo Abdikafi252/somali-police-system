@@ -22,6 +22,37 @@
 </div>
 @endif
 
+<!-- Live Personnel Status Ticker ("Soc-socashada") -->
+<div style="background: var(--sidebar-bg); color: white; padding: 0.8rem; border-radius: 15px; margin-bottom: 2rem; overflow: hidden; position: relative; border-left: 5px solid var(--accent-lime); box-shadow: 0 10px 25px rgba(28, 30, 38, 0.15);">
+    <div style="position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent-lime); color: var(--sidebar-bg); padding: 0 1.2rem; display: flex; align-items: center; font-weight: 900; z-index: 10; font-size: 0.75rem; font-family: 'Outfit';">
+        <i class="fa-solid fa-tower-broadcast" style="margin-right: 0.5rem; animation: pulse 2s infinite;"></i> LIVE FEED
+    </div>
+    <div class="marquee" style="white-space: nowrap; animation: marquee 35s linear infinite; display: inline-block; padding-left: 100%;">
+        @foreach($users->take(10) as $usr)
+            <span style="margin-right: 3rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px;">
+                <span style="color: var(--accent-lime);">[{{ $usr->rank ?? 'ASKARI' }}]</span> 
+                {{ $usr->name }} • 
+                <span style="color: #94a3b8;">{{ $usr->station->station_name ?? 'RESERVE' }}</span> • 
+                <span style="color: {{ $usr->status == 'active' ? '#2ecc71' : '#ef4444' }}; font-size: 0.7rem;">
+                    <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> {{ strtoupper($usr->status) }}
+                </span>
+            </span>
+        @endforeach
+    </div>
+</div>
+
+<style>
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+</style>
+
 <!-- Interactive Stats Charts Row -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
     <!-- Role Distribution Chart -->
@@ -41,7 +72,15 @@
     </div>
 </div>
 
-<div class="glass-card" style="padding: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05);">
+<!-- Simple Count Indicator -->
+<div style="margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;">
+    <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 700; background: #fff; padding: 10px 20px; border-radius: 15px; box-shadow: var(--shadow-premium); border: 1px solid #e2e8f0;">
+        <i class="fa-solid fa-users-police" style="color: var(--accent-blue); margin-right: 0.5rem;"></i> 
+        WADARTA: <strong style="color: var(--text-primary);">{{ $users->total() }}</strong> SARKAAL
+    </div>
+</div>
+
+<div class="glass-card animate-up" style="padding: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); animation-delay: 0.5s;">
     <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); flex-wrap: wrap; gap: 1rem;">
         <h5 style="margin: 0; color: var(--sidebar-bg); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
             <i class="fa-solid fa-list-ul" style="margin-right: 0.5rem; color: #667eea;"></i> Saraakiisha Diiwaangashan
