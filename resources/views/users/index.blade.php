@@ -184,10 +184,17 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" style="padding: 5rem; text-align: center; color: var(--text-sub);">
-                        <i class="fa-solid fa-user-slash fa-4x" style="opacity: 0.1; margin-bottom: 2rem;"></i>
-                        <p style="font-weight: 800; font-size: 1.2rem; color: var(--sidebar-bg);">Ma jiro sarkaal la mid ah raadintaada.</p>
-                        <a href="{{ route('users.index') }}" style="color: #667eea; font-weight: 700; text-decoration: underline;">Dib u soo saar dhamaan</a>
+                    <td colspan="5" style="padding: 6rem 2rem; text-align: center; border: none;">
+                        <div style="width: 120px; height: 120px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 1px solid #e2e8f0;">
+                            <i class="fa-solid fa-user-minus" style="font-size: 3rem; color: #cbd5e1; animation: pulse 2s infinite;"></i>
+                        </div>
+                        <h3 style="font-family: 'Outfit'; font-weight: 800; color: var(--sidebar-bg); font-size: 1.4rem; margin-bottom: 0.8rem;">Sarkaal Lama Helin</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; max-width: 450px; margin: 0 auto 2rem; line-height: 1.6;">
+                            Ma jiro sarkaal ku haboon raadintaada: <strong style="color: var(--sidebar-bg);">"{{ request('search') }}"</strong>. Fadlan isku day inaad raadiso Magac, Darajo, ama ID kale.
+                        </p>
+                        <a href="{{ route('users.index') }}" class="btn-primary" style="text-decoration: none; padding: 0.8rem 2rem; display: inline-flex; align-items: center; gap: 0.6rem; background: var(--sidebar-bg); border-radius: 12px; font-weight: 700;">
+                            <i class="fa-solid fa-rotate-left"></i> Dib u soo saar dhamaan
+                        </a>
                     </td>
                 </tr>
                 @endforelse
