@@ -13,7 +13,11 @@ class Message extends Model
         'sender_id',
         'receiver_id',
         'message',
+        'type',
+        'file_path',
         'is_read',
+        'delivered_at',
+        'read_at',
     ];
 
     public function sender()

@@ -10,6 +10,8 @@ class Call extends Model
         'caller_id',
         'receiver_id',
         'status',
+        'call_type',
+        'duration',
         'caller_signal',
         'receiver_signal'
     ];

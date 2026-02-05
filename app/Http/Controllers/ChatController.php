@@ -51,17 +51,20 @@ class ChatController extends Controller
                       ->where('receiver_id', auth()->id());
             })->with('sender')->orderBy('created_at', 'asc')->get();
 
-            // Mark as read
+            // Mark as read and set timestamp
             Message::where('sender_id', $receiver_id)
                 ->where('receiver_id', auth()->id())
                 ->where('is_read', false)
-                ->update(['is_read' => true]);
+                ->update([
+                    'is_read' => true,
+                    'read_at' => now()
+                ]);
         } else {
             // Global Chat
             $messages = Message::whereNull('receiver_id')
                 ->with('sender')
                 ->orderBy('created_at', 'asc')
-                ->take(100) // Limit global messages
+                ->take(100)
                 ->get();
         }
 
@@ -71,13 +74,33 @@ class ChatController extends Controller
     public function sendMessage(Request $request)
     {
         $request->validate([
-            'message' => 'required',
+            'message' => 'nullable|string',
+            'file' => 'nullable|file|max:51200', // 50MB max
+            'receiver_id' => 'nullable|exists:users,id'
         ]);
+
+        $type = 'text';
+        $filePath = null;
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $mime = $file->getMimeType();
+            
+            if (str_contains($mime, 'image')) $type = 'image';
+            elseif (str_contains($mime, 'video')) $type = 'video';
+            elseif (str_contains($mime, 'audio')) $type = 'audio';
+            else $type = 'file';
+
+            $filePath = $file->store('chat_files', 'public');
+        }
 
         $message = \App\Models\Message::create([
             'sender_id' => auth()->id(),
-            'receiver_id' => $request->receiver_id, // Nullable for global
-            'message' => $request->message,
+            'receiver_id' => $request->receiver_id,
+            'message' => $request->message ?? '',
+            'type' => $type,
+            'file_path' => $filePath,
+            'delivered_at' => now(), // Assume delivered immediately for now as we don't have real-time socket ack yet
         ]);
 
         return response()->json(['status' => 'Message Sent!', 'message' => $message]);
@@ -96,7 +119,8 @@ class ChatController extends Controller
             'caller_id' => auth()->id(),
             'receiver_id' => $receiver_id,
             'status' => 'ringing',
-            'caller_signal' => $request->signal // Initial Offer
+            'call_type' => $request->call_type ?? 'audio',
+            'caller_signal' => $request->signal // Peer ID/SDP
         ]);
 
         return response()->json($call);
@@ -118,7 +142,7 @@ class ChatController extends Controller
         $call = \App\Models\Call::findOrFail($request->call_id);
         $call->update([
             'status' => $request->status, // accepted or declined
-            'receiver_signal' => $request->signal // Answer
+            'receiver_signal' => $request->signal // Peer ID/SDP
         ]);
 
         return response()->json($call);
@@ -126,7 +150,10 @@ class ChatController extends Controller
 
     public function endCall(Request $request)
     {
-        \App\Models\Call::where('id', $request->call_id)->update(['status' => 'ended']);
+        $call = \App\Models\Call::find($request->call_id);
+        if ($call) {
+            $call->update(['status' => 'ended']);
+        }
         return response()->json(['status' => 'Call Ended']);
     }
 

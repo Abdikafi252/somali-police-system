@@ -1,161 +1,152 @@
 @extends('layouts.app')
 
-@section('title', 'Wada-hadalka (Chat)')
+@section('title', 'WhatsApp Police Clone')
 
 @section('css')
 <style>
-    /* Responsive Chat Architecture */
+    /* WhatsApp Styles Overhaul */
     .chat-wrapper {
         display: flex;
         height: calc(100vh - 120px);
-        margin: -1rem; /* Fit into main-content padding */
-        background: #fff;
+        margin: -1rem;
+        background: #f0f2f5;
         position: relative;
         overflow: hidden;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Contacts Sidebar */
+    /* Left Pane */
     .contacts-pane {
-        width: 360px;
-        border-right: 1px solid #e2e8f0;
+        width: 400px;
+        border-right: 1px solid #d1d7db;
         display: flex;
         flex-direction: column;
-        background: #f8fafc;
-        transition: all 0.3s ease;
+        background: #fff;
         z-index: 10;
     }
 
-    /* Message Main Pane */
+    .pane-header {
+        height: 60px;
+        padding: 10px 16px;
+        background: #f0f2f5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #d1d7db;
+    }
+
+    .search-box {
+        padding: 8px 12px;
+        background: #fff;
+    }
+
+    .search-inner {
+        background: #f0f2f5;
+        border-radius: 8px;
+        padding: 6px 14px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .search-inner input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+    }
+
+    /* Right Pane */
     .conversation-pane {
         flex: 1;
         display: flex;
         flex-direction: column;
-        background: #fff;
+        background: #efe7dd url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
         position: relative;
-        min-width: 0;
     }
 
-    /* WhatsApp Style Header */
-    .pane-header {
-        height: 70px;
-        padding: 0 1.5rem;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid #e2e8f0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        shrink: 0;
-    }
-
-    .contact-info {
-        display: flex;
-        align-items: center;
-        gap: 0.85rem;
-    }
-
-    .avatar-wrapper {
-        position: relative;
-        width: 45px;
-        height: 45px;
-    }
-
-    .avatar-img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .online-indicator {
-        position: absolute;
-        bottom: 2px;
-        right: 2px;
-        width: 12px;
-        height: 12px;
-        background: #22c55e;
-        border: 2px solid #fff;
-        border-radius: 50%;
-    }
-
-    /* Scrollable Message Area */
     .messages-viewport {
         flex: 1;
         overflow-y: auto;
-        padding: 1.5rem;
-        background: #efe7dd url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-        background-blend-mode: overlay;
+        padding: 20px 7%;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 4px;
     }
 
-    /* Message Bubbles */
+    /* Bubbles */
     .msg-bubble {
-        max-width: 75%;
-        padding: 0.6rem 1rem;
-        border-radius: 12px;
-        font-size: 0.925rem;
-        line-height: 1.5;
+        max-width: 65%;
+        padding: 6px 7px 8px 9px;
+        border-radius: 8px;
+        font-size: 14.2px;
         position: relative;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+        word-wrap: break-word;
     }
 
     .msg-sent {
         align-self: flex-end;
         background: #dcf8c6;
-        color: #111827;
-        border-top-right-radius: 2px;
+        border-top-right-radius: 0;
     }
 
     .msg-received {
         align-self: flex-start;
         background: #fff;
-        color: #111827;
-        border-top-left-radius: 2px;
+        border-top-left-radius: 0;
     }
 
-    .msg-time {
-        font-size: 0.7rem;
-        color: #64748b;
-        margin-top: 4px;
-        text-align: right;
+    .msg-info {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        font-size: 11px;
+        color: #667781;
+        margin-top: -4px;
     }
 
-    /* Input Dock */
+    .status-icon {
+        font-size: 14px;
+        color: #53bdeb; /* Read blue */
+    }
+
+    /* Input Area */
     .input-dock {
-        padding: 0.8rem 1.5rem;
+        padding: 10px 16px;
         background: #f0f2f5;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 12px;
     }
 
-    .input-wrapper {
+    .input-container {
         flex: 1;
         background: #fff;
-        border-radius: 25px;
-        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        padding: 9px 12px;
         display: flex;
         align-items: center;
     }
 
-    .msg-input {
-        flex: 1;
+    .input-container input {
         border: none;
         outline: none;
-        padding: 0.4rem 0;
-        font-size: 0.95rem;
+        width: 100%;
+        font-size: 15px;
     }
 
-    /* Call Overlays */
-    .call-overlay {
+    /* Floating Call UI */
+    .call-window {
         position: fixed;
-        inset: 0;
-        background: #0f172a;
-        z-index: 3000;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #0b141a;
+        z-index: 9999;
         display: none;
         flex-direction: column;
         align-items: center;
@@ -163,209 +154,252 @@
         color: #fff;
     }
 
-    /* Mobile Interaction */
-    @media (max-width: 768px) {
-        .contacts-pane {
-            width: 100%;
-            position: absolute;
-            height: 100%;
-        }
-        .contacts-pane.hidden {
-            transform: translateX(-100%);
-        }
-        .conversation-pane {
-            width: 100%;
-            position: absolute;
-            height: 100%;
-        }
-        .conversation-pane.hidden {
-            transform: translateX(100%);
-        }
-        .back-btn {
-            display: block !important;
-        }
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000;
     }
 
-    .back-btn {
+    #remoteVideo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    #localVideo {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 150px;
+        height: 200px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid #fff;
+    }
+
+    .call-controls {
+        position: absolute;
+        bottom: 40px;
+        display: flex;
+        gap: 20px;
+        z-index: 100;
+    }
+
+    .ctrl-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-end { background: #ea0038; }
+    .btn-accept { background: #06d755; }
+    .btn-mute { background: rgba(255,255,255,0.2); }
+
+    /* Voice Note */
+    .voice-meter {
+        flex: 1;
+        height: 30px;
+        background: #f0f2f5;
+        border-radius: 15px;
         display: none;
-        margin-right: 1rem;
-        font-size: 1.2rem;
+        align-items: center;
+        padding: 0 15px;
+        color: #ea0038;
+        font-weight: 600;
+    }
+
+    /* Typing Indicator */
+    .typing-status {
+        font-size: 12px;
+        color: #06d755;
+        font-weight: 600;
+        display: none;
+    }
+
+    /* Media Previews */
+    .media-preview {
+        max-width: 300px;
+        border-radius: 8px;
+        margin-bottom: 5px;
         cursor: pointer;
     }
 
-    .action-btn {
-        color: #64748b;
-        font-size: 1.25rem;
-        cursor: pointer;
-        transition: 0.2s;
+    @media (max-width: 768px) {
+        .contacts-pane { width: 100%; position: absolute; height: 100%; }
+        .conversation-pane { width: 100%; position: absolute; height: 100%; }
+        .hidden-mobile { display: none; }
+        .contacts-pane.active { display: flex; }
+        .conversation-pane.active { display: flex; }
     }
-
-    .action-btn:hover { color: var(--accent-blue); }
-    .send-btn { color: var(--accent-blue); font-size: 1.4rem; cursor: pointer; }
 </style>
 @endsection
 
 @section('content')
 <div class="chat-wrapper">
-    <!-- Contacts Pane -->
+    <!-- Left: Contact List -->
     <div class="contacts-pane" id="contactsPane">
-        <div class="pane-header" style="background: #f0f2f5;">
-            <div class="contact-info">
-                <div class="avatar-wrapper">
-                    <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=3b82f6&color=fff" class="avatar-img">
-                </div>
-                <span style="font-weight: 700;">My Chats</span>
-            </div>
-            <div style="display: flex; gap: 1rem;">
-                <i class="fa-solid fa-circle-notch action-btn" title="Status"></i>
-                <i class="fa-solid fa-message action-btn" title="New Chat"></i>
-                <i class="fa-solid fa-ellipsis-vertical action-btn"></i>
+        <div class="pane-header">
+            <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=00a884&color=fff" style="width:40px;height:40px;border-radius:50%;">
+            <div style="display:flex; gap: 20px; color: #54656f; font-size: 20px;">
+                <i class="fa-solid fa-users-viewfinder"></i>
+                <i class="fa-solid fa-circle-notch"></i>
+                <i class="fa-solid fa-message"></i>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
             </div>
         </div>
 
-        <!-- Search -->
-        <div style="padding: 0.75rem 1rem;">
-            <div style="background: #fff; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 1rem; border: 1px solid #e2e8f0;">
-                <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 0.85rem;"></i>
-                <input type="text" id="userSearch" placeholder="Raadi sarkaalka..." style="border: none; outline: none; width: 100%; font-size: 0.85rem;">
+        <div class="search-box">
+            <div class="search-inner">
+                <i class="fa-solid fa-magnifying-glass" style="color: #54656f;"></i>
+                <input type="text" id="userSearch" placeholder="Raadi ama bilow sheeko cusub">
             </div>
         </div>
 
-        <!-- List -->
-        <div id="usersList" style="flex: 1; overflow-y: auto;">
-            <!-- Loaded via JS -->
-            <div style="padding: 2rem; text-align: center; color: #94a3b8;">
-                <i class="fa-solid fa-spinner fa-spin"></i> Loading...
-            </div>
+        <div id="usersList" style="flex:1; overflow-y:auto; background:#fff;">
+            <!-- Rendered by JS -->
         </div>
     </div>
 
-    <!-- Conversation Pane -->
-    <div class="conversation-pane hidden" id="conversationPane">
-        <!-- Default State -->
-        <div id="noChatSelected" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; text-align: center; padding: 2rem;">
-            <div style="width: 250px; height: 250px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); border-radius: 50%; opacity: 0.1; margin-bottom: 2rem;"></div>
-            <h2 style="font-weight: 800; color: #1e293b; margin-bottom: 0.5rem;">WhatsApp for Police</h2>
-            <p style="color: #64748b; max-width: 350px;">Dooro qof aad la hadasho si aad u bilowdo wada-hadal sugan.</p>
-            <div style="margin-top: 2rem; color: #94a3b8; font-size: 0.85rem;">
-                <i class="fa-solid fa-lock"></i> End-to-end encrypted
-            </div>
+    <!-- Right: Conversation -->
+    <div class="conversation-pane" id="conversationPane">
+        <!-- Welcoming Empty State -->
+        <div id="noChatSelected" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+            <img src="https://static.whatsapp.net/rsrc.php/v3/y6/r/wa669ae5zba.png" style="width:400px; opacity:0.8;">
+            <h1 style="color:#41525d; font-weight:300; margin-top:20px;">WhatsApp for Somali Police</h1>
+            <p style="color:#667781; font-size:14px; max-width:450px;">U dir ama ka hel fariimo sugan adiga oo aan talefankaaga online ka dhigin. <br>Isticmaal WhatsApp ilaa 4 aaladood oo isku xidhan hal mar.</p>
         </div>
 
-        <!-- Active Chat State -->
-        <div id="activeChat" style="display: none; flex: 1; flex-direction: column;">
-            <div class="pane-header">
-                <div class="contact-info">
-                    <i class="fa-solid fa-arrow-left back-btn" onclick="showContacts()"></i>
-                    <div class="avatar-wrapper" id="activeUserAvatar"></div>
+        <div id="activeChat" style="display:none; flex:1; flex-direction:column;">
+            <div class="pane-header" style="background:#f0f2f5;">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <i class="fa-solid fa-arrow-left" onclick="backToContacts()" style="display:none;" id="backBtn"></i>
+                    <div id="activeUserAvatar"></div>
                     <div>
-                        <div id="activeUserName" style="font-weight: 700; font-size: 1rem;">John Doe</div>
-                        <div id="activeUserStatus" style="font-size: 0.75rem; color: #64748b;">Online</div>
+                        <div id="activeUserName" style="font-weight:600; color:#111b21;">John Doe</div>
+                        <div id="activeUserStatus" style="font-size:12px; color:#667781;">online</div>
+                        <div class="typing-status" id="typingStatus">is typing...</div>
                     </div>
                 </div>
-                <div style="display: flex; gap: 1.5rem; align-items: center;">
-                    <i class="fa-solid fa-video action-btn" onclick="initiateCall('video')"></i>
-                    <i class="fa-solid fa-phone action-btn" onclick="initiateCall('audio')"></i>
-                    <i class="fa-solid fa-magnifying-glass action-btn"></i>
-                    <i class="fa-solid fa-ellipsis-vertical action-btn"></i>
+                <div style="display:flex; gap:25px; color:#54656f; font-size:18px;">
+                    <i class="fa-solid fa-video" onclick="initiateCall('video')" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-phone" onclick="initiateCall('audio')" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-magnifying-glass" style="cursor:pointer;"></i>
+                    <i class="fa-solid fa-ellipsis-vertical" style="cursor:pointer;"></i>
                 </div>
             </div>
 
             <div class="messages-viewport" id="messageArea">
-                <!-- Messages JS -->
+                <!-- Messages -->
             </div>
 
             <div class="input-dock">
-                <i class="fa-regular fa-face-smile action-btn"></i>
-                <i class="fa-solid fa-plus action-btn"></i>
-                <div class="input-wrapper">
-                    <input type="text" id="messageInput" class="msg-input" placeholder="Qor fariin..." onkeypress="if(event.key==='Enter')sendMessage()">
+                <i class="fa-regular fa-face-smile" id="emojiBtn" style="font-size:24px; color:#54656f; cursor:pointer;"></i>
+                <label for="fileUpload" style="margin:0; cursor:pointer;">
+                    <i class="fa-solid fa-plus" style="font-size:22px; color:#54656f;"></i>
+                    <input type="file" id="fileUpload" hidden onchange="handleFileUpload(event)">
+                </label>
+                
+                <div class="input-container" id="inputContainer">
+                    <input type="text" id="messageInput" placeholder="Qor fariin" onkeyup="handleTyping()">
                 </div>
-                <i class="fa-solid fa-microphone action-btn" id="micBtn"></i>
-                <i class="fa-solid fa-paper-plane send-btn" onclick="sendMessage()" id="sendBtn" style="display: none;"></i>
+
+                <div class="voice-meter" id="voiceMeter">
+                    <i class="fa-solid fa-circle-stop" onclick="stopRecording()" style="cursor:pointer;"></i>
+                    <span id="recordTimer">00:00</span>
+                    <div style="flex:1; margin-left:10px; border-bottom:2px solid; opacity:0.3;"></div>
+                </div>
+
+                <i class="fa-solid fa-microphone" id="micBtn" onclick="startRecording()" style="font-size:22px; color:#54656f; cursor:pointer;"></i>
+                <i class="fa-solid fa-paper-plane" id="sendBtn" onclick="sendMessage()" style="font-size:22px; color:#00a884; cursor:pointer; display:none;"></i>
             </div>
         </div>
     </div>
 </div>
 
-<!-- VoIP Call Overlay -->
-<div class="call-overlay" id="callOverlay">
-    <div style="text-align: center;">
-        <div id="callAvatar" style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 2rem; border: 4px solid var(--accent-lime); padding: 5px;">
-            <img src="" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-        </div>
-        <h1 id="callContactName" style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Sarkaal</h1>
-        <p id="callStatus" style="font-size: 1.1rem; color: #94a3b8;">Wicitaan ayaa socda...</p>
-        
-        <div style="margin-top: 4rem; display: flex; gap: 2rem;">
-            <div onclick="endCall()" style="width: 65px; height: 65px; border-radius: 50%; background: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">
-                <i class="fa-solid fa-phone-slash" style="font-size: 1.5rem;"></i>
-            </div>
-        </div>
+<!-- Call UI -->
+<div class="call-window" id="callWindow">
+    <div class="video-container" id="videoContainer" style="display:none;">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <video id="localVideo" autoplay playsinline muted></video>
+    </div>
+
+    <div id="audioCallUI" style="text-align:center;">
+        <img id="callUserImg" src="" style="width:150px; height:150px; border-radius:50%; margin-bottom:30px;">
+        <h2 id="callUserName">Sarkaal</h2>
+        <p id="callStatusText">Wicitaan ayaa socda...</p>
+    </div>
+
+    <div class="call-controls">
+        <div class="ctrl-btn btn-mute"><i class="fa-solid fa-microphone-slash"></i></div>
+        <div class="ctrl-btn btn-accept" id="acceptBtn" style="display:none;" onclick="answerCall()"><i class="fa-solid fa-phone"></i></div>
+        <div class="ctrl-btn btn-end" onclick="hangUp()"><i class="fa-solid fa-phone-slash"></i></div>
     </div>
 </div>
 
-<audio id="ringtone" loop>
-    <source src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" type="audio/mpeg">
-</audio>
+<!-- Audio Assets -->
+<audio id="ringtone" loop src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
-@endsection
+<!-- Scripts -->
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
 
-@section('js')
 <script>
+    const MY_ID = {{ auth()->id() }};
     let currentReceiverId = null;
-    let activeCallId = null;
+    let peer = null;
+    let activeCall = null;
+    let localStream = null;
+    let isRecording = false;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let activeCallData = null;
 
-    // View Switching logic
-    function showChat(userId, name, img) {
-        currentReceiverId = userId;
-        document.getElementById('noChatSelected').style.display = 'none';
-        document.getElementById('activeChat').style.display = 'flex';
-        document.getElementById('activeUserName').innerText = name;
-        
-        const avatarHtml = img ? `<img src="/storage/${img}" class="avatar-img">` : 
-                          `<div style="width:100%;height:100%;border-radius:50%;background:var(--accent-lime);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;">${name.charAt(0)}</div>`;
-        document.getElementById('activeUserAvatar').innerHTML = avatarHtml;
-
-        if(window.innerWidth <= 768) {
-            document.getElementById('contactsPane').classList.add('hidden');
-            document.getElementById('conversationPane').classList.remove('hidden');
-        }
-        
-        loadMessages();
-    }
-
-    function showContacts() {
-        document.getElementById('contactsPane').classList.remove('hidden');
-        document.getElementById('conversationPane').classList.add('hidden');
-    }
-
-    // Input Control
-    document.getElementById('messageInput').addEventListener('input', function(e) {
-        const hasText = e.target.value.trim().length > 0;
-        document.getElementById('micBtn').style.display = hasText ? 'none' : 'block';
-        document.getElementById('sendBtn').style.display = hasText ? 'block' : 'none';
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initPeer();
+        fetchUsers();
+        setInterval(fetchUsers, 10000);
+        setInterval(smartSync, 3000);
+        initEmoji();
     });
 
-    // WhatsApp style User Fetch
+    function initPeer() {
+        peer = new Peer('SPD-' + MY_ID);
+        peer.on('call', async (call) => {
+            activeCall = call;
+            // Handle incoming call notification via DB is faster, but Peer signal is secondary
+        });
+    }
+
+    // --- UI LOGIC ---
     function fetchUsers() {
         fetch("{{ route('chat.users') }}")
             .then(res => res.json())
             .then(users => {
                 let html = '';
                 users.forEach(u => {
-                    const avatar = u.profile_image ? `<img src="/storage/${u.profile_image}" style="width:50px;height:50px;border-radius:50%;">` : 
-                                  `<div style="width:50px;height:50px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:700;">${u.name.charAt(0)}</div>`;
+                    const avatar = u.profile_image ? `<img src="/storage/${u.profile_image}" style="width:49px;height:49px;border-radius:50%;">` : 
+                                  `<div style="width:49px;height:49px;border-radius:50%;background:#dfe5e7;display:flex;align-items:center;justify-content:center;font-weight:700;">${u.name.charAt(0)}</div>`;
                     
                     html += `
-                    <div onclick="showChat(${u.id}, '${u.name}', '${u.profile_image}')" style="display:flex;padding:0.75rem 1rem;gap:1rem;cursor:pointer;transition:0.2s;align-items:center;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">
+                    <div onclick="selectUser(${u.id}, '${u.name}', '${u.profile_image}')" style="display:flex; padding:12px 16px; gap:12px; cursor:pointer; align-items:center; border-bottom:1px solid #f2f2f2;">
                         ${avatar}
-                        <div style="flex:1;border-bottom:1px solid #f1f5f9;padding-bottom:0.75rem;">
-                            <div style="display:flex;justify-content:space-between;">
-                                <span style="font-weight:600;">${u.name}</span>
-                                <span style="font-size:0.7rem;color:#94a3b8;">${u.last_seen || ''}</span>
+                        <div style="flex:1;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                <span style="font-weight:500; color:#111b21;">${u.name}</span>
+                                <span style="font-size:12px; color:#667781;">${u.last_seen || ''}</span>
                             </div>
-                            <div style="font-size:0.8rem;color:#64748b;">${u.is_online ? '🟢 Online' : 'Click to message'}</div>
+                            <div style="font-size:13px; color:#667781; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; justify-content:space-between;">
+                                <span>${u.is_online ? '<span style="color:#06d755">online</span>' : 'Riix si aad u qortid'}</span>
+                                ${u.unread_count > 0 ? `<span style="background:#06d755; color:#fff; border-radius:50%; padding:2px 7px; font-size:11px; font-weight:700;">${u.unread_count}</span>` : ''}
+                            </div>
                         </div>
                     </div>`;
                 });
@@ -373,6 +407,30 @@
             });
     }
 
+    function selectUser(id, name, img) {
+        currentReceiverId = id;
+        document.getElementById('noChatSelected').style.display = 'none';
+        document.getElementById('activeChat').style.display = 'flex';
+        document.getElementById('activeUserName').innerText = name;
+        
+        const avatarHtml = img ? `<img src="/storage/${img}" style="width:40px;height:40px;border-radius:50%;">` : 
+                          `<div style="width:40px;height:40px;border-radius:50%;background:#00a884;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;">${name.charAt(0)}</div>`;
+        document.getElementById('activeUserAvatar').innerHTML = avatarHtml;
+
+        if(window.innerWidth <= 768) {
+            document.getElementById('contactsPane').style.display = 'none';
+            document.getElementById('backBtn').style.display = 'block';
+        }
+        
+        loadMessages();
+    }
+
+    function backToContacts() {
+        document.getElementById('contactsPane').style.display = 'flex';
+        document.getElementById('activeChat').style.display = 'none';
+    }
+
+    // --- MESSAGING ---
     function loadMessages() {
         if(!currentReceiverId) return;
         fetch(`{{ route('chat.messages') }}?receiver_id=${currentReceiverId}`)
@@ -380,29 +438,45 @@
             .then(messages => {
                 let html = '';
                 messages.forEach(m => {
-                    const isSent = m.sender_id == {{ auth()->id() }};
+                    const isSent = m.sender_id == MY_ID;
                     const time = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                    
+                    let content = m.message;
+                    if(m.type === 'image') content = `<img src="/storage/${m.file_path}" class="media-preview" onclick="window.open(this.src)">`;
+                    if(m.type === 'video') content = `<video src="/storage/${m.file_path}" class="media-preview" controls></video>`;
+                    if(m.type === 'audio') content = `<audio src="/storage/${m.file_path}" controls style="height:35px; width:220px;"></audio>`;
+
+                    const statusIcon = m.read_at ? '<i class="fa-solid fa-check-double status-icon"></i>' : (m.delivered_at ? '<i class="fa-solid fa-check-double" style="color:#667781"></i>' : '<i class="fa-solid fa-check" style="color:#667781"></i>');
+
                     html += `
                     <div class="msg-bubble ${isSent ? 'msg-sent' : 'msg-received'}">
-                        ${m.message}
-                        <div class="msg-time">${time}</div>
+                        ${content}
+                        <div class="msg-info">
+                            <span>${time}</span>
+                            ${isSent ? statusIcon : ''}
+                        </div>
                     </div>`;
                 });
-                const viewport = document.getElementById('messageArea');
-                viewport.innerHTML = html;
-                viewport.scrollTop = viewport.scrollHeight;
+                const area = document.getElementById('messageArea');
+                area.innerHTML = html;
+                area.scrollTop = area.scrollHeight;
             });
     }
 
-    function sendMessage() {
+    function sendMessage(file = null) {
         const input = document.getElementById('messageInput');
         const msg = input.value.trim();
-        if(!msg) return;
+        if(!msg && !file) return;
+
+        let formData = new FormData();
+        formData.append('receiver_id', currentReceiverId);
+        if(msg) formData.append('message', msg);
+        if(file) formData.append('file', file);
 
         fetch("{{ route('chat.send') }}", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
-            body: JSON.stringify({ message: msg, receiver_id: currentReceiverId })
+            headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+            body: formData
         }).then(() => {
             input.value = '';
             document.getElementById('micBtn').style.display = 'block';
@@ -411,21 +485,173 @@
         });
     }
 
-    // VoIP logic interface
-    function initiateCall(type) {
-        document.getElementById('callContactName').innerText = document.getElementById('activeUserName').innerText;
-        document.getElementById('callOverlay').style.display = 'flex';
+    // --- MEDIA HANDLING ---
+    function handleFileUpload(e) {
+        const file = e.target.files[0];
+        if(file) sendMessage(file);
+    }
+
+    // --- VOICE NOTES ---
+    async function startRecording() {
+        if(!navigator.mediaDevices) return alert("Browser kaagu ma taageero cod duubista.");
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+            const file = new File([blob], "voice_note.ogg", { type: 'audio/ogg' });
+            sendMessage(file);
+            stream.getTracks().forEach(t => t.stop());
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        document.getElementById('micBtn').style.color = '#ea0038';
+        document.getElementById('inputContainer').style.display = 'none';
+        document.getElementById('voiceMeter').style.display = 'flex';
+        
+        let sec = 0;
+        window.recordInt = setInterval(() => {
+            sec++;
+            let m = Math.floor(sec/60).toString().padStart(2, '0');
+            let s = (sec%60).toString().padStart(2, '0');
+            document.getElementById('recordTimer').innerText = `${m}:${s}`;
+        }, 1000);
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        clearInterval(window.recordInt);
+        document.getElementById('micBtn').style.color = '#54656f';
+        document.getElementById('inputContainer').style.display = 'flex';
+        document.getElementById('voiceMeter').style.display = 'none';
+        document.getElementById('recordTimer').innerText = "00:00";
+    }
+
+    // --- VOIP CALLS (WebRTC) ---
+    async function initiateCall(type) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === 'video' });
+        localStream = stream;
+        
+        document.getElementById('callWindow').style.display = 'flex';
+        document.getElementById('callUserName').innerText = document.getElementById('activeUserName').innerText;
+        document.getElementById('callUserImg').src = document.getElementById('activeUserAvatar').querySelector('img')?.src || '';
         document.getElementById('ringtone').play();
-        // Backend integration for signaling would follow
+
+        if(type === 'video') {
+            document.getElementById('videoContainer').style.display = 'block';
+            document.getElementById('localVideo').srcObject = stream;
+        }
+
+        // Signaling via DB
+        fetch("{{ route('chat.call.initiate') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+            body: JSON.stringify({ 
+                receiver_id: currentReceiverId, 
+                call_type: type,
+                signal: 'SPD-' + MY_ID 
+            })
+        }).then(res => res.json()).then(call => {
+            activeCallData = call;
+        });
     }
 
-    function endCall() {
-        document.getElementById('callOverlay').style.display = 'none';
+    async function answerCall() {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: true, 
+            video: activeCallData.call_type === 'video' 
+        });
+        localStream = stream;
         document.getElementById('ringtone').pause();
-        document.getElementById('ringtone').currentTime = 0;
+        document.getElementById('acceptBtn').style.display = 'none';
+
+        if(activeCallData.call_type === 'video') {
+            document.getElementById('videoContainer').style.display = 'block';
+            document.getElementById('localVideo').srcObject = stream;
+        }
+
+        // Respond via PeerJS
+        const call = peer.call(activeCallData.caller_signal, stream);
+        setupCallHandlers(call);
+        
+        // Update DB
+        fetch("{{ route('chat.call.respond') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+            body: JSON.stringify({ call_id: activeCallData.id, status: 'accepted', signal: 'SPD-' + MY_ID })
+        });
     }
 
-    fetchUsers();
-    setInterval(loadMessages, 4000);
+    function setupCallHandlers(call) {
+        call.on('stream', remoteStream => {
+            document.getElementById('remoteVideo').srcObject = remoteStream;
+            document.getElementById('callStatusText').innerText = "Wicitaanku waa socdaa...";
+        });
+        call.on('close', hangUp);
+    }
+
+    function hangUp() {
+        if(activeCallData) {
+            fetch("{{ route('chat.call.end') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
+                body: JSON.stringify({ call_id: activeCallData.id })
+            });
+        }
+        if(localStream) localStream.getTracks().forEach(t => t.stop());
+        document.getElementById('callWindow').style.display = 'none';
+        document.getElementById('ringtone').pause();
+        activeCallData = null;
+    }
+
+    // --- REAL-TIME SYNC ---
+    function smartSync() {
+        // Check for incoming calls
+        fetch("{{ route('chat.call.check') }}")
+            .then(res => res.json())
+            .then(call => {
+                if(call && call.status === 'ringing' && !activeCallData) {
+                    activeCallData = call;
+                    document.getElementById('callWindow').style.display = 'flex';
+                    document.getElementById('callUserName').innerText = call.caller.name;
+                    document.getElementById('callStatusText').innerText = "Wicitaanka xafiiska...";
+                    document.getElementById('acceptBtn').style.display = 'flex';
+                    document.getElementById('ringtone').play();
+                } else if(call && call.status === 'ended' && activeCallData) {
+                    hangUp();
+                } else if(call && call.status === 'accepted' && activeCallData && activeCallData.caller_id === MY_ID) {
+                    // Start PeerJS connection if I am the caller and they just accepted
+                    if(!activeCall) {
+                        peer.on('call', call => {
+                            call.answer(localStream);
+                            setupCallHandlers(call);
+                        });
+                    }
+                }
+            });
+
+        if(currentReceiverId) loadMessages();
+    }
+
+    // --- HELPERS ---
+    function handleTyping() {
+        const input = document.getElementById('messageInput');
+        const hasText = input.value.trim().length > 0;
+        document.getElementById('micBtn').style.display = hasText ? 'none' : 'block';
+        document.getElementById('sendBtn').style.display = hasText ? 'block' : 'none';
+        // Simulation: Send typing event to DB here if needed
+    }
+
+    function initEmoji() {
+        const picker = new EmojiButton({ position: 'top-start' });
+        picker.on('emoji', selection => {
+            document.getElementById('messageInput').value += selection.emoji;
+            handleTyping();
+        });
+        document.getElementById('emojiBtn').addEventListener('click', () => picker.togglePicker(document.getElementById('emojiBtn')));
+    }
 </script>
 @endsection
