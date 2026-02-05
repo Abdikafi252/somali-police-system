@@ -95,119 +95,24 @@
         overflow: hidden;
     }
 
+    /* Messages Viewport */
     .messages-viewport {
         flex: 1;
         overflow-y: auto;
-        padding: 20px 7% 100px;
-        /* Increased bottom padding for floating input */
+        padding: 20px 7% 10px;
+        /* Reduced bottom padding since input is now flex */
         display: flex;
         flex-direction: column;
         gap: 8px;
         scroll-behavior: smooth;
         scrollbar-width: thin;
-        height: 100%;
-        /* Ensure full height usage */
     }
 
-    /* Message Bubbles */
-    .msg-bubble {
-        max-width: 65%;
-        padding: 12px 18px;
-        border-radius: 18px;
-        font-size: 15px;
-        position: relative;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        word-wrap: break-word;
-        opacity: 0;
-        transform: translateY(10px);
-        animation: bubblePop 0.3s forwards var(--wa-transition);
-        line-height: 1.5;
-    }
-
-    .msg-bubble:hover {
-        transform: scale(1.01);
-    }
-
-    @keyframes bubblePop {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Sent Messages (Right, White, Dark Text) */
-    .msg-sent {
-        align-self: flex-end;
-        background: var(--wa-bubble-sent);
-        color: var(--wa-text-sent);
-        border-bottom-right-radius: 4px;
-    }
-
-    /* Received Messages (Left, Green, White Text) */
-    .msg-received {
-        align-self: flex-start;
-        background: var(--wa-bubble-received);
-        color: var(--wa-text-received);
-        border-bottom-left-radius: 4px;
-    }
-
-    .msg-received .msg-info {
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-    .msg-sent .msg-info {
-        color: #999;
-    }
-
-    .msg-info {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 6px;
-        font-size: 11px;
-        margin-top: 6px;
-    }
-
-    /* Avatar for Received Messages */
-    .msg-row-received {
-        display: flex;
-        align-items: flex-end;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-
-    .msg-avatar-small {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Sticky Date Divider */
-    .date-divider {
-        align-self: center;
-        background: #ffffff;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 12px;
-        color: #54656f;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        margin: 15px 0;
-        position: sticky;
-        top: 10px;
-        z-index: 50;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    /* Floating Input Bar - Fixed Floating Style (Robust) */
+    /* Floating Input Bar - Flex Layout (Robust) */
     .input-dock {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        width: auto;
+        /* Removed absolute positioning for better stability */
+        margin: 10px 20px 20px 20px;
+        /* Floating look with margins */
         padding: 10px 20px;
         background: #ffffff !important;
         display: flex;
@@ -218,8 +123,6 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         border: 1px solid #e0e0e0;
         z-index: 2000;
-        backdrop-filter: none;
-        /* Removed to prevent rendering issues */
     }
 
     .input-container {
@@ -230,6 +133,7 @@
         display: flex;
         align-items: center;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eee;
     }
 
     .input-container input {
@@ -554,7 +458,103 @@
         /* For FAB */
     }
 
+    /* Re-adding Message Bubbles Styles */
+    .msg-bubble {
+        max-width: 65%;
+        padding: 12px 18px;
+        border-radius: 18px;
+        font-size: 15px;
+        position: relative;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        word-wrap: break-word;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: bubblePop 0.3s forwards var(--wa-transition);
+        line-height: 1.5;
+    }
+
+    .msg-bubble:hover {
+        transform: scale(1.01);
+    }
+
+    @keyframes bubblePop {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .msg-sent {
+        align-self: flex-end;
+        background: var(--wa-bubble-sent);
+        color: var(--wa-text-sent);
+        border-bottom-right-radius: 4px;
+    }
+
+    .msg-received {
+        align-self: flex-start;
+        background: var(--wa-bubble-received);
+        color: var(--wa-text-received);
+        border-bottom-left-radius: 4px;
+    }
+
+    .msg-received .msg-info {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .msg-sent .msg-info {
+        color: #999;
+    }
+
+    .msg-info {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        font-size: 11px;
+        margin-top: 6px;
+    }
+
+    .msg-row-received {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .msg-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-divider {
+        align-self: center;
+        background: #ffffff;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        color: #54656f;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin: 15px 0;
+        position: sticky;
+        top: 10px;
+        z-index: 50;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
     @media (max-width: 992px) {
+        .chat-wrapper {
+            height: 100dvh;
+            /* Mobile Height Fix */
+            margin: 0;
+            border-radius: 0;
+            max-width: 100%;
+        }
+
         .app-sidebar-mini {
             display: none;
         }
