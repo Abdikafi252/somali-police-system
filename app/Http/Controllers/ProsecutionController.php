@@ -28,7 +28,27 @@ class ProsecutionController extends Controller
         $case_id = $request->query('case_id');
         $case = PoliceCase::with(['crime', 'investigation'])->findOrFail($case_id);
         $courts = Facility::where('type', 'Court')->get();
-        return view('prosecutions.create', compact('case', 'courts'));
+        
+        // Auto-select court based on crime location
+        $crimeLocation = $case->crime->location;
+        $selectedCourt = null;
+        
+        // Try to match district court by location
+        $districtCourt = $courts->first(function($court) use ($crimeLocation) {
+            return stripos($court->name, 'Degmada') !== false && 
+                   stripos($court->location, $crimeLocation) !== false;
+        });
+        
+        // If no match, select first district court
+        if (!$districtCourt) {
+            $districtCourt = $courts->first(function($court) {
+                return stripos($court->name, 'Degmada') !== false;
+            });
+        }
+        
+        $selectedCourt = $districtCourt ? $districtCourt->id : null;
+        
+        return view('prosecutions.create', compact('case', 'courts', 'selectedCourt'));
     }
 
     public function store(Request $request)

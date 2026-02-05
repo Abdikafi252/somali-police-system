@@ -76,11 +76,18 @@
                         <i class="fa-solid fa-building-columns" style="color: #3498db; margin-right: 0.5rem;"></i> Maxkamadda (Select Court)
                     </label>
                     <select name="court_id" id="court_id" class="form-control" required style="border: 2px solid var(--border-soft); border-radius: 12px; padding: 1rem; width: 100%; font-weight: 700; background: #fff;">
-                        <option value="" disabled selected>Dooro Maxkamadda kiiskan dacwad oogistiisa loo gudbinayo...</option>
+                        <option value="" disabled {{ !$selectedCourt ? 'selected' : '' }}>Dooro Maxkamadda kiiskan dacwad oogistiisa loo gudbinayo...</option>
                         @foreach($courts as $court)
-                            <option value="{{ $court->id }}">{{ $court->name }} - {{ $court->location }}</option>
+                            <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }}>
+                                {{ $court->name }} - {{ $court->location }}
+                            </option>
                         @endforeach
                     </select>
+                    @if($selectedCourt)
+                    <small style="display: block; margin-top: 0.5rem; color: #27ae60; font-weight: 600;">
+                        <i class="fa-solid fa-circle-check"></i> Maxkamadda Degmada waxaa loo doortay sababtoo ah kiiskan wuxuu ka dhacay: {{ $case->crime->location }}
+                    </small>
+                    @endif
                 </div>
 
                 <div class="form-group" style="margin-bottom: 2rem;">
