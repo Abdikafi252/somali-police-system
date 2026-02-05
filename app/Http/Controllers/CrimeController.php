@@ -8,9 +8,36 @@ use Illuminate\Support\Str;
 
 class CrimeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $crimes = Crime::with('reporter')->latest()->paginate(10);
+        $query = Crime::with('reporter');
+        
+        $user = auth()->user();
+        $userRole = $user->role->slug;
+        
+        // Role-based filtering
+        if (!in_array($userRole, ['admin', 'taliye-ciidan', 'taliye-gobol'])) {
+            // Station-based officers only see their station's crimes
+            if (in_array($userRole, ['askari', 'taliye-saldhig', 'cid'])) {
+                $query->where('reported_by', $user->id)
+                      ->orWhereHas('reporter', function($q) use ($user) {
+                          $q->where('station_id', $user->station_id);
+                      });
+            }
+        }
+        
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('case_number', 'LIKE', "%{$search}%")
+                  ->orWhere('crime_type', 'LIKE', "%{$search}%")
+                  ->orWhere('location', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        $crimes = $query->latest()->paginate(10);
         return view('crimes.index', compact('crimes'));
     }
 
