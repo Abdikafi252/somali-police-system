@@ -349,12 +349,12 @@
                 <div>
                     <h3 id="activeUserName" style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--sidebar-bg);">Global Chat</h3>
                     <span id="activeUserStatus" style="font-size: 0.8rem; color: #2ecc71; font-weight: 700;">
-                        <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Online
+                        <i class="fa-solid fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i> Online
                     </span>
                 </div>
             </div>
             <div style="display: flex; gap: 12px;">
-                <button style="width: 40px; height: 40px; border-radius: 50%; background: rgba(102, 126, 234, 0.1); border: none; color: #667eea; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(102, 126, 234, 0.2)'" onmouseout="this.style.background='rgba(102, 126, 234, 0.1)'">
+                <button onclick="startCall()" class="call-trigger" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(102, 126, 234, 0.1); border: none; color: #667eea; cursor: pointer; transition: all 0.3s; display: none;" onmouseover="this.style.background='rgba(102, 126, 234, 0.2)'" onmouseout="this.style.background='rgba(102, 126, 234, 0.1)'">
                     <i class="fa-solid fa-phone"></i>
                 </button>
                 <button style="width: 40px; height: 40px; border-radius: 50%; background: rgba(102, 126, 234, 0.1); border: none; color: #667eea; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(102, 126, 234, 0.2)'" onmouseout="this.style.background='rgba(102, 126, 234, 0.1)'">
@@ -386,6 +386,31 @@
         </div>
     </div>
 </div>
+
+<!-- Calling Modal -->
+<div id="callingModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(20px);">
+    <div style="text-align: center; color: white;">
+        <div id="callingAvatar" style="margin-bottom: 2rem;">
+            <div class="user-avatar-placeholder" style="width: 120px; height: 120px; font-size: 3rem; margin: 0 auto; border: 4px solid #667eea; box-shadow: 0 0 40px rgba(102, 126, 234, 0.5);">?</div>
+        </div>
+        <h2 id="callingName" style="font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800;">John Doe</h2>
+        <div id="callingStatus" style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 3rem; animation: pulse 1.5s infinite;">Dalbashada... (Calling)</div>
+        
+        <div style="display: flex; gap: 2rem; justify-content: center;">
+            <button onclick="endCall()" style="width: 70px; height: 70px; border-radius: 50%; background: #ef4444; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+            <div style="width: 70px; height: 70px; border-radius: 50%; background: #2ecc71; border: none; color: white; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-microphone"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="ringSound" loop preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" type="audio/mpeg">
+</audio>
+
 @endsection
 
 @section('js')
@@ -424,6 +449,18 @@
                         `<img src="/storage/${user.profile_image}" class="user-avatar">` :
                         `<div class="user-avatar-placeholder">${user.name.charAt(0)}</div>`;
 
+                    // Update active user status in header if this is the one
+                    if (currentReceiverId === user.id) {
+                        const statusEl = document.getElementById('activeUserStatus');
+                        if (user.is_online) {
+                            statusEl.innerHTML = '<i class="fa-solid fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i> Online';
+                            statusEl.style.color = '#2ecc71';
+                        } else {
+                            statusEl.innerHTML = '<i class="fa-solid fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i> ' + user.last_seen;
+                            statusEl.style.color = '#94a3b8';
+                        }
+                    }
+
                     html += `
                     <div class="user-item ${activeClass}" onclick="loadChat(${user.id}, '${user.name.replace("'", "\\'")}', '${user.profile_image}')">
                         ${avatar}
@@ -448,6 +485,8 @@
         if (userId === null) {
              avatarHtml = `<div class="user-avatar-placeholder"><i class="fa-solid fa-users"></i></div>`;
              document.getElementById('activeUserStatus').innerHTML = '<i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Public Room';
+             document.getElementById('activeUserStatus').style.color = '#2ecc71';
+             document.querySelector('.call-trigger').style.display = 'none';
         } else {
              if(userImage && userImage !== 'null') {
                 avatarHtml = `<img src="/storage/${userImage}" class="user-avatar">`;
@@ -455,6 +494,7 @@
                 avatarHtml = `<div class="user-avatar-placeholder">${userName.charAt(0)}</div>`;
              }
              document.getElementById('activeUserStatus').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+             document.querySelector('.call-trigger').style.display = 'flex';
         }
         document.getElementById('activeUserAvatar').innerHTML = avatarHtml;
         
@@ -548,5 +588,24 @@
             }
         });
     });
+
+    function startCall() {
+        if (!currentReceiverId) return;
+        
+        const name = document.getElementById('activeUserName').innerText;
+        const avatar = document.getElementById('activeUserAvatar').innerHTML;
+        
+        document.getElementById('callingName').innerText = name;
+        document.getElementById('callingAvatar').innerHTML = avatar.replace('width: 40px; height: 40px;', 'width: 120px; height: 120px; font-size: 3rem; margin: 0 auto; border: 4px solid #667eea; box-shadow: 0 0 40px rgba(102, 126, 234, 0.5);');
+        
+        document.getElementById('callingModal').style.display = 'flex';
+        document.getElementById('ringSound').play();
+    }
+
+    function endCall() {
+        document.getElementById('callingModal').style.display = 'none';
+        document.getElementById('ringSound').pause();
+        document.getElementById('ringSound').currentTime = 0;
+    }
 </script>
 @endsection
