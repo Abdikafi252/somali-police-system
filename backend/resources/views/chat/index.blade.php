@@ -4,425 +4,618 @@
 
 @section('css')
 <style>
-    .chat-container {
-        display: flex;
-        height: calc(100vh - 140px);
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        border: 1px solid var(--border-soft);
+    :root {
+        --chat-bg: #e5ddd5;
+        --chat-header-bg: #f0f2f5;
+        --incoming-bg: #ffffff;
+        --outgoing-bg: #d9fdd3;
+        --input-bg: #f0f2f5;
+        --sidebar-width: 350px;
     }
 
+    /* Layout Reset */
+    .app-main {
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Main Container */
+    .whatsapp-container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        background: #fff;
+        font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    /* Left Sidebar */
     .chat-sidebar {
-        width: 320px;
-        background: #f8f9fc;
-        border-right: 1px solid var(--border-soft);
+        width: var(--sidebar-width);
+        background: #fff;
+        border-right: 1px solid #e0e0e0;
         display: flex;
         flex-direction: column;
+        height: 100%;
+        transition: transform 0.3s ease;
+        z-index: 100;
     }
 
+    /* Right Main Chat */
     .chat-main {
         flex: 1;
         display: flex;
         flex-direction: column;
-        background: #fff;
+        height: 100%;
+        background-color: var(--chat-bg);
+        background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+        background-repeat: repeat;
+        background-blend-mode: soft-light;
+        position: relative;
     }
 
+    /* Header Styles */
+    .sidebar-header,
+    .main-header {
+        height: 60px;
+        background: var(--chat-header-bg);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        flex-shrink: 0;
+        border-bottom: 1px solid #d1d7db;
+    }
+
+    .main-header {
+        justify-content: space-between;
+    }
+
+    /* Profile Images */
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+    /* Search Bar */
+    .search-box {
+        padding: 8px 16px;
+        background: #fff;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .search-input-wrapper {
+        background: #f0f2f5;
+        border-radius: 8px;
+        padding: 6px 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        border: none;
+        background: transparent;
+        outline: none;
+        width: 100%;
+        margin-left: 10px;
+        font-size: 14px;
+    }
+
+    /* User List */
     .user-list {
         flex: 1;
         overflow-y: auto;
-        padding: 10px;
     }
 
     .user-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 12px;
-        border-radius: 12px;
+        padding: 12px 16px;
         cursor: pointer;
-        transition: all 0.2s;
-        margin-bottom: 5px;
-        position: relative;
+        border-bottom: 1px solid #f0f2f5;
+        transition: background 0.2s;
     }
 
     .user-item:hover {
-        background: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        background: #f5f6f6;
     }
 
     .user-item.active {
-        background: white;
-        border-left: 4px solid #3498db;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background: #f0f2f5;
     }
 
-    .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #bdc3c7;
-        border: 2px solid white;
-        position: absolute;
-        bottom: 12px;
-        left: 42px;
+    .user-info {
+        flex: 1;
+        margin-left: 15px;
     }
 
-    .status-dot.online {
-        background: #2ecc71;
+    .user-name {
+        font-size: 16px;
+        color: #111b21;
+        font-weight: 500;
+        margin-bottom: 3px;
     }
 
+    .last-message {
+        font-size: 13px;
+        color: #667781;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Message Area */
     .message-area {
         flex: 1;
-        padding: 20px;
+        padding: 20px 5%;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        background: #fdfdfd;
+        gap: 8px;
     }
 
-    .message {
-        max-width: 70%;
-        padding: 12px 18px;
-        border-radius: 18px;
+    /* Bubbles */
+    .message-row {
+        display: flex;
+        margin-bottom: 4px;
+        width: 100%;
+    }
+
+    .message-row.sent {
+        justify-content: flex-end;
+    }
+
+    .message-row.received {
+        justify-content: flex-start;
+    }
+
+    .msg-bubble {
+        max-width: 65%;
+        padding: 6px 12px 6px 12px;
+        /* Top Right Bottom Left */
+        border-radius: 7.5px;
+        font-size: 14.2px;
+        line-height: 19px;
+        color: #111b21;
         position: relative;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        box-shadow: 0 1px 0.5px rgba(11, 20, 26, .13);
+        word-wrap: break-word;
     }
 
-    .message.sent {
-        align-self: flex-end;
-        background: #3498db;
-        color: white;
-        border-bottom-right-radius: 4px;
+    .msg-sent {
+        background: var(--outgoing-bg);
+        border-top-right-radius: 0;
     }
 
-    .message.received {
-        align-self: flex-start;
-        background: #f1f2f6;
-        color: var(--sidebar-bg);
-        border-bottom-left-radius: 4px;
+    .msg-received {
+        background: var(--incoming-bg);
+        border-top-left-radius: 0;
     }
 
-    .chat-header {
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--border-soft);
+    /* Bubble Tails CSS */
+    .msg-sent::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -8px;
+        width: 8px;
+        height: 13px;
+        background: linear-gradient(to top left, transparent 50%, var(--outgoing-bg) 50%);
+        border-top: 1px solid transparent;
+        /* Anti-aliasing hack */
+    }
+
+    .msg-received::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -8px;
+        width: 8px;
+        height: 13px;
+        background: linear-gradient(to top right, transparent 50%, var(--incoming-bg) 50%);
+    }
+
+    /* Meta Info (Time + Ticks) */
+    .msg-meta {
+        float: right;
+        margin-left: 8px;
+        margin-top: 4px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        background: white;
+        gap: 3px;
+        font-size: 11px;
+        color: #667781;
+        height: 15px;
     }
 
-    .chat-input-area {
-        padding: 20px;
-        background: white;
-        border-top: 1px solid var(--border-soft);
+    .tick-icon {
+        font-size: 14px;
+    }
+
+    .tick-read {
+        color: #53bdeb;
+        /* WhatsApp Blue */
+    }
+
+    /* Footer/Input */
+    .chat-footer {
+        min-height: 62px;
+        background: #f0f2f5;
+        padding: 10px 16px;
         display: flex;
+        align-items: center;
         gap: 10px;
+        z-index: 200;
+    }
+
+    .footer-icon {
+        color: #54656f;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 8px;
+    }
+
+    .input-wrapper {
+        flex: 1;
+        background: #fff;
+        border-radius: 8px;
+        padding: 9px 12px;
+        display: flex;
+        align-items: center;
     }
 
     .chat-input {
-        flex: 1;
-        padding: 12px 20px;
-        border: 1px solid var(--border-soft);
-        border-radius: 30px;
-        outline: none;
-        background: #f8f9fa;
-        transition: 0.2s;
-    }
-
-    .chat-input:focus {
-        border-color: #3498db;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
-    }
-
-    .send-btn {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        background: #3498db;
-        color: white;
+        width: 100%;
         border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.2s;
+        outline: none;
+        font-size: 15px;
+        font-family: inherit;
+        max-height: 100px;
+        overflow-y: auto;
     }
 
-    .send-btn:hover {
-        background: #2980b9;
-        transform: scale(1.05);
-    }
+    /* Mobile Responsiveness */
+    @media (max-width: 900px) {
+        :root {
+            --sidebar-width: 100%;
+        }
 
-    .badge {
-        background: #e74c3c;
-        color: white;
-        border-radius: 50%;
-        padding: 2px 6px;
-        font-size: 0.7rem;
-        font-weight: bold;
-        margin-left: auto;
+        .chat-sidebar {
+            position: absolute;
+            transform: translateX(0);
+        }
+
+        .chat-main {
+            position: absolute;
+            width: 100%;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        /* Show ChatState */
+        .show-chat .chat-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .show-chat .chat-main {
+            transform: translateX(0);
+        }
+
+        .message-area {
+            padding: 20px 10px;
+        }
     }
 </style>
 @endsection
 
 @section('content')
-<div class="chat-launcher" onclick="toggleChat()">
-    <i class="fa-solid fa-comments"></i>
-</div>
-
-<div class="chat-container" id="chatWidget">
+<div class="whatsapp-container" id="mainContainer">
     <!-- Sidebar -->
-    <div class="chat-sidebar" id="chatSidebar">
-        <div style="padding: 15px; border-bottom: 1px solid var(--border-soft); display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="margin:0; font-family:'Outfit'; font-weight:700; color:var(--sidebar-bg);">Chats</h3>
-            <button onclick="toggleChat()" style="background:none; border:none; color:#95a5a6; cursor:pointer; font-size:18px;"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-
-        <div style="padding: 10px 15px;">
-            <div style="position: relative;">
-                <i class="fa-solid fa-search" style="position: absolute; left: 15px; top: 10px; color: #95a5a6; font-size:14px;"></i>
-                <input type="text" id="userDetails" placeholder="Search..."
-                    style="width: 100%; padding: 8px 10px 8px 35px; border-radius: 8px; border: 1px solid var(--border-soft); outline: none; background: #f8f9fc; font-size:14px;">
+    <aside class="chat-sidebar">
+        <!-- Header -->
+        <div class="sidebar-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:40px; height:40px; background:#ddd; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#54656f;">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span style="font-weight:600; color:#41525d;">Chats</span>
+            </div>
+            <div style="margin-left:auto; display:flex; gap:15px; color:#54656f;">
+                <i class="fa-solid fa-circle-notch"></i>
+                <i class="fa-solid fa-message"></i>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
             </div>
         </div>
 
+        <!-- Search -->
+        <div class="search-box">
+            <div class="search-input-wrapper">
+                <i class="fa-solid fa-search" style="color:#54656f; font-size:14px;"></i>
+                <input type="text" class="search-input" placeholder="Search or start new chat">
+            </div>
+        </div>
+
+        <!-- User List -->
         <div class="user-list" id="usersList">
-            <!-- Global Chat Option -->
-            <div class="user-item active" onclick="loadChat(null, 'Global Chat', null)">
-                <div style="width: 40px; height: 40px; border-radius: 12px; background: #e3f2fd; color: #3498db; display: flex; align-items: center; justify-content: center;">
+            <!-- Global Chat -->
+            <div class="user-item" onclick="selectUser(null, 'Global Chat', null)">
+                <div style="width:49px; height:49px; background:#00a884; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">
                     <i class="fa-solid fa-users"></i>
                 </div>
-                <div>
-                    <div style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.9rem;">Global Chat</div>
-                    <div style="font-size: 0.75rem; color: var(--text-sub);">Public Room</div>
-                </div>
-            </div>
-
-            <!-- Users will be loaded here via JS -->
-            <div style="text-align: center; padding: 20px; color: var(--text-sub);">Loading users...</div>
-        </div>
-    </div>
-
-    <!-- Main Chat Area -->
-    <div class="chat-main" id="chatMain" style="display:none; flex-direction:column; height:100%;">
-        <div class="chat-header">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <button onclick="showSidebar()" style="background:none; border:none; font-size:16px; color:#54656f; cursor:pointer; margin-right:5px;"><i class="fa-solid fa-arrow-left"></i></button>
-                <div id="activeUserAvatar">
-                    <div style="width: 35px; height: 35px; border-radius: 10px; background: #e3f2fd; color: #3498db; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa-solid fa-users"></i>
+                <div class="user-info">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="user-name">Global Chat</span>
+                        <span class="last-message" style="font-size:11px;">Now</span>
                     </div>
-                </div>
-                <div>
-                    <h3 id="activeUserName" style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--sidebar-bg);">Global Chat</h3>
-                    <span id="activeUserStatus" style="font-size: 0.7rem; color: #2ecc71; font-weight: 600;">ΓÇó Online</span>
+                    <div class="last-message">Tap to join public room</div>
                 </div>
             </div>
-            <button onclick="toggleChat()" style="background:none; border:none; color:#95a5a6; cursor:pointer; font-size:18px;"><i class="fa-solid fa-xmark"></i></button>
+            <!-- Dynamic Users -->
+            <div style="text-align:center; padding:20px; color:#8696a0;">Updating contacts...</div>
         </div>
+    </aside>
 
-        <div class="message-area" id="messageArea">
-            <div style="text-align: center; color: var(--text-sub); margin-top: 50px;">
-                Dooro qof aad la hadasho ama Global Chat isticmaal.
+    <!-- Main Chat -->
+    <main class="chat-main" id="chatMainBg">
+        <!-- Chat Header -->
+        <div class="main-header" id="mainHeader" style="display:none;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <i class="fa-solid fa-arrow-left" style="font-size:20px; color:#54656f; cursor:pointer; display:none;" id="backBtn" onclick="closeChat()"></i>
+                <img id="headerAvatar" class="avatar" src="https://via.placeholder.com/40" style="display:none;">
+                <div id="headerInitials" style="width:40px; height:40px; border-radius:50%; background:#dfe3e5; display:flex; align-items:center; justify-content:center; color:#54656f; font-weight:bold;">?</div>
+
+                <div style="display:flex; flex-direction:column;">
+                    <span id="headerName" style="font-weight:600; color:#111b21; font-size:16px;">Select a contact</span>
+                    <span id="headerStatus" style="font-size:13px; color:#667781;"></span>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:20px; color:#54656f;">
+                <i class="fa-solid fa-video"></i>
+                <i class="fa-solid fa-phone"></i>
+                <i class="fa-solid fa-search"></i>
+                <i class="fa-solid fa-ellipsis-vertical" onclick="toggleMenu()"></i>
+
+                <!-- Dropdown -->
+                <div id="chatMenu" style="display:none; position:absolute; right:16px; top:50px; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.15); border-radius:6px; z-index:1000; min-width:150px; padding:5px 0;">
+                    <div onclick="clearChat()" style="padding:10px 20px; cursor:pointer; font-size:14.5px; color:#111b21;">Clear messages</div>
+                    <div onclick="toggleMenu()" style="padding:10px 20px; cursor:pointer; font-size:14.5px; color:#111b21;">Close</div>
+                </div>
             </div>
         </div>
 
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" id="messageInput" placeholder="Message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-            <button class="send-btn" onclick="sendMessage()">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
+        <!-- Before Selection State -->
+        <div id="welcomeScreen" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-bottom:6px solid #25d366; background:#f0f2f5; text-align:center; padding:40px;">
+            <h1 style="color:#41525d; font-weight:300; margin-bottom:10px;">Somali Police Chat</h1>
+            <p style="color:#667781; font-size:14px;">ku soo dhawaada nidaamka wada-hadalka ciidanka.<br>Dooro sarkaal si aad u wada-hadashaan.</p>
         </div>
-    </div>
+
+        <!-- Messages Area -->
+        <div class="message-area" id="messageArea" style="display:none;">
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-footer" id="chatFooter" style="display:none;">
+            <i class="fa-regular fa-face-smile footer-icon"></i>
+            <i class="fa-solid fa-paperclip footer-icon"></i>
+            <div class="input-wrapper">
+                <input type="text" class="chat-input" id="messageInput" placeholder="Type a message" onkeypress="if(event.key === 'Enter') sendMessage()">
+            </div>
+            <i class="fa-solid fa-microphone footer-icon" id="micBtn"></i>
+            <i class="fa-solid fa-paper-plane footer-icon" id="sendBtn" style="display:none; color:#00a884;" onclick="sendMessage()"></i>
+        </div>
+    </main>
 </div>
-
-<script>
-    function toggleChat() {
-        const widget = document.getElementById('chatWidget');
-        widget.classList.toggle('active');
-
-        // Reset to sidebar view when opening
-        if (widget.classList.contains('active')) {
-            if (!currentReceiverId) showSidebar();
-        }
-    }
-
-    function showSidebar() {
-        document.getElementById('chatSidebar').style.display = 'flex';
-        document.getElementById('chatMain').style.display = 'none';
-        // Reset active user
-        // currentReceiverId = null; // Optional: keep active chat state or reset
-    }
-</script>
 @endsection
 
 @section('js')
 <script>
     let currentReceiverId = null;
-    let pollingInterval = null;
+    let currentUser = {
+        {
+            auth() - > id()
+        }
+    };
 
-    // Load Users on Page Load
+    // Initial Load
     fetchUsers();
-    // Start polling users status every 10 seconds
-    setInterval(fetchUsers, 10000); // 10s
+    setInterval(fetchUsers, 10000);
+    setInterval(fetchMessages, 3000);
 
-    // Start polling messages every 3 seconds
-    setInterval(fetchMessages, 3000); // 3s
+    // Dynamic Input Icon Toggle
+    document.getElementById('messageInput').addEventListener('input', function(e) {
+        if (this.value.trim().length > 0) {
+            document.getElementById('micBtn').style.display = 'none';
+            document.getElementById('sendBtn').style.display = 'block';
+        } else {
+            document.getElementById('micBtn').style.display = 'block';
+            document.getElementById('sendBtn').style.display = 'none';
+        }
+    });
+
+    function toggleMenu() {
+        let menu = document.getElementById('chatMenu');
+        menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectUser(id, name, avatar) {
+        currentReceiverId = id;
+
+        // UI Updates
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('mainHeader').style.display = 'flex';
+        document.getElementById('messageArea').style.display = 'flex';
+        document.getElementById('chatFooter').style.display = 'flex';
+        document.getElementById('messageArea').innerHTML = ''; // Clear prior
+
+        // Mobile Logic
+        document.getElementById('mainContainer').classList.add('show-chat');
+        if (window.innerWidth <= 900) {
+            document.getElementById('backBtn').style.display = 'block';
+        }
+
+        // Header Info
+        document.getElementById('headerName').innerText = name;
+        if (avatar && avatar !== 'null') {
+            document.getElementById('headerAvatar').src = '/storage/' + avatar;
+            document.getElementById('headerAvatar').style.display = 'block';
+            document.getElementById('headerInitials').style.display = 'none';
+        } else {
+            document.getElementById('headerAvatar').style.display = 'none';
+            document.getElementById('headerInitials').style.display = 'flex';
+            document.getElementById('headerInitials').innerText = name.charAt(0);
+        }
+
+        fetchMessages(true);
+    }
+
+    function closeChat() {
+        document.getElementById('mainContainer').classList.remove('show-chat');
+        currentReceiverId = null;
+    }
 
     function fetchUsers() {
         fetch("{{ route('chat.users') }}")
-            .then(response => response.json())
+            .then(res => res.json())
             .then(users => {
                 let html = `
-                <div class="user-item ${currentReceiverId === null ? 'active' : ''}" onclick="loadChat(null, 'Global Chat', null)">
-                    <div style="width: 40px; height: 40px; border-radius: 12px; background: #e3f2fd; color: #3498db; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa-solid fa-users"></i>
+            <div class="user-item ${currentReceiverId === null ? 'active' : ''}" onclick="selectUser(null, 'Global Chat', null)">
+                <div style="width:49px; height:49px; background:#00a884; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="user-info">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="user-name">Global Chat</span>
                     </div>
-                    <div>
-                        <div style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.9rem;">Global Chat</div>
-                        <div style="font-size: 0.75rem; color: var(--text-sub);">Public Room</div>
-                    </div>
-                </div>`;
+                    <div class="last-message">Public Room</div>
+                </div>
+            </div>`;
 
                 users.forEach(user => {
-                    let activeClass = currentReceiverId === user.id ? 'active' : '';
-                    let statusClass = user.is_online ? 'online' : '';
-                    let unreadBadge = user.unread_count > 0 ? `<span class="badge">${user.unread_count}</span>` : '';
+                    let initial = user.name.charAt(0);
                     let avatar = user.profile_image ?
-                        `<img src="/storage/${user.profile_image}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` :
-                        `<div style="width: 40px; height: 40px; border-radius: 50%; background: #f1f2f6; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #7f8c8d;">${user.name.charAt(0)}</div>`;
+                        `<img src="/storage/${user.profile_image}" style="width:49px; height:49px; border-radius:50%; object-fit:cover;">` :
+                        `<div style="width:49px; height:49px; background:#dfe3e5; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#54656f; font-weight:bold; font-size:20px;">${initial}</div>`;
+
+                    let activeClass = currentReceiverId === user.id ? 'active' : '';
 
                     html += `
-                    <div class="user-item ${activeClass}" onclick="loadChat(${user.id}, '${user.name.replace("'", "\\'")}', '${user.profile_image}')">
-                        ${avatar}
-                        <div class="status-dot ${statusClass}"></div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.9rem;">${user.name}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-sub);">${user.is_online ? 'Online' : user.last_seen}</div>
+                <div class="user-item ${activeClass}" onclick="selectUser(${user.id}, '${user.name.replace("'", "\\'")}', '${user.profile_image}')">
+                    ${avatar}
+                    <div class="user-info">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span class="user-name">${user.name}</span>
+                            <span class="last-message" style="font-size:11px; color:${user.is_online ? '#25d366' : '#667781'};">
+                                ${user.is_online ? 'online' : user.last_seen}
+                            </span>
                         </div>
-                        ${unreadBadge}
-                    </div>`;
+                        <div class="last-message" style="display:flex; justify-content:space-between;">
+                             <span>Tap to chat</span>
+                             ${user.unread_count > 0 ? `<div style="background:#25d366; color:white; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:10px;">${user.unread_count}</div>` : ''}
+                        </div>
+                    </div>
+                </div>`;
                 });
-
                 document.getElementById('usersList').innerHTML = html;
             });
     }
 
-    function loadChat(userId, userName, userImage) {
-        currentReceiverId = userId;
-        document.getElementById('activeUserName').innerText = userName;
+    function fetchMessages(forceScroll = false) {
+        if (!document.getElementById('chatFooter').offsetParent) return; // Only if chat open
 
-        // Switch View
-        document.getElementById('chatSidebar').style.display = 'none';
-        document.getElementById('chatMain').style.display = 'flex';
-
-        let avatarHtml = '';
-        if (userId === null) {
-            avatarHtml = `<div style="width: 35px; height: 35px; border-radius: 10px; background: #e3f2fd; color: #3498db; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-users"></i></div>`;
-            document.getElementById('activeUserStatus').innerText = 'ΓÇó Public Room';
-        } else {
-            if (userImage && userImage !== 'null') {
-                avatarHtml = `<img src="/storage/${userImage}" style="width: 35px; height: 35px; border-radius: 10px; object-fit: cover;">`;
-            } else {
-                avatarHtml = `<div style="width: 35px; height: 35px; border-radius: 10px; background: #f1f2f6; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #7f8c8d;">${userName.charAt(0)}</div>`;
-            }
-            // Status will update on next poll, but we can set checking...
-            document.getElementById('activeUserStatus').innerText = '...';
-        }
-        document.getElementById('activeUserAvatar').innerHTML = avatarHtml;
-
-        fetchMessages();
-        // Immediately refresh user list to update active class state
-        fetchUsers();
-    }
-
-    function fetchMessages() {
         let url = "{{ route('chat.messages') }}";
-        if (currentReceiverId) {
-            url += `?receiver_id=${currentReceiverId}`;
-        }
+        if (currentReceiverId) url += `?receiver_id=${currentReceiverId}`;
 
         fetch(url)
-            .then(response => response.json())
-            .then(messages => {
+            .then(res => res.json())
+            .then(data => {
+                let container = document.getElementById('messageArea');
                 let html = '';
-                let currentUserId = {
-                    {
-                        auth() - > id()
-                    }
-                };
 
-                if (messages.length === 0) {
-                    html = `<div style="text-align: center; color: var(--text-sub); margin-top: 50px;">Bilaaw wada-hadal cusub...</div>`;
-                } else {
-                    messages.forEach(msg => {
-                        let isSent = msg.sender_id === currentUserId;
-                        let msgClass = isSent ? 'sent' : 'received';
-                        let time = new Date(msg.created_at).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-
-                        let senderName = '';
-                        if (!isSent && currentReceiverId === null) {
-                            // In global chat, show sender name
-                            senderName = `<div style="font-size: 0.7rem; color: #7f8c8d; margin-bottom: 2px;">${msg.sender.name}</div>`;
-                        }
-
-                        html += `
-                        <div style="display: flex; flex-direction: column; align-items: ${isSent ? 'flex-end' : 'flex-start'};">
-                            ${senderName}
-                            <div class="message ${msgClass}">
-                                ${msg.message}
-                                <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 4px; text-align: right;">${time}</div>
-                            </div>
-                        </div>`;
-                    });
+                if (data.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; margin-top:50px; background:rgba(255,255,255,0.9); padding:10px; border-radius:8px; display:inline-block; align-self:center; font-size:13px; color:#54656f;">Messages are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.</div>`;
+                    return;
                 }
 
-                let messageArea = document.getElementById('messageArea');
-                let shouldScroll = messageArea.scrollTop + messageArea.clientHeight === messageArea.scrollHeight;
+                // Group by Date could be nice, but stick to list first
+                data.forEach(msg => {
+                    let isSent = msg.sender_id === currentUser;
+                    let time = new Date(msg.created_at).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
 
-                messageArea.innerHTML = html;
+                    // Tick Logic
+                    let tickIcon = '<i class="fa-solid fa-check tick-icon"></i>'; // One check (Sent)
+                    if (msg.is_read) tickIcon = '<i class="fa-solid fa-check-double tick-icon tick-read"></i>'; // Blue double (Read)
+                    else if (msg.delivered_at) tickIcon = '<i class="fa-solid fa-check-double tick-icon"></i>'; // Grey double (Delivered)
 
-                // Simple auto-scroll logic (scroll if was at bottom or if it's first load/empty)
-                // For better UX, we might want to be smarter, but this is a good start
-                // Actually, let's just scroll to bottom always for now as it's a chat
-                // Improving: only scroll if near bottom
-                // messageArea.scrollTop = messageArea.scrollHeight; 
+                    html += `
+                <div class="message-row ${isSent ? 'sent' : 'received'}">
+                    <div class="msg-bubble ${isSent ? 'msg-sent' : 'msg-received'}">
+                        ${!isSent && !currentReceiverId ? `<strong style="color:#d35400; font-size:12px; display:block;">${msg.sender.name}</strong>` : ''}
+                        ${msg.message}
+                        <div class="msg-meta">
+                            <span>${time}</span>
+                            ${isSent ? tickIcon : ''}
+                        </div>
+                    </div>
+                </div>`;
+                });
+
+                // Only update html if changed to avoid flicker (simple check length?)
+                // For now replace all
+                let isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+                container.innerHTML = html;
+
+                if (forceScroll || isAtBottom) {
+                    container.scrollTop = container.scrollHeight;
+                }
             });
     }
 
     function sendMessage() {
         let input = document.getElementById('messageInput');
-        let message = input.value.trim();
-
-        if (!message) return;
+        let text = input.value.trim();
+        if (!text) return;
 
         fetch("{{ route('chat.send') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    message: message,
-                    receiver_id: currentReceiverId
-                })
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                message: text,
+                receiver_id: currentReceiverId
             })
-            .then(response => response.json())
-            .then(data => {
-                input.value = '';
-                fetchMessages(); // Refresh immediately
-                // Force scroll to bottom
-                let area = document.getElementById('messageArea');
-                setTimeout(() => area.scrollTop = area.scrollHeight, 100);
-            });
+        }).then(() => {
+            input.value = '';
+            // Reset icons
+            document.getElementById('micBtn').style.display = 'block';
+            document.getElementById('sendBtn').style.display = 'none';
+            fetchMessages(true);
+        });
+    }
+
+    async function clearChat() {
+        if (!confirm('Clear all messages in this chat?')) return;
+        // reuse existing route
+        await fetch("{{ route('chat.clear') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                receiver_id: currentReceiverId
+            })
+        });
+        fetchMessages(true);
+        toggleMenu();
     }
 </script>
 @endsection
