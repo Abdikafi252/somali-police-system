@@ -138,7 +138,7 @@
                             <div style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Ogeysiisyada</div>
                             @forelse(auth()->user()->unreadNotifications as $notification)
                                 <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f1f1f1;">
-                                    <div style="width: 8px; height: 8px; background: #C6F048; border-radius: 50%; margin-top: 5px;"></div>
+                                    <div style="width: 8px; height: 8px; background: var(--accent-lime); border-radius: 50%; margin-top: 5px;"></div>
                                     <div>
                                         <div style="font-size: 0.85rem; font-weight: 600;">{{ $notification->data['message'] ?? 'Ogeysiin Cusub' }}</div>
                                         <div style="font-size: 0.75rem; color: #888;">{{ $notification->created_at->diffForHumans() }}</div>
