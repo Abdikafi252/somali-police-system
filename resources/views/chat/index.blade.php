@@ -365,7 +365,7 @@
 
         <div class="message-area" id="messageArea">
             <!-- Messages will be loaded here -->
-            <div style="text-align: center; color: var(--text-sub); margin-top: 80px;">
+            <div id="chatPlaceholder" style="text-align: center; color: var(--text-sub); margin-top: 80px;">
                 <i class="fa-solid fa-comments" style="font-size: 4rem; color: rgba(102, 126, 234, 0.2); margin-bottom: 20px;"></i>
                 <div style="font-size: 1.1rem; font-weight: 600; color: var(--sidebar-bg);">Dooro qof aad la hadasho</div>
                 <div style="font-size: 0.9rem; margin-top: 8px;">ama Global Chat isticmaal si aad ula wada hadashid dhammaan.</div>
@@ -416,7 +416,8 @@
 @section('js')
 <script>
     let currentReceiverId = null;
-    let pollingInterval = null;
+    let lastMessageCount = 0;
+    let isInitialLoad = true;
 
     // Load Users on Page Load
     fetchUsers();
@@ -427,9 +428,12 @@
     setInterval(fetchMessages, 3000);
 
     function fetchUsers() {
+        const isSearching = document.getElementById('userSearch').value.length > 0;
+        
         fetch("{{ route('chat.users') }}")
             .then(response => response.json())
             .then(users => {
+                if (isSearching) return; // Don't update list while searching to prevent UI jumping
                 let html = `
                 <div class="user-item ${currentReceiverId === null ? 'active' : ''}" onclick="loadChat(null, 'Global Chat', null)">
                     <div class="user-avatar-placeholder">
@@ -493,10 +497,13 @@
              } else {
                 avatarHtml = `<div class="user-avatar-placeholder">${userName.charAt(0)}</div>`;
              }
-             document.getElementById('activeUserStatus').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+             document.getElementById('activeUserStatus').innerHTML = '<i class="fa-solid fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i> Checking Status...';
              document.querySelector('.call-trigger').style.display = 'flex';
         }
         document.getElementById('activeUserAvatar').innerHTML = avatarHtml;
+        
+        // Reset message count for full reload
+        lastMessageCount = 0;
         
         fetchMessages();
         fetchUsers(); 
@@ -511,6 +518,10 @@
         fetch(url)
             .then(response => response.json())
             .then(messages => {
+                // Only update if message count changed (basic optimization to prevent flicker)
+                if (messages.length === lastMessageCount && lastMessageCount > 0) return;
+                
+                lastMessageCount = messages.length;
                 let html = '';
                 let currentUserId = {{ auth()->id() }};
                 
@@ -545,6 +556,8 @@
                 
                 let messageArea = document.getElementById('messageArea');
                 messageArea.innerHTML = html;
+                
+                // Only scroll to bottom on first load or new message
                 messageArea.scrollTop = messageArea.scrollHeight;
             });
     }
