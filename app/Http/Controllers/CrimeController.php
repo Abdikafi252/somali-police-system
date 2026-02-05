@@ -102,6 +102,24 @@ class CrimeController extends Controller
             }
         }
 
+        // Send notifications to prosecutors and judges
+        $prosecutorRole = \App\Models\Role::where('slug', 'prosecutor')->first();
+        $judgeRole = \App\Models\Role::where('slug', 'judge')->first();
+        
+        if ($prosecutorRole) {
+            $prosecutors = \App\Models\User::where('role_id', $prosecutorRole->id)->get();
+            foreach ($prosecutors as $prosecutor) {
+                $prosecutor->notify(new \App\Notifications\CaseRegistered($crime, $caseNumber));
+            }
+        }
+        
+        if ($judgeRole) {
+            $judges = \App\Models\User::where('role_id', $judgeRole->id)->get();
+            foreach ($judges as $judge) {
+                $judge->notify(new \App\Notifications\CaseRegistered($crime, $caseNumber));
+            }
+        }
+
         return redirect()->route('crimes.index')->with('success', 'Dambiga si guul leh ayaa loo diiwangeliyay. Case Number: ' . $caseNumber);
     }
 

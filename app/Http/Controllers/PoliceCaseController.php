@@ -14,7 +14,17 @@ class PoliceCaseController extends Controller
     {
         $query = PoliceCase::with(['crime', 'assignedOfficer']);
 
-        if ($request->has('assigned') && $request->assigned == 'me') {
+        // Role-based filtering
+        $userRole = auth()->user()->role->slug;
+        
+        if ($userRole == 'prosecutor') {
+            // Prosecutors see cases in prosecution/court stages
+            $query->whereIn('status', ['Xeer-Ilaalinta', 'Maxkamadda', 'Xiran', 'Xukunsan']);
+        } elseif ($userRole == 'judge') {
+            // Judges see only court cases
+            $query->whereIn('status', ['Maxkamadda', 'Xiran', 'Xukunsan']);
+        } elseif ($request->has('assigned') && $request->assigned == 'me') {
+            // Officers see their assigned cases
             $query->where('assigned_to', auth()->id());
         }
 
