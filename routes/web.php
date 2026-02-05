@@ -105,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/chat/call/end', [\App\Http\Controllers\ChatController::class, 'endCall'])->name('chat.call.end');
     Route::post('/chat/call/signal', [\App\Http\Controllers\ChatController::class, 'sendSignal'])->name('chat.call.signal');
     Route::get('/chat/call/signal', [\App\Http\Controllers\ChatController::class, 'getSignal'])->name('chat.call.get_signal');
+    Route::post('/chat/ping', [\App\Http\Controllers\ChatController::class, 'updatePing'])->name('chat.ping');
     // Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [App\Http\Controllers\SettingsController::class, 'index'])->name('index');

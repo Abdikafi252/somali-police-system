@@ -94,33 +94,51 @@ class ChatController extends Controller
             $filePath = $file->store('chat_files', 'public');
         }
 
-        $message = \App\Models\Message::create([
+        $message = Message::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $request->receiver_id,
             'message' => $request->message ?? '',
             'type' => $type,
             'file_path' => $filePath,
-            'delivered_at' => now(), // Assume delivered immediately for now as we don't have real-time socket ack yet
+            'delivered_at' => now(), 
         ]);
 
         return response()->json(['status' => 'Message Sent!', 'message' => $message]);
     }
 
-    // --- CALL SYSTEM ---
+    public function updatePing(Request $request)
+    {
+        $user = auth()->user();
+        $user->update(['last_seen_at' => now()]);
+        
+        if ($request->is_typing) {
+            \Cache::put('typing_to_'.$user->id, $request->receiver_id, now()->addSeconds(10));
+        } else {
+            \Cache::forget('typing_to_'.$user->id);
+        }
 
+        $isTyping = false;
+        if ($request->receiver_id) {
+            $isTyping = \Cache::get('typing_to_'.$request->receiver_id) == $user->id;
+        }
+
+        return response()->json(['is_typing' => $isTyping]);
+    }
+
+    // --- CALL SYSTEM ---
     public function initiateCall(Request $request)
     {
         $receiver_id = $request->receiver_id;
         
         // Clean old calls
-        \App\Models\Call::where('caller_id', auth()->id())->orWhere('receiver_id', auth()->id())->delete();
+        Call::where('caller_id', auth()->id())->orWhere('receiver_id', auth()->id())->delete();
 
-        $call = \App\Models\Call::create([
+        $call = Call::create([
             'caller_id' => auth()->id(),
             'receiver_id' => $receiver_id,
             'status' => 'ringing',
             'call_type' => $request->call_type ?? 'audio',
-            'caller_signal' => $request->signal // Peer ID/SDP
+            'caller_signal' => $request->signal 
         ]);
 
         return response()->json($call);
@@ -128,7 +146,7 @@ class ChatController extends Controller
 
     public function checkIncomingCall()
     {
-        $call = \App\Models\Call::with('caller')
+        $call = Call::with('caller')
             ->where('receiver_id', auth()->id())
             ->whereIn('status', ['ringing', 'accepted', 'ended'])
             ->latest()
@@ -139,10 +157,10 @@ class ChatController extends Controller
 
     public function respondToCall(Request $request)
     {
-        $call = \App\Models\Call::findOrFail($request->call_id);
+        $call = Call::findOrFail($request->call_id);
         $call->update([
-            'status' => $request->status, // accepted or declined
-            'receiver_signal' => $request->signal // Peer ID/SDP
+            'status' => $request->status, 
+            'receiver_signal' => $request->signal
         ]);
 
         return response()->json($call);
@@ -150,7 +168,7 @@ class ChatController extends Controller
 
     public function endCall(Request $request)
     {
-        $call = \App\Models\Call::find($request->call_id);
+        $call = Call::find($request->call_id);
         if ($call) {
             $call->update(['status' => 'ended']);
         }
@@ -159,7 +177,7 @@ class ChatController extends Controller
 
     public function sendSignal(Request $request)
     {
-        $call = \App\Models\Call::findOrFail($request->call_id);
+        $call = Call::findOrFail($request->call_id);
         if (auth()->id() == $call->caller_id) {
             $call->update(['caller_signal' => $request->signal]);
         } else {
@@ -170,7 +188,7 @@ class ChatController extends Controller
 
     public function getSignal(Request $request)
     {
-        $call = \App\Models\Call::findOrFail($request->call_id);
+        $call = Call::findOrFail($request->call_id);
         return response()->json($call);
     }
 }
