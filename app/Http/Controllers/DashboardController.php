@@ -306,9 +306,14 @@ class DashboardController extends Controller
         }
 
         // 3. Average Response Time (in hours)
-        $avg_response_time = (clone $caseQuery)->whereNotNull('assigned_at')
-            ->selectRaw('AVG(EXTRACT(EPOCH FROM (assigned_at - created_at))/3600) as avg_hours')
-            ->value('avg_hours') ?? 0;
+        try {
+            $avg_response_time = (clone $caseQuery)->whereNotNull('assigned_at')
+                ->selectRaw('AVG(EXTRACT(EPOCH FROM (assigned_at - created_at))/3600) as avg_hours')
+                ->value('avg_hours') ?? 0;
+        } catch (\Exception $e) {
+            // If assigned_at column doesn't exist, return 0
+            $avg_response_time = 0;
+        }
 
         // 4. Case Age Distribution
         $case_age_distribution = [
