@@ -439,7 +439,120 @@
         padding-top: 2px;
     }
 
+    /* Mini Sidebar (Icon Strip) */
+    .app-sidebar-mini {
+        width: 70px;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+        border-right: 1px solid #f0f0f0;
+        z-index: 101;
+        flex-shrink: 0;
+    }
+
+    .mini-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #b0b0b0;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-bottom: 25px;
+    }
+
+    .mini-icon:hover {
+        color: var(--wa-green);
+        background: #f5fcf8;
+    }
+
+    .mini-icon.active {
+        color: var(--wa-green);
+        background: #f5fcf8;
+        position: relative;
+    }
+
+    .mini-icon.active::before {
+        content: '';
+        position: absolute;
+        left: -15px;
+        height: 100%;
+        width: 4px;
+        background: var(--wa-green);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .mini-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 40px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .status-dot {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        width: 10px;
+        height: 10px;
+        background: var(--wa-green);
+        border-radius: 50%;
+        border: 2px solid #fff;
+    }
+
+    /* Floating Action Button (Plus) */
+    .fab-btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: var(--wa-green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4);
+        cursor: pointer;
+        transition: transform 0.2s;
+        z-index: 105;
+    }
+
+    .fab-btn:hover {
+        transform: scale(1.1) rotate(90deg);
+    }
+
+    /* Contacts Pane Adjustments */
+    .contacts-pane {
+        width: 320px;
+        /* Reduced slightly */
+        background: #fff;
+        /* Match Sidebar */
+        border-right: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+        transition: transform 0.4s var(--wa-transition);
+        position: relative;
+        /* For FAB */
+    }
+
     @media (max-width: 992px) {
+        .app-sidebar-mini {
+            display: none;
+        }
+
         .contacts-pane {
             width: 100%;
         }
@@ -470,29 +583,48 @@
 
 @section('content')
 <div class="chat-wrapper">
-    <!-- Left: Contacts Sidebar -->
+    <!-- Mini Icon Sidebar -->
+    <div class="app-sidebar-mini">
+        <div style="position: relative; margin-bottom: 30px;">
+            <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=00a884&color=fff" class="mini-avatar">
+            <div class="status-dot"></div>
+        </div>
+
+        <div class="mini-icon"><i class="fa-solid fa-house"></i></div>
+        <div class="mini-icon"><i class="fa-regular fa-calendar"></i></div>
+        <div class="mini-icon active"><i class="fa-regular fa-comments"></i></div>
+        <div class="mini-icon"><i class="fa-solid fa-gear"></i></div>
+
+        <div style="margin-top: auto; margin-bottom: 20px;" class="mini-icon">
+            <i class="fa-solid fa-arrow-right-from-bracket" onclick="document.getElementById('logout-form').submit();" title="Logout"></i>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+        </div>
+    </div>
+
+    <!-- Left: Contacts List -->
     <div class="contacts-pane" id="contactsPane">
         <div class="pane-header">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=00a884&color=fff" style="width:40px;height:40px;border-radius:50%;">
-                <span style="font-weight:700; color:#111b21;">Talk-ga Booliska</span>
-            </div>
-            <div style="display:flex; gap: 20px; color: #54656f; font-size: 18px;">
-                <i class="fa-solid fa-rotate-right" style="cursor:pointer;" onclick="fetchUsers()"></i>
-                <i class="fa-solid fa-message"></i>
-                <i class="fa-solid fa-ellipsis-vertical"></i>
+            <div style="font-weight:700; color:#111b21; font-size: 20px;">Chats</div>
+            <div style="display:flex; gap: 20px; color: #b0b0b0; font-size: 18px;">
+                <i class="fa-solid fa-rotate-right" style="cursor:pointer; font-size: 16px;" onclick="fetchUsers()"></i>
+                <i class="fa-solid fa-ellipsis" style="cursor:pointer;"></i>
             </div>
         </div>
         <div class="search-box">
             <div class="search-inner" style="padding: 15px 20px; background: #fff;">
                 <div style="display: flex; align-items: center; background: #f5f7fb; padding: 10px 16px; border-radius: 12px; border: 1px solid #eee;">
                     <i class="fa-solid fa-magnifying-glass" style="color: #adb5bd; margin-right: 12px;"></i>
-                    <input type="text" id="userSearch" placeholder="Raadi sarkaalka..." style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; color: #495057;">
+                    <input type="text" id="userSearch" placeholder="Search..." style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; color: #495057;">
                 </div>
             </div>
         </div>
         <div id="usersList" style="flex:1; overflow-y:auto;">
             <!-- Contacts Injected via JS -->
+        </div>
+
+        <!-- Floating Action Button -->
+        <div class="fab-btn" onclick="fetchUsers()" title="New Chat">
+            <i class="fa-solid fa-plus"></i>
         </div>
     </div>
 
