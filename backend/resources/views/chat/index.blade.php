@@ -65,12 +65,15 @@
     .messages-viewport {
         flex: 1;
         overflow-y: auto;
-        padding: 20px 7% 40px;
+        padding: 20px 7% 80px;
+        /* Increased bottom padding for fixed input */
         display: flex;
         flex-direction: column;
         gap: 8px;
         scroll-behavior: smooth;
         scrollbar-width: thin;
+        height: 100%;
+        /* Ensure full height usage */
     }
 
     /* Authentic WhatsApp Message Bubbles */
@@ -163,8 +166,12 @@
         text-transform: uppercase;
     }
 
-    /* Floating Input Bar */
+    /* Floating Input Bar - Fixed at Bottom */
     .input-dock {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         padding: 10px 16px;
         background: var(--wa-header);
         backdrop-filter: blur(10px);
@@ -173,6 +180,7 @@
         gap: 12px;
         flex-shrink: 0;
         border-top: 1px solid #d1d7db;
+        z-index: 1000;
     }
 
     .input-container {
@@ -503,24 +511,11 @@
             <emoji-picker id="emojiPicker" style="display:none; position:absolute; bottom:70px; left:20px; z-index:100;"></emoji-picker>
 
             <div class="input-dock">
-                <i class="fa-regular fa-face-smile" id="emojiToggle" style="font-size:24px; color:#54656f; cursor:pointer;"></i>
-                <label for="fileInput" style="margin:0; cursor:pointer;">
-                    <i class="fa-solid fa-paperclip" style="font-size:20px; color:#54656f;"></i>
-                    <input type="file" id="fileInput" hidden onchange="handleFileSelect(event)">
-                </label>
-
                 <div class="input-container" id="inputContainer">
                     <input type="text" id="messageInput" placeholder="Quraal halkan ku qor..." onkeyup="handleKeyPress(event)" autocomplete="off">
                 </div>
 
-                <div id="voiceUI" style="display:none; align-items:center; flex:1; padding:0 15px; background:#fff; border-radius:30px; height:44px; box-shadow:0 1px 1px rgba(0,0,0,0.1);">
-                    <div class="voice-pulse" style="width:10px; height:10px; background:#ef4444; border-radius:50%; margin-right:10px; animation: pulse 1s infinite;"></div>
-                    <span id="recordDuration" style="color:#ef4444; font-weight:700; font-size:14px;">0:00</span>
-                    <i class="fa-solid fa-trash-can" onclick="cancelRecord()" style="margin-left:auto; color:#ef4444; cursor:pointer; font-size:18px;"></i>
-                </div>
-
-                <i class="fa-solid fa-microphone" id="micBtn" onclick="toggleRecording()" style="font-size:22px; color:#54656f; cursor:pointer;"></i>
-                <i class="fa-solid fa-paper-plane" id="sendBtn" onclick="sendMessage()" style="font-size:24px; color:var(--wa-green); cursor:pointer; display:none;"></i>
+                <i class="fa-solid fa-paper-plane" id="sendBtn" onclick="sendMessage()" style="font-size:24px; color:var(--wa-green); cursor:pointer;"></i>
             </div>
         </div>
     </div>
@@ -996,7 +991,17 @@
 
     function handleKeyPress(e) {
         const val = document.getElementById('messageInput').value;
-        document.getElementById('micBtn').style.display = val.length > 0 ? 'none' : 'block';
+        // document.getElementById('micBtn').style.display = val.length > 0 ? 'none' : 'block'; 
+        // Logic simplified: Send button always visible or toggled? 
+        // User asked for "Type Only", usually implies just text input and send. 
+        // Let's keep send button always visible or just use Enter. 
+        // But for mobile, a send button is good.
+        // Let's make send button visible if text > 0, otherwise maybe greyed out or hidden?
+        // Original code hid send button if empty.
+        // Let's keep it simple: Show send button if text > 0.
+        // Since we removed Mic, we can either leave space empty or show disabled send.
+        // Let's show it always but maybe opacity change? Or just hide/show.
+        // Given 'Type Only', hiding when empty is fine.
         document.getElementById('sendBtn').style.display = val.length > 0 ? 'block' : 'none';
         if (e && e.key === 'Enter') sendMessage();
     }
