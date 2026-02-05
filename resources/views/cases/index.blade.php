@@ -73,28 +73,49 @@
                     <td style="padding: 1.2rem 1rem;">
                         @php
                             $statusColors = [
-                                'Loo-xilsaaray' => ['bg' => '#e3f2fd', 'color' => '#0d47a1'],
-                                'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100'],
-                                'Xeer-Ilaalinta' => ['bg' => '#f3e5f5', 'color' => '#4a148c'],
-                                'Maxkamadda' => ['bg' => '#efebe9', 'color' => '#3e2723'],
-                                'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20'],
+                                'assigned' => ['bg' => '#e3f2fd', 'color' => '#0d47a1', 'label' => 'Loo-xilsaaray', 'progress' => 25],
+                                'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan', 'progress' => 25],
+                                'Baarista-CID' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan CID', 'progress' => 40],
+                                'Xeer-Ilaalinta' => ['bg' => '#f3e5f5', 'color' => '#4a148c', 'label' => 'Xeer-ilaalinta', 'progress' => 60],
+                                'Maxkamadda' => ['bg' => '#efebe9', 'color' => '#3e2723', 'label' => 'Maxkamadda', 'progress' => 80],
+                                'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xiran', 'progress' => 100],
+                                'Xukunsan' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xukunsan', 'progress' => 100],
+                                'Dhamaaday' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Dhamaaday', 'progress' => 100],
                             ];
-                            $colors = $statusColors[$case->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436'];
+                            $statusData = $statusColors[$case->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436', 'label' => $case->status, 'progress' => 0];
                         @endphp
-                        <span style="
-                            padding: 0.4rem 0.8rem; 
-                            border-radius: 8px; 
-                            font-size: 0.75rem; 
-                            font-weight: 800; 
-                            background: {{ $colors['bg'] }}; 
-                            color: {{ $colors['color'] }};
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 0.4rem;
-                        ">
-                            <i class="fa-solid fa-circle" style="font-size: 0.4rem;"></i>
-                            {{ $case->status }}
-                        </span>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span style="
+                                padding: 0.4rem 0.8rem; 
+                                border-radius: 8px; 
+                                font-size: 0.75rem; 
+                                font-weight: 800; 
+                                background: {{ $statusData['bg'] }}; 
+                                color: {{ $statusData['color'] }};
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 0.4rem;
+                                width: fit-content;
+                            ">
+                                <i class="fa-solid fa-circle" style="font-size: 0.4rem;"></i>
+                                {{ $statusData['label'] }}
+                            </span>
+                            
+                            <!-- Progress Bar -->
+                            <div style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 6px; overflow: hidden;">
+                                <div style="
+                                    width: {{ $statusData['progress'] }}%; 
+                                    height: 100%; 
+                                    background: linear-gradient(90deg, {{ $statusData['color'] }}, {{ $statusData['color'] }}dd);
+                                    transition: width 0.3s ease;
+                                    border-radius: 10px;
+                                "></div>
+                            </div>
+                            <small style="font-size: 0.7rem; color: var(--text-sub); font-weight: 600;">
+                                {{ $statusData['progress'] }}% Dhammaystiran
+                            </small>
+                        </div>
                     </td>
                     <td style="padding: 1.2rem 1rem; text-align: right;">
                         <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
