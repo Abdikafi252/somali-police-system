@@ -87,6 +87,13 @@
                     <small style="display: block; margin-top: 0.5rem; color: #27ae60; font-weight: 600;">
                         <i class="fa-solid fa-circle-check"></i> Maxkamadda Degmada waxaa loo doortay sababtoo ah kiiskan wuxuu ka dhacay: {{ $case->crime->location }}
                     </small>
+                    <small style="display: block; margin-top: 0.3rem; color: #3498db; font-weight: 600; font-style: italic;">
+                        <i class="fa-solid fa-info-circle"></i> Waxaad bedeli kartaa maxkamadda haddii aad rabto.
+                    </small>
+                    @else
+                    <small style="display: block; margin-top: 0.5rem; color: #e67e22; font-weight: 600;">
+                        <i class="fa-solid fa-exclamation-triangle"></i> Fadlan dooro maxkamadda ku habboon kiiskan.
+                    </small>
                     @endif
                 </div>
 
