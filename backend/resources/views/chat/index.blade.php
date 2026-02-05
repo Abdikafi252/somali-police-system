@@ -433,6 +433,8 @@
 
     // Load users initially
     loadUsers();
+    // Poll users every 10s
+    setInterval(loadUsers, 10000);
     // Poll for new messages every 3s
     setInterval(() => loadMessages(false), 3000);
 
@@ -441,7 +443,7 @@
             .then(res => res.json())
             .then(users => {
                 let html = `
-                <div class="user-item" onclick="openChat(null, 'Global Chat', null)">
+                <div class="user-item ${receiverId===null?'active':''}" onclick="openChat(null, 'Global Chat', null)">
                     <div class="u-avatar" style="background:#008069;">G</div>
                     <div class="u-info">
                         <div class="u-name">Global Chat</div>
@@ -454,14 +456,17 @@
                         `<img src="/storage/${u.profile_image}" class="u-avatar">` :
                         `<div class="u-avatar" style="background:#ccc">${u.name[0]}</div>`;
 
+                    // Simple online indicator check (if last_seen within 5 mins?)
+                    let activeClass = (receiverId === u.id) ? 'active' : '';
+
                     html += `
-                    <div class="user-item" onclick="openChat(${u.id}, '${u.name.replace("'","\\'")}', null)">
+                    <div class="user-item ${activeClass}" onclick="openChat(${u.id}, '${u.name.replace("'","\\'")}', null)">
                         ${avatar}
                         <div class="u-info">
                             <div class="u-name">${u.name}</div>
                             <div class="u-sub">
-                                <span>Hello!</span>
-                                <span class="u-time">${u.last_seen || 'now'}</span>
+                                <span>Recent msg...</span>
+                                <span class="u-time">${u.last_seen || ''}</span>
                             </div>
                         </div>
                     </div>`;
