@@ -20,8 +20,7 @@ class UserController extends Controller
 
     public function create()
     {
-        // Exclude prosecutor and judge roles from user creation
-        $roles = Role::whereNotIn('slug', ['prosecutor', 'judge'])->get();
+        $roles = Role::all();
         $stations = Station::all();
         $ranks = \App\Constants\PoliceRanks::all();
         return view('users.create', compact('roles', 'stations', 'ranks'));
@@ -73,8 +72,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        // Exclude prosecutor and judge roles from user edit
-        $roles = Role::whereNotIn('slug', ['prosecutor', 'judge'])->get();
+        $roles = Role::all();
         $stations = Station::all();
         $ranks = \App\Constants\PoliceRanks::all();
         return view('users.edit', compact('user', 'roles', 'stations', 'ranks'));
