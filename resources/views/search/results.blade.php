@@ -109,10 +109,22 @@
     </div>
 
     @if($cases->isEmpty() && $suspects->isEmpty() && $crimes->isEmpty() && $officers->isEmpty())
-        <div class="empty-state">
-            <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
-            <h3 style="color: #64748b; font-weight: 700;">Waxba lama helin</h3>
-            <p style="color: #94a3b8;">Fadlan isku day erey kale ama hubi higaada.</p>
+        <div class="glass-card" style="padding: 4rem 2rem; text-align: center; border: 2px dashed #e2e8f0; background: rgba(255,255,255,0.5);">
+            <div style="width: 100px; height: 100px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fa-solid fa-cloud-moon" style="font-size: 3rem; color: #cbd5e1;"></i>
+            </div>
+            <h3 style="font-family: 'Outfit'; font-weight: 800; color: #1e293b; font-size: 1.5rem; margin-bottom: 0.5rem;">Waxba Lama Helin (No Results)</h3>
+            <p style="color: #64748b; font-size: 1rem; max-width: 400px; margin: 0 auto 2rem;">
+                Ma jiro xog ku haboon <strong>"{{ $query }}"</strong>. Fadlan isku day inaad raadiso Magac, ID, ama Lambarka Kiiska si kale.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="{{ route('dashboard') }}" class="btn-primary" style="text-decoration: none;">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+                <button onclick="document.querySelector('.search-bar input').focus()" class="btn-secondary" style="background: #fff; border: 1px solid #e2e8f0;">
+                    <i class="fa-solid fa-rotate-left"></i> Dib u raadi
+                </button>
+            </div>
         </div>
     @else
 
