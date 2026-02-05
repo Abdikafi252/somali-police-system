@@ -22,13 +22,19 @@
 
     .chat-wrapper {
         display: flex;
-        height: calc(100vh - 120px);
-        margin: -1rem;
+        height: 80vh;
+        max-width: 1050px;
+        margin: 20px auto;
         background: var(--wa-bg);
         position: relative;
         overflow: hidden;
         font-family: 'DM Sans', 'Segoe UI', sans-serif;
         /* Modern Font */
+        border-radius: 24px;
+        /* Card Style */
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        /* Floating Effect */
+        border: 1px solid #fff;
     }
 
     /* Contacts Pane */
