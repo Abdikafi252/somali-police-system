@@ -26,36 +26,39 @@ class ProsecutionController extends Controller
     public function create(Request $request)
     {
         $case_id = $request->query('case_id');
-        $case = PoliceCase::with(['crime', 'investigation'])->findOrFail($case_id);
+        $case = PoliceCase::with(['crime', 'investigation', 'assignedUser.station'])->findOrFail($case_id);
         
-        // Fetch facilities that are either type 'Court' or have 'Maxkamad' in the name
+        // Fetch all facilities that are courts
         $courts = Facility::where('type', 'Court')
             ->orWhere('name', 'LIKE', '%Maxkamad%')
             ->get();
             
         if ($courts->isEmpty()) {
-            // Fallback: get all facilities if no courts found
             $courts = Facility::all();
         }
+
+        // --- SMART AUTO-SELECT LOGIC ---
+        $crimeLocation = $case->crime->location; // Where it happened
+        $stationLocation = $case->station ? $case->station->location : null; // Where it was registered
         
-        // Auto-select court based on crime location
-        $crimeLocation = $case->crime->location;
         $selectedCourt = null;
         
-        // Try to match district court by location
-        $districtCourt = $courts->first(function($court) use ($crimeLocation) {
-            return stripos($court->name, 'Degmada') !== false && 
-                   stripos($court->location, $crimeLocation) !== false;
+        // 1. First priority: District Court matching crime location OR station location
+        $matchedDistrict = $courts->first(function($court) use ($crimeLocation, $stationLocation) {
+            $isDistrict = stripos($court->name, 'Degmada') !== false || stripos($court->name, 'District') !== false;
+            $matchesLocation = (stripos($court->location, $crimeLocation) !== false) || 
+                               ($stationLocation && stripos($court->location, $stationLocation) !== false);
+            return $isDistrict && $matchesLocation;
         });
-        
-        // If no match, select first district court
-        if (!$districtCourt) {
-            $districtCourt = $courts->first(function($court) {
-                return stripos($court->name, 'Degmada') !== false;
+
+        // 2. Second priority: Any District Court if local match not found
+        if (!$matchedDistrict) {
+            $matchedDistrict = $courts->first(function($court) {
+                return stripos($court->name, 'Degmada') !== false || stripos($court->name, 'District') !== false;
             });
         }
         
-        $selectedCourt = $districtCourt ? $districtCourt->id : null;
+        $selectedCourt = $matchedDistrict ? $matchedDistrict->id : null;
         
         return view('prosecutions.create', compact('case', 'courts', 'selectedCourt'));
     }
