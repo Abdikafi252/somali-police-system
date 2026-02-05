@@ -75,10 +75,21 @@
                     <label for="court_id" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase;">
                         <i class="fa-solid fa-building-columns" style="color: #3498db; margin-right: 0.5rem;"></i> Maxkamadda (Select Court)
                     </label>
-                    <select name="court_id" id="court_id" class="form-control" required style="border: 2px solid var(--border-soft); border-radius: 12px; padding: 1rem; width: 100%; font-weight: 700; background: #fff;">
-                        <option value="" disabled {{ !$selectedCourt ? 'selected' : '' }}>Dooro Maxkamadda kiiskan dacwad oogistiisa loo gudbinayo...</option>
+                    <select name="court_id" id="court_id" class="form-control" required style="
+                        border: 2px solid #dfe6e9; 
+                        border-radius: 12px; 
+                        padding: 1rem; 
+                        width: 100%; 
+                        font-weight: 700; 
+                        background: #ffffff; 
+                        color: #2d3436;
+                        font-size: 0.95rem;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    " onfocus="this.style.borderColor='#3498db'; this.style.boxShadow='0 0 0 4px rgba(52, 152, 219, 0.1)'" onblur="this.style.borderColor='#dfe6e9'; this.style.boxShadow='none'">
+                        <option value="" disabled {{ !$selectedCourt ? 'selected' : '' }} style="color: #95a5a6;">Dooro Maxkamadda kiiskan dacwad oogistiisa loo gudbinayo...</option>
                         @foreach($courts as $court)
-                            <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }}>
+                            <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #2d3436; background: #ffffff; padding: 10px;">
                                 {{ $court->name }} - {{ $court->location }}
                             </option>
                         @endforeach
