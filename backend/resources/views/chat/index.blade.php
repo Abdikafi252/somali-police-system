@@ -4,14 +4,19 @@
 
 @section('css')
 <style>
-    /* Premium WhatsApp Redesign - Final Polish & Advanced Animation */
+    /* Premium Modern Redesign - "Clean Green" Theme */
     :root {
-        --wa-bg: #efe7dd;
-        --wa-header: rgba(240, 242, 245, 0.95);
+        --wa-bg: #f5f7fb;
+        --wa-header: #ffffff;
         --wa-sidebar: #ffffff;
-        --wa-green: #00a884;
-        --wa-bubble-sent: #dcf8c6;
-        --wa-bubble-received: #ffffff;
+        --wa-green: #2ecc71;
+        /* Vibrant Green */
+        --wa-light-green: #eafaf1;
+        /* Light green for active state */
+        --wa-bubble-sent: #ffffff;
+        --wa-bubble-received: #2ecc71;
+        --wa-text-sent: #333333;
+        --wa-text-received: #ffffff;
         --wa-transition: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -19,21 +24,23 @@
         display: flex;
         height: calc(100vh - 120px);
         margin: -1rem;
-        background: #f0f2f5;
+        background: var(--wa-bg);
         position: relative;
         overflow: hidden;
-        font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-family: 'DM Sans', 'Segoe UI', sans-serif;
+        /* Modern Font */
     }
 
     /* Contacts Pane */
     .contacts-pane {
-        width: 380px;
-        border-right: 1px solid #d1d7db;
+        width: 350px;
+        background: var(--wa-sidebar);
+        border-right: 1px solid #f0f0f0;
         display: flex;
         flex-direction: column;
-        background: var(--wa-sidebar);
         z-index: 100;
-        transition: transform 0.4s var(--wa-transition), width 0.4s var(--wa-transition);
+        transition: transform 0.4s var(--wa-transition);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
     }
 
     .pane-header {
@@ -51,13 +58,33 @@
         top: 0;
     }
 
+    .user-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: 0.2s;
+        border-bottom: 1px solid #f9f9f9;
+        margin: 0 10px;
+        border-radius: 12px;
+    }
+
+    .user-item:hover {
+        background: #f8f9fa;
+    }
+
+    .user-item.active {
+        background: var(--wa-light-green);
+        border: none;
+    }
+
     /* Conversation Pane */
     .conversation-pane {
         flex: 1;
         display: flex;
         flex-direction: column;
-        background: var(--wa-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-        background-blend-mode: overlay;
+        background: var(--wa-bg);
         position: relative;
         overflow: hidden;
     }
@@ -76,20 +103,19 @@
         /* Ensure full height usage */
     }
 
-    /* Authentic WhatsApp Message Bubbles */
+    /* Message Bubbles */
     .msg-bubble {
-        max-width: 70%;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 14.5px;
+        max-width: 65%;
+        padding: 12px 18px;
+        border-radius: 18px;
+        font-size: 15px;
         position: relative;
-        box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         word-wrap: break-word;
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(10px);
         animation: bubblePop 0.3s forwards var(--wa-transition);
-        cursor: pointer;
-        transition: transform 0.2s;
+        line-height: 1.5;
     }
 
     .msg-bubble:hover {
@@ -103,50 +129,53 @@
         }
     }
 
+    /* Sent Messages (Right, White, Dark Text) */
     .msg-sent {
         align-self: flex-end;
         background: var(--wa-bubble-sent);
-        border-top-right-radius: 0;
+        color: var(--wa-text-sent);
+        border-bottom-right-radius: 4px;
     }
 
-    .msg-sent::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: -8px;
-        width: 0;
-        height: 0;
-        border: 8px solid transparent;
-        border-left-color: var(--wa-bubble-sent);
-        border-top-color: var(--wa-bubble-sent);
-    }
-
+    /* Received Messages (Left, Green, White Text) */
     .msg-received {
         align-self: flex-start;
         background: var(--wa-bubble-received);
-        border-top-left-radius: 0;
+        color: var(--wa-text-received);
+        border-bottom-left-radius: 4px;
     }
 
-    .msg-received::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -8px;
-        width: 0;
-        height: 0;
-        border: 8px solid transparent;
-        border-right-color: var(--wa-bubble-received);
-        border-top-color: var(--wa-bubble-received);
+    .msg-received .msg-info {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .msg-sent .msg-info {
+        color: #999;
     }
 
     .msg-info {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 4px;
+        gap: 6px;
         font-size: 11px;
-        color: #667781;
-        margin-top: 4px;
+        margin-top: 6px;
+    }
+
+    /* Avatar for Received Messages */
+    .msg-row-received {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .msg-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     /* Sticky Date Divider */
@@ -455,10 +484,10 @@
             </div>
         </div>
         <div class="search-box">
-            <div class="search-inner" style="padding: 10px; background: #f0f2f5;">
-                <div style="display: flex; align-items: center; background: #fff; padding: 6px 14px; border-radius: 8px;">
-                    <i class="fa-solid fa-magnifying-glass" style="color: #8696a0; margin-right: 10px;"></i>
-                    <input type="text" id="userSearch" placeholder="Raadi sarkaalka..." style="border: none; outline: none; width: 100%; font-size: 14px;">
+            <div class="search-inner" style="padding: 15px 20px; background: #fff;">
+                <div style="display: flex; align-items: center; background: #f5f7fb; padding: 10px 16px; border-radius: 12px; border: 1px solid #eee;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #adb5bd; margin-right: 12px;"></i>
+                    <input type="text" id="userSearch" placeholder="Raadi sarkaalka..." style="border: none; outline: none; width: 100%; font-size: 15px; background: transparent; color: #495057;">
                 </div>
             </div>
         </div>
@@ -931,6 +960,10 @@
     function renderMessages(messages) {
         let html = '';
         let lastDate = null;
+        // Get active user avatar from the DOM since we don't have it in the message object directly (optimization)
+        // Or we can get it from the 'users' logical side if needed, but DOM is easiest:
+        const activeAvatarSrc = document.querySelector('#activeUserAvatar img') ? document.querySelector('#activeUserAvatar img').src : '';
+
         messages.forEach(m => {
             const mDate = new Date(m.created_at).toLocaleDateString();
             if (mDate !== lastDate) {
@@ -947,7 +980,7 @@
 
             let content = m.message;
             if (m.is_deleted) {
-                content = `<span style="font-style:italic; color:#8696a0;"><i class="fa-solid fa-ban"></i> Fariintaan waa la tirtiray</span>`;
+                content = `<span style="font-style:italic; opacity:0.7;"><i class="fa-solid fa-ban"></i> Fariintaan waa la tirtiray</span>`;
             } else {
                 if (m.type === 'image') content = `<div style="border-radius:8px; overflow:hidden; max-width:280px;"><img src="/storage/${m.file_path}" onclick="window.open(this.src)" style="width:100%; cursor:zoom-in;"></div>` + (m.message ? `<div style="padding-top:5px;">${m.message}</div>` : '');
                 if (m.type === 'video') content = `<div style="border-radius:8px; overflow:hidden; max-width:300px;"><video src="/storage/${m.file_path}" controls style="width:100%"></video></div>`;
@@ -956,7 +989,8 @@
 
             let status = isSent ? (m.read_at ? '<i class="fa-solid fa-check-double" style="color:#53bdeb"></i>' : (m.delivered_at ? '<i class="fa-solid fa-check-double" style="color:#8696a0"></i>' : '<i class="fa-solid fa-check" style="color:#8696a0"></i>')) : '';
 
-            html += `
+            // Construct Bubble
+            const bubbleHtml = `
             <div class="msg-bubble ${isSent ? 'msg-sent' : 'msg-received'}" oncontextmenu="event.preventDefault(); ${isSent && !m.is_deleted ? `openDeleteMenu(${m.id})` : ''}">
                 ${content}
                 <div class="msg-info">
@@ -964,6 +998,18 @@
                     ${status}
                 </div>
             </div>`;
+
+            // Layout based on Sent/Received
+            if (isSent) {
+                html += bubbleHtml; // Sent messages just float right (handled by CSS)
+            } else {
+                // Received messages get an avatar
+                html += `
+                <div class="msg-row-received">
+                    <img src="${activeAvatarSrc}" class="msg-avatar-small">
+                    ${bubbleHtml}
+                </div>`;
+            }
         });
         const box = document.getElementById('messageArea');
         box.innerHTML = html;
