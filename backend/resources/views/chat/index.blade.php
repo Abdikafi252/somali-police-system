@@ -314,8 +314,7 @@
         <div class="ms-header">
             <h1 class="ms-title">Chats</h1>
             <div style="display:flex; gap:10px;">
-                <button class="ms-icon-btn"><i class="fa-solid fa-camera"></i></button>
-                <button class="ms-icon-btn"><i class="fa-solid fa-pen-to-square"></i></button>
+                <!-- Buttons removed -->
             </div>
         </div>
 
@@ -379,7 +378,7 @@
         <!-- Welcome Placeholder -->
         <div id="welcomePlaceholder" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-secondary);">
             <i class="fa-brands fa-facebook-messenger" style="font-size:64px; color:var(--messenger-blue); margin-bottom:20px;"></i>
-            <h2>Wada-hadalka (Messenger)</h2>
+            <h2>Messenger</h2>
             <p>Dooro qof si aad u wada hadashaan.</p>
         </div>
 
