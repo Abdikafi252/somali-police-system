@@ -166,25 +166,25 @@
         text-transform: uppercase;
     }
 
-    /* Floating Input Bar - Fixed Floating Style */
+    /* Floating Input Bar - Fixed Floating Style (Robust) */
     .input-dock {
         position: absolute;
-        bottom: 15px;
-        left: 15px;
-        width: calc(100% - 30px);
-        padding: 10px 16px;
-        background: rgba(255, 255, 255, 0.9);
-        /* Cleaner white background */
-        backdrop-filter: blur(10px);
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+        padding: 10px 20px;
+        background: #ffffff !important;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 15px;
         flex-shrink: 0;
-        border-radius: 24px;
-        /* Floating look */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        z-index: 1000;
+        border-radius: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e0e0e0;
+        z-index: 2000;
+        backdrop-filter: none;
+        /* Removed to prevent rendering issues */
     }
 
     .input-container {
