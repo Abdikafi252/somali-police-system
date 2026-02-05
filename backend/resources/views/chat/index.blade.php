@@ -1,6 +1,6 @@
 ﻿@extends('layouts.app')
 
-@section('title', 'Wada-hadalka (Messenger)')
+@section('title', 'Messenger')
 
 @section('css')
 <style>
