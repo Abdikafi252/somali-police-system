@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="so">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link href="{{ asset('css/dashboard-glass.css') }}" rel="stylesheet">
     @yield('css')
 </head>
+
 <body data-theme="dark">
     <!-- Mobile Overlay -->
     <div class="overlay" onclick="toggleSidebar()"></div>
@@ -25,10 +27,10 @@
                 <i class="fa-solid fa-shield-cat"></i>
                 <span class="logo-text">Police<span style="color: var(--accent-lime);">System</span></span>
             </div>
-            
+
             <div style="flex: 1; overflow-y: auto;">
                 <div class="nav-section-title">Main Menu</div>
-                
+
                 <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
                     <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
                 </a>
@@ -46,9 +48,7 @@
                 <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-magnifying-glass"></i> <span>Investigations (Baaritaanka)</span>
                 </a>
-                <a href="{{ route('chat.index') }}" class="nav-link {{ request()->is('chat*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-comments"></i> <span>Chat (Wada-hadalka)</span>
-                </a>
+
                 @endif
 
                 @if(auth()->user()->role->slug == 'prosecutor')
@@ -79,7 +79,7 @@
                 <a href="{{ route('facilities.index') }}" class="nav-link {{ request()->is('facilities*') ? 'active' : '' }}">
                     <i class="fa-solid fa-building"></i> <span>Xarumaha (Registry)</span>
                 </a>
-                 <div class="nav-section-title" style="margin-top: 0.5rem;">Maamulka & Shaqaalaha</div>
+                <div class="nav-section-title" style="margin-top: 0.5rem;">Maamulka & Shaqaalaha</div>
                 <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
                     <i class="fa-solid fa-user-group"></i> <span>Dhamaan Shaqaalaha</span>
                 </a>
@@ -98,7 +98,7 @@
                     <i class="fa-solid fa-clock-rotate-left"></i> <span>Audit Logs (Keydka)</span>
                 </a>
                 @endif
-                
+
                 <div style="margin-top: 1rem;">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
@@ -132,22 +132,22 @@
                         <button class="icon-btn" onclick="toggleNotifications()">
                             <i class="fa-regular fa-bell"></i>
                             @if(auth()->user()->unreadNotifications->count() > 0)
-                                <div class="badge">{{ auth()->user()->unreadNotifications->count() }}</div>
+                            <div class="badge">{{ auth()->user()->unreadNotifications->count() }}</div>
                             @endif
                         </button>
                         <!-- Notification Dropdown -->
                         <div id="notification-list" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 55px; background: white; width: 300px; padding: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 9999; max-height: 400px; overflow-y: auto;">
                             <div style="font-size: 0.85rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">Ogeysiisyada</div>
                             @forelse(auth()->user()->unreadNotifications as $notification)
-                                <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f1f1f1;">
-                                    <div style="width: 8px; height: 8px; background: var(--accent-lime); border-radius: 50%; margin-top: 5px;"></div>
-                                    <div>
-                                        <div style="font-size: 0.85rem; font-weight: 600;">{{ $notification->data['message'] ?? 'Ogeysiin Cusub' }}</div>
-                                        <div style="font-size: 0.75rem; color: #888;">{{ $notification->created_at->diffForHumans() }}</div>
-                                    </div>
+                            <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #f1f1f1;">
+                                <div style="width: 8px; height: 8px; background: var(--accent-lime); border-radius: 50%; margin-top: 5px;"></div>
+                                <div>
+                                    <div style="font-size: 0.85rem; font-weight: 600;">{{ $notification->data['message'] ?? 'Ogeysiin Cusub' }}</div>
+                                    <div style="font-size: 0.75rem; color: #888;">{{ $notification->created_at->diffForHumans() }}</div>
                                 </div>
+                            </div>
                             @empty
-                                <div style="font-size: 0.8rem; color: #666; text-align: center; padding: 10px;">Ma jiraan ogeysiisyo cusub</div>
+                            <div style="font-size: 0.8rem; color: #666; text-align: center; padding: 10px;">Ma jiraan ogeysiisyo cusub</div>
                             @endforelse
                             @if(auth()->user()->unreadNotifications->count() > 0)
                             <div style="text-align: center; margin-top: 10px;">
@@ -156,15 +156,15 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     <button class="icon-btn">
                         <i class="fa-regular fa-calendar"></i>
                     </button>
-                    
+
                     <!-- Profile Dropdown -->
                     <div class="user-profile" style="position: relative;" onclick="toggleProfileMenu()">
                         <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}&background=C6F048&color=1C1E26" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-soft); cursor: pointer;">
-                        
+
                         <!-- Dropdown Menu -->
                         <div id="profileDropdown" style="display: none; position: absolute; right: 0; top: 60px; background: white; width: 200px; padding: 0.5rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 9999; border: 1px solid rgba(0,0,0,0.05);">
                             <div style="padding: 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 0.5rem;">
@@ -191,10 +191,10 @@
             @yield('content')
         </main>
         @else
-            <!-- Guest View -->
-            <main style="flex: 1;">
-                @yield('content')
-            </main>
+        <!-- Guest View -->
+        <main style="flex: 1;">
+            @yield('content')
+        </main>
         @endauth
     </div>
 
@@ -226,7 +226,7 @@
             }
             if (!event.target.closest('.icon-btn') && !event.target.matches('.fa-bell')) {
                 const notif = document.getElementById('notification-list');
-                 if (notif && notif.style.display === 'block') {
+                if (notif && notif.style.display === 'block') {
                     notif.style.display = 'none';
                 }
             }
@@ -245,10 +245,11 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
         @auth
-            const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
-            document.body.setAttribute('data-theme', userTheme);
+        const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
+        document.body.setAttribute('data-theme', userTheme);
         @endauth
     </script>
     @yield('js')
 </body>
+
 </html>
