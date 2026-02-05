@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Crime extends Model
 {
-    protected $fillable = ['case_number', 'crime_type', 'description', 'location', 'crime_date', 'reported_by', 'status'];
+    protected $fillable = ['case_number', 'crime_type', 'severity', 'description', 'location', 'crime_date', 'reported_by', 'status'];
 
     public function reporter()
     {

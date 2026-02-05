@@ -53,16 +53,30 @@
                 </div>
             </div>
 
-            <!-- Row 3: Crime Type, Location, ID -->
+            <!-- Row 3: Crime Type, Severity, Location -->
             <div class="grid-3" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                 <div class="form-group">
                     <label for="crime_type" class="form-label">Nuuca Dambiga</label>
                     <input type="text" name="crime_type" id="crime_type" class="form-control" placeholder="Gali nooca dambiga..." required>
                 </div>
                 <div class="form-group">
+                    <label for="severity" class="form-label">Halista / Severity</label>
+                    <select name="severity" id="severity" class="form-select">
+                        <option value="">Dooro...</option>
+                        <option value="Critical">🔴 Halis Aad u Sare (Critical)</option>
+                        <option value="High">🟠 Halis Sare (High)</option>
+                        <option value="Medium">🟡 Halis Dhexe (Medium)</option>
+                        <option value="Low">🟢 Halis Hoose (Low)</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="location" class="form-label">Goobta</label>
                     <input type="text" name="location" id="location" class="form-control" placeholder="Goobta uu ka dhacay" required>
                 </div>
+            </div>
+
+            <!-- Row 3.5: National ID -->
+            <div class="grid-3" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                 <div class="form-group">
                     <label for="national_id" class="form-label">Numberka Aqoonsiga (Nation ID)</label>
                     <input type="text" name="national_id" id="national_id" class="form-control" placeholder="Haddii la hayo">
