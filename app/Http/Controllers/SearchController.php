@@ -18,34 +18,72 @@ class SearchController extends Controller
             return redirect()->back();
         }
 
-        // Search Cases
-        $cases = PoliceCase::where('case_number', 'LIKE', "%{$query}%")
+        $user = auth()->user();
+        $userRole = $user->role->slug;
+        $hasFullAccess = in_array($userRole, ['admin', 'taliye-ciidan', 'taliye-gobol']);
+
+        // Search Cases with role-based filtering
+        $casesQuery = PoliceCase::where('case_number', 'LIKE', "%{$query}%")
             ->orWhereHas('crime', function($q) use ($query) {
                 $q->where('crime_type', 'LIKE', "%{$query}%")
                   ->orWhere('description', 'LIKE', "%{$query}%")
                   ->orWhere('location', 'LIKE', "%{$query}%");
-            })
-            ->with('crime')
-            ->take(10)
-            ->get();
+            });
+        
+        // Apply role-based filters
+        if (!$hasFullAccess) {
+            if ($userRole == 'prosecutor') {
+                $casesQuery->whereIn('status', ['Xeer-Ilaalinta', 'Maxkamadda', 'Xiran', 'Xukunsan']);
+            } elseif ($userRole == 'judge') {
+                $casesQuery->whereIn('status', ['Maxkamadda', 'Xiran', 'Xukunsan']);
+            } elseif (in_array($userRole, ['askari', 'taliye-saldhig', 'cid'])) {
+                $casesQuery->whereHas('assignedUser', function($q) use ($user) {
+                    $q->where('station_id', $user->station_id);
+                });
+            }
+        }
+        
+        $cases = $casesQuery->with('crime')->take(10)->get();
 
-        // Search Suspects
-        $suspects = Suspect::where('name', 'LIKE', "%{$query}%")
-            ->orWhere('national_id', 'LIKE', "%{$query}%")
-            ->take(10)
-            ->get();
-
-        // Search Crimes (if separate from cases)
-        $crimes = Crime::where('crime_type', 'LIKE', "%{$query}%") // Changed to crime_type based on dashboard usage
-            ->orWhere('description', 'LIKE', "%{$query}%")
-            ->take(10)
-            ->get();
+        // Search Suspects with role-based filtering
+        $suspectsQuery = Suspect::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('national_id', 'LIKE', "%{$query}%");
             
-        // Search Officers
-        $officers = User::where('name', 'LIKE', "%{$query}%")
-            ->orWhere('email', 'LIKE', "%{$query}%")
-            ->take(5)
-            ->get();
+        if (!$hasFullAccess && in_array($userRole, ['askari', 'taliye-saldhig', 'cid'])) {
+            $suspectsQuery->whereHas('crime.reporter', function($q) use ($user) {
+                $q->where('station_id', $user->station_id);
+            });
+        }
+        
+        $suspects = $suspectsQuery->take(10)->get();
+
+        // Search Crimes with role-based filtering
+        $crimesQuery = Crime::where('crime_type', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%");
+            
+        if (!$hasFullAccess && in_array($userRole, ['askari', 'taliye-saldhig', 'cid'])) {
+            $crimesQuery->where(function($q) use ($user) {
+                $q->where('reported_by', $user->id)
+                  ->orWhereHas('reporter', function($sq) use ($user) {
+                      $sq->where('station_id', $user->station_id);
+                  });
+            });
+        }
+        
+        $crimes = $crimesQuery->take(10)->get();
+            
+        // Search Officers (only for admins and commanders)
+        $officers = collect([]);
+        if ($hasFullAccess || in_array($userRole, ['taliye-saldhig'])) {
+            $officersQuery = User::where('name', 'LIKE', "%{$query}%")
+                ->orWhere('email', 'LIKE', "%{$query}%");
+                
+            if ($userRole == 'taliye-saldhig') {
+                $officersQuery->where('station_id', $user->station_id);
+            }
+            
+            $officers = $officersQuery->take(5)->get();
+        }
 
         return view('search.results', compact('query', 'cases', 'suspects', 'crimes', 'officers'));
     }
