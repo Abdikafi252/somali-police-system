@@ -12,10 +12,26 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with(['role', 'station'])->get();
-        return view('users.index', compact('users'));
+        $query = User::with(['role', 'station']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%$search%")
+                  ->orWhere('rank', 'LIKE', "%$search%")
+                  ->orWhere('id', 'LIKE', "%$search%");
+            });
+        }
+
+        $users = $query->latest()->paginate(15);
+        
+        // Stats for charts (loading only needed data)
+        $roleStats = User::selectRaw('role_id, count(*) as count')->groupBy('role_id')->with('role')->get();
+        $rankStats = User::selectRaw('rank, count(*) as count')->groupBy('rank')->get();
+
+        return view('users.index', compact('users', 'roleStats', 'rankStats'));
     }
 
     public function create()

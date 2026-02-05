@@ -68,28 +68,26 @@
             </span>
         </div>
 
-        <!-- Quick Contacts -->
-        <div class="glass-card" style="padding: 1.5rem;">
-            <h5 style="color: var(--sidebar-bg); font-weight: 800; margin-bottom: 1rem; font-size: 0.8rem; text-transform: uppercase;">Xogta Xiriirka</h5>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div style="width: 35px; height: 35px; border-radius: 10px; background: #f1f2f6; display: flex; align-items: center; justify-content: center; color: var(--sidebar-bg);">
-                        <i class="fa-solid fa-envelope"></i>
-                    </div>
-                    <div style="overflow: hidden; text-overflow: ellipsis;">
-                        <small style="display: block; color: var(--text-sub); font-size: 0.7rem;">Email-ka</small>
-                        <span style="font-weight: 700; font-size: 0.85rem;">{{ $user->email }}</span>
-                    </div>
+        <!-- Registration Metadata Card (The "Registry DNA") -->
+        <div class="glass-card" style="padding: 1.5rem; border-radius: 25px; border-left: 5px solid #2ecc71; background: linear-gradient(to right, #ffffff, #f0fff4);">
+            <h5 style="font-weight: 800; color: var(--sidebar-bg); margin-bottom: 1.2rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">
+                <i class="fa-solid fa-file-signature" style="margin-right: 0.5rem; color: #2ecc71;"></i> Aqoonsiga Diiwaanka
+            </h5>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.85rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-weight: 600;">Service ID:</span>
+                    <span style="color: var(--sidebar-bg); font-weight: 800; font-family: monospace;">#SNP-{{ str_pad($user->id, 6, '0', STR_PAD_LEFT) }}</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <div style="width: 35px; height: 35px; border-radius: 10px; background: #f1f2f6; display: flex; align-items: center; justify-content: center; color: var(--sidebar-bg);">
-                        <i class="fa-solid fa-location-dot"></i>
-                    </div>
-                    <div>
-                        <small style="display: block; color: var(--text-sub); font-size: 0.7rem;">Gobolka</small>
-                        <span style="font-weight: 700; font-size: 0.85rem;">{{ $user->region_id ?? 'Lama diwaangelin' }}</span>
-                    </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-weight: 600;">Diiwaangelinta:</span>
+                    <span style="color: var(--sidebar-bg); font-weight: 800;">{{ $user->created_at->format('d M, Y H:i') }}</span>
                 </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-weight: 600;">Authority:</span>
+                    <span style="color: #3498db; font-weight: 800;">SNP HQ REGISTRY</span>
+                </div>
+                <hr style="border: none; border-top: 1px solid #eee;">
+                <p style="margin: 0; color: #7f8c8d; font-size: 0.72rem; font-style: italic; line-height: 1.4;">Xogtan waxaa laga soo xigtay Diiwaanka Rasmiga ah ee Ciidanka Booliska Soomaaliyeed.</p>
             </div>
         </div>
     </div>
