@@ -49,6 +49,26 @@
                 </a>
                 @endif
 
+                @if(auth()->user()->role->slug == 'prosecutor')
+                <div class="nav-section-title">Xeer-ilaalinta (Prosecution)</div>
+                <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
+                </a>
+                <a href="{{ route('prosecutions.index') }}" class="nav-link {{ request()->is('prosecutions*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-scale-balanced"></i> <span>Prosecutions (Dacwadaha)</span>
+                </a>
+                <a href="{{ route('court-cases.index') }}" class="nav-link {{ request()->is('court-cases*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-gavel"></i> <span>Court Cases (Maxkamadda)</span>
+                </a>
+                @endif
+
+                @if(auth()->user()->role->slug == 'judge')
+                <div class="nav-section-title">Garsoorka (Judiciary)</div>
+                <a href="{{ route('court-cases.index') }}" class="nav-link {{ request()->is('court-cases*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-gavel"></i> <span>Court Cases (Maxkamadda)</span>
+                </a>
+                @endif
+
                 @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Administration</div>
                 <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
