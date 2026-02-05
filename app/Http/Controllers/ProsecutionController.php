@@ -27,7 +27,16 @@ class ProsecutionController extends Controller
     {
         $case_id = $request->query('case_id');
         $case = PoliceCase::with(['crime', 'investigation'])->findOrFail($case_id);
-        $courts = Facility::where('type', 'Court')->get();
+        
+        // Fetch facilities that are either type 'Court' or have 'Maxkamad' in the name
+        $courts = Facility::where('type', 'Court')
+            ->orWhere('name', 'LIKE', '%Maxkamad%')
+            ->get();
+            
+        if ($courts->isEmpty()) {
+            // Fallback: get all facilities if no courts found
+            $courts = Facility::all();
+        }
         
         // Auto-select court based on crime location
         $crimeLocation = $case->crime->location;

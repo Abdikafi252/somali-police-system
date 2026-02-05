@@ -75,35 +75,53 @@
                     <label for="court_id" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase;">
                         <i class="fa-solid fa-building-columns" style="color: #3498db; margin-right: 0.5rem;"></i> Maxkamadda (Select Court)
                     </label>
-                    <select name="court_id" id="court_id" class="form-control" required style="
-                        border: 2px solid #dfe6e9; 
-                        border-radius: 12px; 
-                        padding: 1rem; 
-                        width: 100%; 
-                        font-weight: 700; 
-                        background: #ffffff; 
-                        color: #2d3436;
-                        font-size: 0.95rem;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                    " onfocus="this.style.borderColor='#3498db'; this.style.boxShadow='0 0 0 4px rgba(52, 152, 219, 0.1)'" onblur="this.style.borderColor='#dfe6e9'; this.style.boxShadow='none'">
-                        <option value="" disabled {{ !$selectedCourt ? 'selected' : '' }} style="color: #95a5a6;">Dooro Maxkamadda kiiskan dacwad oogistiisa loo gudbinayo...</option>
-                        @foreach($courts as $court)
-                            <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #2d3436; background: #ffffff; padding: 10px;">
-                                {{ $court->name }} - {{ $court->location }}
+                    <div style="position: relative; width: 100%;">
+                        <select name="court_id" id="court_id" required class="form-control" style="
+                            width: 100% !important;
+                            height: 60px !important;
+                            background-color: #ffffff !important;
+                            color: #1a1a1a !important;
+                            border: 3px solid #3498db !important;
+                            border-radius: 12px !important;
+                            padding: 0 1.5rem !important;
+                            font-weight: 700 !important;
+                            font-size: 1.1rem !important;
+                            display: block !important;
+                            visibility: visible !important;
+                            opacity: 1 !important;
+                            -webkit-appearance: menulist !important;
+                            -moz-appearance: menulist !important;
+                            appearance: menulist !important;
+                            cursor: pointer !important;
+                            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.15) !important;
+                        ">
+                            <option value="" {{ !$selectedCourt ? 'selected' : '' }} style="color: #666; background: #fff;">
+                                Choose Court / Dooro Maxkamadda (Found: {{ $courts->count() }})
                             </option>
-                        @endforeach
-                    </select>
+                            @forelse($courts as $court)
+                                <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
+                                    {{ $court->name }} - {{ $court->location }}
+                                </option>
+                            @empty
+                                <option value="" disabled style="color: red; background: #fff;">
+                                    ERR: No courts found in database!
+                                </option>
+                            @endforelse
+                        </select>
+                    </div>
+
+                    @if($courts->isEmpty())
+                        <div style="margin-top: 1rem; background: #fff5f5; color: #c53030; padding: 1rem; border-radius: 8px; border: 1px solid #feb2b2; font-weight: 600;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Khalad: Wax maxkamado ah laguma hayo system-ka. Fadlan la xiriir Admin-ka.
+                        </div>
+                    @endif
+
                     @if($selectedCourt)
-                    <small style="display: block; margin-top: 0.5rem; color: #27ae60; font-weight: 600;">
+                    <small style="display: block; margin-top: 0.8rem; color: #27ae60; font-weight: 700; font-size: 0.9rem; background: rgba(39, 174, 96, 0.1); padding: 5px 10px; border-radius: 6px; width: fit-content;">
                         <i class="fa-solid fa-circle-check"></i> Maxkamadda Degmada waxaa loo doortay sababtoo ah kiiskan wuxuu ka dhacay: {{ $case->crime->location }}
                     </small>
-                    <small style="display: block; margin-top: 0.3rem; color: #3498db; font-weight: 600; font-style: italic;">
+                    <small style="display: block; margin-top: 0.5rem; color: #3498db; font-weight: 600; font-style: italic; font-size: 0.85rem;">
                         <i class="fa-solid fa-info-circle"></i> Waxaad bedeli kartaa maxkamadda haddii aad rabto.
-                    </small>
-                    @else
-                    <small style="display: block; margin-top: 0.5rem; color: #e67e22; font-weight: 600;">
-                        <i class="fa-solid fa-exclamation-triangle"></i> Fadlan dooro maxkamadda ku habboon kiiskan.
                     </small>
                     @endif
                 </div>
