@@ -46,21 +46,19 @@ class StationController extends Controller
 
     public function show(Station $station)
     {
-    public function show(Station $station)
-    {
         // Load relationships
         $station->load(['commander', 'activeStationOfficers.user.role']);
 
         // 1. Determine Active Commander
         // Priority: Explicit station->commander, then search active StationCommander record
         $activeCommander = $station->commander;
-        
+
         if (!$activeCommander) {
             $activeCommanderRecord = \App\Models\StationCommander::where('station_id', $station->id)
                 ->where('status', 'active')
                 ->latest('appointed_date')
                 ->first();
-            
+
             if ($activeCommanderRecord) {
                 $activeCommander = $activeCommanderRecord->user;
             }
@@ -68,7 +66,7 @@ class StationController extends Controller
 
         // 2. Build Comprehensive Staff List
         // Start with Active Station Officers
-        $staffList = $station->activeStationOfficers->map(function($officer) {
+        $staffList = $station->activeStationOfficers->map(function ($officer) {
             $user = $officer->user;
             if ($user) {
                 // Attach pivot-like data directly to user object for easy display
@@ -91,14 +89,13 @@ class StationController extends Controller
                 $staffList->prepend($activeCommander);
             }
         }
-        
+
         // If staff list is empty, fallback to users table (legacy support)
         if ($staffList->isEmpty() && $station->users->count() > 0) {
-           $staffList = $station->users;
+            $staffList = $station->users;
         }
 
         return view('stations.show', compact('station', 'activeCommander', 'staffList'));
-    }
     }
 
     public function edit(Station $station)
