@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -36,7 +36,7 @@ Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+    
     // Shared Operational Routes (Admin, CID, Askari)
     // Added Regional Commander (taliye-gobol) and Army Commander (taliye-ciidan) to view all operations
     Route::middleware(['role:admin,cid,askari,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
@@ -52,14 +52,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Legal Routes (Prosecutor, Judge, Admin)
     // Added Commanders to view legal proceedings
-    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan,taliye-qaran'])->group(function () {
+    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan'])->group(function () {
         Route::resource('prosecutions', ProsecutionController::class);
         Route::resource('court-cases', CourtCaseController::class);
     });
 
     // Administrative Routes (Admin only or Commanders)
     // Added Taliye Ciidan to admin routes
-    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol,taliye-ciidan,taliye-qaran'])->group(function () {
+    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
         Route::resource('deployments', DeploymentController::class);
         Route::resource('facilities', FacilityController::class);
         Route::resource('stations', StationController::class);
@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
-
+    
     // User Profile
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
@@ -98,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
     Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
     Route::post('/chat/delete', [\App\Http\Controllers\ChatController::class, 'deleteMessage'])->name('chat.delete');
-
+    
     // Call System Signals
     Route::post('/chat/call/initiate', [\App\Http\Controllers\ChatController::class, 'initiateCall'])->name('chat.call.initiate');
     Route::get('/chat/call/check', [\App\Http\Controllers\ChatController::class, 'checkIncomingCall'])->name('chat.call.check');

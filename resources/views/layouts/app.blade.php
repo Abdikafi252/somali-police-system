@@ -35,7 +35,7 @@
                     <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
                 </a>
 
-                @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan', 'taliye-qaran']))
+                @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Operations</div>
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
@@ -53,7 +53,7 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['prosecutor', 'taliye-qaran']))
+                @if(auth()->user()->role->slug == 'prosecutor')
                 <div class="nav-section-title">Xeer-ilaalinta (Prosecution)</div>
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
@@ -66,14 +66,14 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['judge', 'taliye-qaran']))
+                @if(auth()->user()->role->slug == 'judge')
                 <div class="nav-section-title">Garsoorka (Judiciary)</div>
                 <a href="{{ route('court-cases.index') }}" class="nav-link {{ request()->is('court-cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-gavel"></i> <span>Court Cases (Maxkamadda)</span>
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan', 'taliye-qaran']))
+                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
                 <div class="nav-section-title">Administration</div>
                 <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-building-shield"></i> <span>Saldhigyada (Registry)</span>
