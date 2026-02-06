@@ -261,9 +261,12 @@ class DashboardController extends Controller
                 return $item;
             })
             ->groupBy('gender')
-            ->map(function ($group) {
-                return $group->sum('count');
-            });
+            ->map(function ($group, $key) {
+                return [
+                    'gender' => ucfirst($key),
+                    'count' => $group->sum('count')
+                ];
+            })->values();
 
         // Crimes by Station
         $crimes_by_station = PoliceCase::when(!$hasFullAccess, function ($q) use ($user) {
