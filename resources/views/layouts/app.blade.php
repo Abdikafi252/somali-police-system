@@ -247,7 +247,7 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
         @auth
-        const userTheme = "{{ auth()->user()->settings->theme ?? 'light' }}";
+        const userTheme = "{{ optional(auth()->user()->settings)->theme ?? 'light' }}";
         document.body.setAttribute('data-theme', userTheme);
         @endauth
     </script>
