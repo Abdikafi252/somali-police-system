@@ -1,31 +1,31 @@
 @if ($paginator->hasPages())
 <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="glass-pagination-container">
-    <ul class="glass-pagination">
+    <div class="glass-pagination">
         {{-- Previous Page Link --}}
         @if ($paginator->onFirstPage())
-        <li class="disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
-            <span class="page-link" aria-hidden="true">&lsaquo;</span>
-        </li>
+        <span class="pagination-btn disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
+            <i class="fa-solid fa-chevron-left"></i>
+        </span>
         @else
-        <li>
-            <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="page-link" aria-label="@lang('pagination.previous')">&lsaquo;</a>
-        </li>
+        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="pagination-btn" aria-label="@lang('pagination.previous')">
+            <i class="fa-solid fa-chevron-left"></i>
+        </a>
         @endif
 
         {{-- Pagination Elements --}}
         @foreach ($elements as $element)
         {{-- "Three Dots" Separator --}}
         @if (is_string($element))
-        <li class="disabled" aria-disabled="true"><span class="page-link">{{ $element }}</span></li>
+        <span class="pagination-separator" aria-disabled="true">{{ $element }}</span>
         @endif
 
         {{-- Array Of Links --}}
         @if (is_array($element))
         @foreach ($element as $page => $url)
         @if ($page == $paginator->currentPage())
-        <li class="active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
+        <span class="pagination-btn active" aria-current="page">{{ $page }}</span>
         @else
-        <li><a href="{{ $url }}" class="page-link">{{ $page }}</a></li>
+        <a href="{{ $url }}" class="pagination-btn">{{ $page }}</a>
         @endif
         @endforeach
         @endif
@@ -33,72 +33,123 @@
 
         {{-- Next Page Link --}}
         @if ($paginator->hasMorePages())
-        <li>
-            <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="page-link" aria-label="@lang('pagination.next')">&rsaquo;</a>
-        </li>
+        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="pagination-btn" aria-label="@lang('pagination.next')">
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
         @else
-        <li class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
-            <span class="page-link" aria-hidden="true">&rsaquo;</span>
-        </li>
+        <span class="pagination-btn disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
+            <i class="fa-solid fa-chevron-right"></i>
+        </span>
         @endif
-    </ul>
+    </div>
+
+    <div class="pagination-info">
+        Showing <span class="font-bold">{{ $paginator->firstItem() }}</span> to <span class="font-bold">{{ $paginator->lastItem() }}</span> of <span class="font-bold">{{ $paginator->total() }}</span> results
+    </div>
 </nav>
 
 <style>
     .glass-pagination-container {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
         margin-top: 2rem;
+        width: 100%;
     }
 
     .glass-pagination {
         display: flex;
-        list-style: none;
-        padding: 0;
-        margin: 0;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
         background: rgba(255, 255, 255, 0.05);
+        /* Very subtle glass */
         backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50px;
-        padding: 5px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
-    .glass-pagination li {
-        margin: 0 2px;
-    }
-
-    .glass-pagination .page-link {
+    .pagination-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 36px;
         height: 36px;
-        border-radius: 50%;
-        color: #9ca3af;
-        text-decoration: none;
-        font-weight: 500;
+        border-radius: 10px;
         font-size: 0.9rem;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        color: #6b7280;
+        background: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
     }
 
-    .glass-pagination li:not(.disabled):not(.active) .page-link:hover {
-        background: rgba(255, 255, 255, 0.1);
+    .pagination-btn:hover:not(.disabled) {
+        background: white;
+        color: #4f46e5;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        border-color: rgba(79, 70, 229, 0.1);
+    }
+
+    .pagination-btn.active {
+        background: #4f46e5;
+        /* Primary Color */
         color: white;
-        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
     }
 
-    .glass-pagination li.active .page-link {
-        background: var(--accent-lime);
-        color: #1a1a1a;
-        font-weight: 700;
-        box-shadow: 0 2px 10px rgba(198, 240, 72, 0.3);
-    }
-
-    .glass-pagination li.disabled .page-link {
-        color: #4b5563;
+    .pagination-btn.disabled {
+        opacity: 0.5;
         cursor: not-allowed;
+        background: rgba(0, 0, 0, 0.02);
+        color: #9ca3af;
+    }
+
+    .pagination-separator {
+        padding: 0 0.5rem;
+        color: #9ca3af;
+        font-weight: 500;
+    }
+
+    .pagination-info {
+        font-size: 0.85rem;
+        color: #6b7280;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .font-bold {
+        font-weight: 700;
+        color: #374151;
+    }
+
+    /* Dark Mode Support (if updated via js) */
+    [data-theme="dark"] .glass-pagination {
+        background: rgba(17, 24, 39, 0.6);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    [data-theme="dark"] .pagination-btn {
+        background: rgba(31, 41, 55, 0.5);
+        color: #9ca3af;
+    }
+
+    [data-theme="dark"] .pagination-btn:hover:not(.disabled) {
+        background: #374151;
+        color: white;
+    }
+
+    [data-theme="dark"] .pagination-info {
+        color: #9ca3af;
+    }
+
+    [data-theme="dark"] .font-bold {
+        color: #e5e7eb;
     }
 </style>
 @endif
