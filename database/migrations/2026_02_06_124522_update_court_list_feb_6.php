@@ -1,29 +1,25 @@
 <?php
 
-namespace Database\Seeders;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Seeder;
-use App\Models\Facility;
-use App\Models\User;
-
-class FacilitySeeder extends Seeder
+return new class extends Migration
 {
-    public function run(): void
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        $admin = User::first();
-        $adminId = $admin ? $admin->id : null;
+        // 0. Disable FK checks
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
 
-        // Existing Default Station
-        Facility::firstOrCreate(
-            ['name' => 'Saldhigga Degmada Hodan'],
-            [
-                'type' => 'Station',
-                'location' => 'Hodan, Mogadishu',
-                'commander_id' => $adminId,
-            ]
-        );
+        // 1. Delete existing courts
+        \App\Models\Facility::where('type', 'Court')
+            ->orWhere('name', 'LIKE', '%Maxkamad%')
+            ->delete();
 
-        //  Courts List (User Request)
+        // 2. New List
         $courts = [
             'Maxkamadda Degmada Hodan',
             'Maxkamadda Degmada Wadajir',
@@ -55,15 +51,23 @@ class FacilitySeeder extends Seeder
                 $location = "Degmada {$district}, Muqdisho";
             }
 
-            Facility::firstOrCreate(
-                ['name' => $name],
-                [
-                    'type' => 'Court',
-                    'location' => $location,
-                    'security_level' => 'High',
-                    'commander_id' => $adminId
-                ]
-            );
+            \App\Models\Facility::create([
+                'name' => $name,
+                'type' => 'Court',
+                'location' => $location,
+                'security_level' => 'High'
+            ]);
         }
+
+        // Re-enable FK checks
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
     }
-}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        //
+    }
+};

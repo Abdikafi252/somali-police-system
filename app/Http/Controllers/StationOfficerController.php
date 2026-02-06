@@ -44,7 +44,7 @@ class StationOfficerController extends Controller
         }
 
         // Available users to be officers (role 'askari')
-        $available_users = \App\Models\User::whereHas('role', function($q) {
+        $available_users = \App\Models\User::whereHas('role', function ($q) {
             $q->where('slug', 'askari');
         })->get();
 
@@ -95,6 +95,11 @@ class StationOfficerController extends Controller
             $data['commander_id'] = $commander->id;
         }
 
+        // Prevent Duplicate Active Assignments: Deactivate previous active records
+        StationOfficer::where('officer_id', $request->officer_id)
+            ->where('status', 'active')
+            ->update(['status' => 'inactive']);
+
         StationOfficer::create($data);
 
         return redirect()->route('station-officers.index')->with('success', 'Askariga si guul leh ayaa loogu daray saldhigga.');
@@ -135,7 +140,7 @@ class StationOfficerController extends Controller
             abort(403, 'Ma laguu oggola inaad wax ka bedesho askarigan.');
         }
 
-        $available_users = \App\Models\User::whereHas('role', function($q) {
+        $available_users = \App\Models\User::whereHas('role', function ($q) {
             $q->where('slug', 'askari');
         })->get();
 

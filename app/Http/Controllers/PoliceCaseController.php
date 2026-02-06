@@ -16,7 +16,7 @@ class PoliceCaseController extends Controller
 
         // Role-based filtering
         $userRole = auth()->user()->role->slug;
-        
+
         if ($userRole == 'prosecutor') {
             // Prosecutors see cases in prosecution/court stages
             $query->whereIn('status', ['Xeer-Ilaalinta', 'Maxkamadda', 'Xiran', 'Xukunsan']);
@@ -51,7 +51,7 @@ class PoliceCaseController extends Controller
     {
         $crime_id = $request->query('crime_id');
         $crime = Crime::findOrFail($crime_id);
-        
+
         $cidRole = Role::where('slug', 'cid')->first();
         $officers = User::where('role_id', $cidRole->id)->get();
 
@@ -70,14 +70,14 @@ class PoliceCaseController extends Controller
         $year = date('Y');
         $lastCase = PoliceCase::whereYear('created_at', $year)->latest()->first();
         $nextNumber = 1;
-        
+
         if ($lastCase && preg_match('/-(\d+)$/', $lastCase->case_number, $matches)) {
             $nextNumber = intval($matches[1]) + 1;
         }
-        
+
         $caseNumber = sprintf("SNP-PC-%s-%03d", $year, $nextNumber);
         $validated['case_number'] = $caseNumber;
-        
+
         $case = PoliceCase::create($validated);
 
         // Update crime status
@@ -87,23 +87,25 @@ class PoliceCaseController extends Controller
         // Notify Assigned Officer
         if ($request->filled('assigned_to')) {
             $officer = User::find($request->assigned_to);
-             if ($officer) {
+            if ($officer) {
                 // Ensure auth user is passed, or system user if needed. 
                 // Since this is authenticated route, auth()->user() should exist.
-                $user = auth()->user(); 
+                $user = auth()->user();
                 $officer->notify(new \App\Notifications\CaseAssignedNotification($case, $user));
             }
         }
 
-        return redirect()->route('cases.index')->with('success', 'Kiiska si guul leh ayaa loo furay loona xilsaaray. Case Number: ' . $caseNumber);
+        return redirect()->route('cases.index')
+            ->with('success', 'Kiiska si guul leh ayaa loo diiwaangeliyay.')
+            ->with('new_case', $case->load('crime'));
     }
 
     public function show(PoliceCase $case)
     {
         $case->load([
-            'crime.suspects', 
-            'assignedOfficer', 
-            'investigation.statements', 
+            'crime.suspects',
+            'assignedOfficer',
+            'investigation.statements',
             'prosecution.courtCase',
             'logs.officer'
         ]);

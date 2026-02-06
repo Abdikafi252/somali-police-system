@@ -15,7 +15,7 @@
             <h3 style="margin-bottom: 1.5rem; color: #34495e; font-family: 'Outfit'; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
                 <i class="fa-solid fa-file-shield" style="color: #27ae60;"></i> WARBIXINTA BAARISTA CID (FULL REPORT)
             </h3>
-            
+
             <div class="report-section" style="margin-bottom: 2rem;">
                 <h5 style="color: #27ae60; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 1rem;">
                     <i class="fa-solid fa-clipboard-list"></i> Natiijada Baaritaanka (Findings)
@@ -31,7 +31,7 @@
                     <i class="fa-solid fa-box-archive"></i> Caddeymada & Lifaaqyada (Evidence)
                 </h5>
                 <p style="margin-bottom: 1rem; color: #576574;">{{ $case->investigation->evidence_list }}</p>
-                
+
                 @if($case->investigation->files && count($case->investigation->files) > 0)
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem;">
                     @foreach($case->investigation->files as $file)
@@ -98,68 +98,54 @@
                             <option value="" {{ !$selectedCourt ? 'selected' : '' }} style="color: #666; background: #fff;">
                                 Choose Court / Dooro Maxkamadda (Found: {{ $courts->count() }})
                             </option>
-                            
+
                             @php
-                                $courtTypes = [
-                                    'Degmada' => 'Maxkamadda Degmada (District Court)',
-                                    'Gobolka' => 'Maxkamadda Gobolka (Regional Court)',
-                                    'Racfaanka' => 'Maxkamadda Racfaanka (Appeal Court)',
-                                    'Sare' => 'Maxkamadda Sare (Supreme Court)',
-                                    'Militariga' => 'Maxkamadda Militariga (Military Court)'
-                                ];
+                            $courtTypes = [
+                            'Degmada' => 'Maxkamadda Degmada (District Court)',
+                            'Gobolka' => 'Maxkamadda Gobolka (Regional Court)',
+                            'Racfaanka' => 'Maxkamadda Racfaanka (Appeal Court)',
+                            'Sare' => 'Maxkamadda Sare (Supreme Court)',
+                            'Militariga' => 'Maxkamadda Militariga (Military Court)'
+                            ];
                             @endphp
 
                             @foreach($courtTypes as $key => $label)
-                                <optgroup label="{{ $label }}" style="background: #f8f9fa; font-weight: 800; color: #1c1e26;">
-                                    @foreach($courts as $court)
-                                        @if(stripos($court->name, $key) !== false)
-                                            <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
-                                                {{ $court->name }} - {{ $court->location }}
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </optgroup>
+                            <optgroup label="{{ $label }}" style="background: #f8f9fa; font-weight: 800; color: #1c1e26;">
+                                @foreach($courts as $court)
+                                @if(stripos($court->name, $key) !== false)
+                                <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
+                                    {{ $court->name }} - {{ $court->location }}
+                                </option>
+                                @endif
+                                @endforeach
+                            </optgroup>
                             @endforeach
 
                             <optgroup label="Maxkamado Kale (Other Courts)" style="background: #f8f9fa;">
                                 @foreach($courts as $court)
-                                    @php 
-                                        $found = false; 
-                                        foreach($courtTypes as $k => $l) if(stripos($court->name, $k) !== false) $found = true;
-                                    @endphp
-                                    @if(!$found)
-                                        <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
-                                            {{ $court->name }} - {{ $court->location }}
-                                        </option>
-                                    @endif
+                                @php
+                                $found = false;
+                                foreach($courtTypes as $k => $l) if(stripos($court->name, $k) !== false) $found = true;
+                                @endphp
+                                @if(!$found)
+                                <option value="{{ $court->id }}" {{ $selectedCourt == $court->id ? 'selected' : '' }} style="color: #000; background: #fff;">
+                                    {{ $court->name }} - {{ $court->location }}
+                                </option>
+                                @endif
                                 @endforeach
                             </optgroup>
                         </select>
                     </div>
 
-                    @if($selectedCourt)
-                    @php $selectedObj = $courts->firstWhere('id', $selectedCourt); @endphp
-                    <div style="margin-top: 1rem; background: rgba(39, 174, 96, 0.05); border: 1px solid rgba(39, 174, 96, 0.2); padding: 1rem; border-radius: 12px;">
-                        <span style="display: block; color: #27ae60; font-weight: 800; font-size: 0.95rem;">
-                            <i class="fa-solid fa-circle-check"></i> MAXKAMADDA AYAA SI OTOMATIG AH LOO DOORTAY:
-                        </span>
-                        <p style="margin: 5px 0 0 0; color: #2d3436; font-weight: 600; font-size: 0.9rem;">
-                            <strong>{{ $selectedObj ? $selectedObj->name : '' }}</strong> waxaa loo doortay sababtoo ah kiiskan wuxuu ka dhacay ama laga diwaangeliyay degmada: 
-                            <span style="color: #3498db; text-decoration: underline;">{{ $case->crime->location }}</span>.
-                        </p>
-                        <small style="display: block; margin-top: 0.5rem; color: #7f8c8d; font-style: italic;">
-                            <i class="fa-solid fa-info-circle"></i> Waxaad bedeli kartaa maxkamadda haddii aad u baahato inaad u gudbiso maxkamad kale.
-                        </small>
-                    </div>
-                    @endif
+
                 </div>
 
                 <div class="form-group" style="margin-bottom: 2rem;">
                     <label for="charges" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase;">
                         <i class="fa-solid fa-gavel" style="color: #8e44ad; margin-right: 0.5rem;"></i> Eedeymaha Rasmiga ah (Charges)
                     </label>
-                    <textarea name="charges" id="charges" class="form-control" rows="8" required 
-                        style="border: 2px solid var(--border-soft); border-radius: 12px; padding: 1.2rem; font-size: 1rem; line-height: 1.6; transition: all 0.3s ease;" 
+                    <textarea name="charges" id="charges" class="form-control" rows="8" required
+                        style="border: 2px solid var(--border-soft); border-radius: 12px; padding: 1.2rem; font-size: 1rem; line-height: 1.6; transition: all 0.3s ease;"
                         placeholder="Gali eedeymaha rasmiga ah ee lagu soo oogayo dambiilaha..."></textarea>
                 </div>
 

@@ -23,6 +23,11 @@ class CourtCaseController extends Controller
 
     public function create(Request $request)
     {
+        // Enforce Judge Role
+        if (auth()->user()->role->slug !== 'judge') {
+            abort(403, 'Ma laguu oggola inaad gasho qaybtan. Garsoore kaliya ayaa gaari kara go\'aan.');
+        }
+
         $prosecution_id = $request->query('prosecution_id');
         $prosecution = Prosecution::with(['policeCase.crime', 'policeCase.investigation.statements', 'prosecutor'])->findOrFail($prosecution_id);
         return view('court.create', compact('prosecution'));
@@ -30,6 +35,11 @@ class CourtCaseController extends Controller
 
     public function store(Request $request)
     {
+        // Enforce Judge Role
+        if (auth()->user()->role->slug !== 'judge') {
+            abort(403, 'Ma laguu oggola inaad gasho qaybtan. Garsoore kaliya ayaa gaari kara go\'aan.');
+        }
+
         $validated = $request->validate([
             'prosecution_id' => 'required|exists:prosecutions,id',
             'verdict' => 'required|string',

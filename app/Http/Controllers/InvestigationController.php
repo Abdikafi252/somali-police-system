@@ -11,25 +11,25 @@ class InvestigationController extends Controller
     public function index()
     {
         $query = Investigation::with('policeCase.crime');
-        
+
         $user = auth()->user();
         $userRole = $user->role->slug;
-        
+
         // Role-based filtering
         if (!in_array($userRole, ['admin', 'taliye-ciidan', 'taliye-gobol'])) {
             if ($userRole == 'cid') {
                 // CID sees investigations for their assigned cases
-                $query->whereHas('policeCase', function($q) use ($user) {
+                $query->whereHas('policeCase', function ($q) use ($user) {
                     $q->where('assigned_to', $user->id);
                 });
             } elseif (in_array($userRole, ['askari', 'taliye-saldhig'])) {
                 // Station officers see investigations from their station
-                $query->whereHas('policeCase.assignedUser', function($q) use ($user) {
+                $query->whereHas('policeCase.assignedUser', function ($q) use ($user) {
                     $q->where('station_id', $user->station_id);
                 });
             }
         }
-        
+
         $investigations = $query->latest()->paginate(10);
         return view('investigations.index', compact('investigations'));
     }
@@ -57,6 +57,12 @@ class InvestigationController extends Controller
                 $path = $file->store('investigations', 'public');
                 $fileData[] = $path;
             }
+        }
+
+        // Check assignment execution
+        $case = PoliceCase::find($validated['case_id']);
+        if ($case->assigned_to != auth()->id()) {
+            abort(403, 'Ma laguu oggola inaad baaris ku sameyso kiiskan, sababtoo ah adiga laguma xilsaarin.');
         }
 
         $investigation = Investigation::create([
