@@ -46,60 +46,56 @@ class StationController extends Controller
 
     public function show(Station $station)
     {
-        try {
-            // Load relationships
-            $station->load(['commander', 'activeStationOfficers.user.role']);
+        // Load relationships
+        $station->load(['commander', 'activeStationOfficers.user.role']);
 
-            // 1. Determine Active Commander
-            // Priority: Explicit station->commander, then search active StationCommander record
-            $activeCommander = $station->commander;
+        // 1. Determine Active Commander
+        // Priority: Explicit station->commander, then search active StationCommander record
+        $activeCommander = $station->commander;
 
-            if (!$activeCommander) {
-                $activeCommanderRecord = \App\Models\StationCommander::where('station_id', $station->id)
-                    ->where('status', 'active')
-                    ->latest('appointed_date')
-                    ->first();
+        if (!$activeCommander) {
+            $activeCommanderRecord = \App\Models\StationCommander::where('station_id', $station->id)
+                ->where('status', 'active')
+                ->latest('appointed_date')
+                ->first();
 
-                if ($activeCommanderRecord) {
-                    $activeCommander = $activeCommanderRecord->user;
-                }
+            if ($activeCommanderRecord) {
+                $activeCommander = $activeCommanderRecord->user;
             }
-
-            // 2. Build Comprehensive Staff List
-            // Start with Active Station Officers
-            $staffList = $station->activeStationOfficers->map(function ($officer) {
-                $user = $officer->user;
-                if ($user) {
-                    // Attach pivot-like data directly to user object for easy display
-                    $user->display_rank = $officer->rank;
-                    $user->display_role = $officer->duty_type; // e.g. 'Patrol', 'Guard'
-                    $user->display_status = $officer->status;
-                    $user->source = 'officer';
-                }
-                return $user;
-            })->filter();
-
-            // Add Commander to the list if exists and not already in list
-            if ($activeCommander) {
-                // Check if already in list to avoid duplicates
-                if (!$staffList->contains('id', $activeCommander->id)) {
-                    $activeCommander->display_rank = $activeCommander->rank ?? 'TALIYE';
-                    $activeCommander->display_role = 'Taliyaha Saldhigga';
-                    $activeCommander->display_status = 'active';
-                    $activeCommander->source = 'commander';
-                    $staffList->prepend($activeCommander);
-                }
-            }
-
-            // If staff list is empty, fallback to users table (legacy support)
-            if ($staffList->isEmpty() && $station->users->count() > 0) {
-                $staffList = $station->users;
-            }
-
-            return view('stations.show', compact('station', 'activeCommander', 'staffList'));
-        } catch (\Exception $e) {
-            dd($e->getMessage(), $e->getTraceAsString());
         }
+
+        // 2. Build Comprehensive Staff List
+        // Start with Active Station Officers
+        $staffList = $station->activeStationOfficers->map(function ($officer) {
+            $user = $officer->user;
+            if ($user) {
+                // Attach pivot-like data directly to user object for easy display
+                $user->display_rank = $officer->rank;
+                $user->display_role = $officer->duty_type; // e.g. 'Patrol', 'Guard'
+                $user->display_status = $officer->status;
+                $user->source = 'officer';
+            }
+            return $user;
+        })->filter();
+
+        // Add Commander to the list if exists and not already in list
+        if ($activeCommander) {
+            // Check if already in list to avoid duplicates
+            if (!$staffList->contains('id', $activeCommander->id)) {
+                $activeCommander->display_rank = $activeCommander->rank ?? 'TALIYE';
+                $activeCommander->display_role = 'Taliyaha Saldhigga';
+                $activeCommander->display_status = 'active';
+                $activeCommander->source = 'commander';
+                $staffList->prepend($activeCommander);
+            }
+        }
+
+        // If staff list is empty, fallback to users table (legacy support)
+        if ($staffList->isEmpty() && $station->users->count() > 0) {
+            $staffList = $station->users;
+        }
+
+        return view('stations.show', compact('station', 'activeCommander', 'staffList'));
     }
 
     public function edit(Station $station)

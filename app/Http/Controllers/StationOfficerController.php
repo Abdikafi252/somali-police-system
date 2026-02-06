@@ -44,7 +44,7 @@ class StationOfficerController extends Controller
         }
 
         // Available users to be officers (role 'askari')
-        $available_users = \App\Models\User::whereHas('role', function($q) {
+        $available_users = \App\Models\User::whereHas('role', function ($q) {
             $q->where('slug', 'askari');
         })->get();
 
@@ -79,6 +79,22 @@ class StationOfficerController extends Controller
             'assigned_date' => $request->assigned_date,
             'status' => 'active',
         ];
+
+        // 1. Automatic Cleanup: Deactivate/Delete previous active assignments
+        // The user requested: "askari saldhig lo diwan galiye hadda meeel kle lo diwan galinayo waa inukii hore otomatig u delete"
+        // We will find any existing ACTIVE assignment for this officer and delete/deactivate it.
+        $existingActive = StationOfficer::where('officer_id', $request->officer_id)
+            ->where('status', 'active')
+            ->get();
+
+        foreach ($existingActive as $oldAssignment) {
+            // We can either delete it or mark it as 'transferred'. 
+            // Given the user said "delete", we'll delete the record to strictly follow instructions, 
+            // OR we can set it to inactive. Let's set it to 'transferred' (inactive) to keep history but ensure it doesn't show as active.
+            // Actually, to fully comply with "delete" visually, setting to 'inactive' is enough as lists usually show active.
+            // But if they literally mean delete from DB:
+            $oldAssignment->delete();
+        }
 
         if ($isHighLevel) {
             $request->validate([
@@ -135,7 +151,7 @@ class StationOfficerController extends Controller
             abort(403, 'Ma laguu oggola inaad wax ka bedesho askarigan.');
         }
 
-        $available_users = \App\Models\User::whereHas('role', function($q) {
+        $available_users = \App\Models\User::whereHas('role', function ($q) {
             $q->where('slug', 'askari');
         })->get();
 
