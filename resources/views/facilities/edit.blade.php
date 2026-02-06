@@ -18,7 +18,7 @@
     <strong style="display: block; margin-bottom: 0.5rem; font-weight: 800;"><i class="fa-solid fa-triangle-exclamation"></i> Khaladaad ayaa ka dhex jira foomka:</strong>
     <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.85rem;">
         @foreach($errors->all() as $error)
-        <li>{{ $error }}</li>
+            <li>{{ $error }}</li>
         @endforeach
     </ul>
 </div>
@@ -28,14 +28,14 @@
     <form action="{{ route('facilities.update', $facility->id) }}" method="POST">
         @csrf
         @method('PUT')
-
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
             <!-- Name -->
             <div>
                 <label for="name" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
                     <i class="fa-solid fa-building" style="color: #3498db; margin-right: 0.4rem;"></i> Magaca Xarunta <span style="color: red;">*</span>
                 </label>
-                <input type="text" name="name" id="name" value="{{ old('name', $facility->name) }}" placeholder="Tusaale: Xabsiga Dhexe"
+                <input type="text" name="name" id="name" value="{{ old('name', $facility->name) }}" placeholder="Tusaale: Xabsiga Dhexe" 
                     style="width: 100%; padding: 1.1rem; border-radius: 12px; border: 2px solid var(--border-soft); font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; background: #f8f9fa; color: #2d3436;" required>
             </div>
 
@@ -47,20 +47,11 @@
                 <div style="position: relative;">
                     <select name="type" id="type" style="width: 100%; padding: 1.1rem; border-radius: 12px; border: 2px solid var(--border-soft); font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; appearance: none; background: #f8f9fa; cursor: pointer;" required>
                         <option value="">-- Dooro Nooca --</option>
-                        <option value="Prison" {{ old('type', $facility->type) == 'Prison' ? 'selected' : '' }}>Xabsi</option>
-                        <option value="Court" {{ old('type', $facility->type) == 'Court' ? 'selected' : '' }}>Maxkamad</option>
-                        <option value="Police Station" {{ old('type', $facility->type) == 'Police Station' ? 'selected' : '' }}>Saldhig Boolis</option>
-                        <option value="Checkpoint" {{ old('type', $facility->type) == 'Checkpoint' ? 'selected' : '' }}>Bar-Hubinta (Checkpoint)</option>
-                        <option value="Ministry" {{ old('type', $facility->type) == 'Ministry' ? 'selected' : '' }}>Wasaarad</option>
-                        <option value="Local Government" {{ old('type', $facility->type) == 'Local Government' ? 'selected' : '' }}>Xafiis Dowlad Hoose</option>
-                        <option value="Financial Center" {{ old('type', $facility->type) == 'Financial Center' ? 'selected' : '' }}>Xarun Maaliyadeed</option>
-                        <option value="Health Center" {{ old('type', $facility->type) == 'Health Center' ? 'selected' : '' }}>Xarun Caafimaad</option>
-                        <option value="Port" {{ old('type', $facility->type) == 'Port' ? 'selected' : '' }}>Deked</option>
-                        <option value="Airport" {{ old('type', $facility->type) == 'Airport' ? 'selected' : '' }}>Garoon Diyaaradeed</option>
-                        <option value="Stadium" {{ old('type', $facility->type) == 'Stadium' ? 'selected' : '' }}>Garoon Ciyaared</option>
-                        <option value="Registration Center" {{ old('type', $facility->type) == 'Registration Center' ? 'selected' : '' }}>Xarun Diiwaangelin</option>
-                        <option value="Immigration" {{ old('type', $facility->type) == 'Immigration' ? 'selected' : '' }}>Xarun Socdaal & Jinsiyad</option>
-                        <option value="Emergency" {{ old('type', $facility->type) == 'Emergency' ? 'selected' : '' }}>Xarun Gurmad Degdeg ah</option>
+                        <option value="Station" {{ old('type', $facility->type) == 'Station' ? 'selected' : '' }}>Saldhig (Station)</option>
+                        <option value="Checkpoint" {{ old('type', $facility->type) == 'Checkpoint' ? 'selected' : '' }}>Bar-hubinta (Checkpoint)</option>
+                        <option value="HQ" {{ old('type', $facility->type) == 'HQ' ? 'selected' : '' }}>Xarun Dhexe (HQ)</option>
+                        <option value="Prison" {{ old('type', $facility->type) == 'Prison' ? 'selected' : '' }}>Xabsi (Prison)</option>
+                        <option value="Training" {{ old('type', $facility->type) == 'Training' ? 'selected' : '' }}>Tababarka (Training)</option>
                     </select>
                     <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-sub);">
                         <i class="fa-solid fa-chevron-down"></i>
@@ -75,7 +66,7 @@
                 <label for="location" style="display: block; font-weight: 800; color: var(--sidebar-bg); margin-bottom: 0.8rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
                     <i class="fa-solid fa-location-dot" style="color: #e74c3c; margin-right: 0.4rem;"></i> Goobta / Degmada <span style="color: red;">*</span>
                 </label>
-                <input type="text" name="location" id="location" value="{{ old('location', $facility->location) }}" placeholder="Tusaale: Degmada Xamar Jajab"
+                <input type="text" name="location" id="location" value="{{ old('location', $facility->location) }}" placeholder="Tusaale: Degmada Xamar Jajab" 
                     style="width: 100%; padding: 1.1rem; border-radius: 12px; border: 2px solid var(--border-soft); font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; background: #f8f9fa; color: #2d3436;" required>
             </div>
 
@@ -106,9 +97,9 @@
                 <select name="commander_id" id="commander_id" style="width: 100%; padding: 1.1rem; border-radius: 12px; border: 2px solid var(--border-soft); font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; appearance: none; background: #f8f9fa; cursor: pointer;">
                     <option value="">-- Dooro Taliyaha --</option>
                     @foreach($commanders as $commander)
-                    <option value="{{ $commander->id }}" {{ old('commander_id', $facility->commander_id) == $commander->id ? 'selected' : '' }}>
-                        {{ $commander->name }} ({{ $commander->rank ?? 'SARKAL' }})
-                    </option>
+                        <option value="{{ $commander->id }}" {{ old('commander_id', $facility->commander_id) == $commander->id ? 'selected' : '' }}>
+                            {{ $commander->name }} ({{ $commander->rank ?? 'SARKAL' }})
+                        </option>
                     @endforeach
                 </select>
                 <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-sub);">
@@ -118,7 +109,7 @@
         </div>
 
         <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-            <a href="{{ route('facilities.index') }}"
+            <a href="{{ route('facilities.index') }}" 
                 style="padding: 1rem 2rem; background: #f1f2f6; color: #4b5563; border-radius: 15px; text-decoration: none; font-weight: 800; font-family: 'Outfit'; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; transition: 0.3s;">
                 CIRIIRI (CANCEL)
             </a>
@@ -130,8 +121,7 @@
 </div>
 
 <style>
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
         outline: none;
         border-color: #3498db !important;
         background: #fff !important;

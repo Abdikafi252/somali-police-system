@@ -61,6 +61,7 @@ class FacilitySeeder extends Seeder
                     'type' => 'Court',
                     'location' => $location,
                     'security_level' => 'High',
+                    'status' => 'Active',
                     'commander_id' => $adminId
                 ]
             );

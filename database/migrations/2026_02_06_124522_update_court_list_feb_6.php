@@ -55,7 +55,8 @@ return new class extends Migration
                 'name' => $name,
                 'type' => 'Court',
                 'location' => $location,
-                'security_level' => 'High'
+                'security_level' => 'High',
+                'status' => 'Active'
             ]);
         }
 
