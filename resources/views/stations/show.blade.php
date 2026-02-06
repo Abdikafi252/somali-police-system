@@ -32,10 +32,10 @@
             <p style="color: #e74c3c; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                 <i class="fa-solid fa-location-dot"></i> {{ $station->location }}
             </p>
-            
+
             <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem;">
                 <div style="background: rgba(52, 152, 219, 0.05); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(52, 152, 219, 0.1);">
-                    <h1 style="margin: 0; font-size: 3rem; color: #2980b9; font-family: 'Outfit'; font-weight: 900;">{{ $station->users->count() }}</h1>
+                    <h1 style="margin: 0; font-size: 3rem; color: #2980b9; font-family: 'Outfit'; font-weight: 900;">{{ $staffList->count() }}</h1>
                     <p style="margin: 0; color: #7f8c8d; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">Askarta Dhismeedka</p>
                 </div>
             </div>
@@ -46,13 +46,14 @@
             <h5 style="font-weight: 800; color: var(--sidebar-bg); margin-bottom: 1.2rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.8rem;">
                 <i class="fa-solid fa-user-shield" style="margin-right: 0.5rem; color: #f39c12;"></i> Taliyaha Saldhigga
             </h5>
-            
-            @if($station->commander)
+
+            @if($activeCommander)
             <div style="display: flex; align-items: center; gap: 1.2rem;">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode($station->commander->name) }}&size=100&background=random" style="width: 60px; height: 60px; border-radius: 15px; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <img src="{{ $activeCommander->profile_image ? asset('storage/' . $activeCommander->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($activeCommander->name) . '&background=f39c12&color=fff' }}"
+                    style="width: 60px; height: 60px; border-radius: 15px; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); object-fit: cover;">
                 <div>
-                    <h4 style="margin: 0; font-weight: 800; color: var(--sidebar-bg); font-size: 1rem;">{{ $station->commander->name }}</h4>
-                    <p style="margin: 0.2rem 0; color: #f39c12; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">{{ $station->commander->rank ?? 'TALIYE' }}</p>
+                    <h4 style="margin: 0; font-weight: 800; color: var(--sidebar-bg); font-size: 1rem;">{{ $activeCommander->name }}</h4>
+                    <p style="margin: 0.2rem 0; color: #f39c12; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">{{ $activeCommander->rank ?? 'TALIYE' }}</p>
                 </div>
             </div>
             @else
@@ -60,7 +61,7 @@
                 <i class="fa-solid fa-user-slash fa-2x" style="color: #f56565; margin-bottom: 0.5rem; opacity: 0.5;"></i>
                 <p style="color: #c53030; font-weight: 700; font-size: 0.85rem; margin: 0;">Lama magacaabin taliye</p>
                 @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-qaran']))
-                <a href="{{ route('stations.edit', $station->id) }}" style="color: #c53030; font-size: 0.75rem; font-weight: 800; text-decoration: underline; margin-top: 0.5rem; display: block;">MAGACAAB HADDA</a>
+                <a href="{{ route('station-commanders.create') }}?station_id={{ $station->id }}" style="color: #c53030; font-size: 0.75rem; font-weight: 800; text-decoration: underline; margin-top: 0.5rem; display: block;">MAGACAAB HADDA</a>
                 @endif
             </div>
             @endif
@@ -97,7 +98,7 @@
                 <i class="fa-solid fa-users-viewfinder" style="margin-right: 0.5rem; color: #3498db;"></i> Liiska Askarta & Shaqaalaha
             </h5>
             <span style="font-weight: 800; font-size: 0.75rem; color: #3498db; background: rgba(52, 152, 219, 0.1); padding: 0.4rem 0.8rem; border-radius: 10px;">
-                {{ $station->users->count() }} WADARTA
+                {{ $staffList->count() }} WADARTA
             </span>
         </div>
 
@@ -112,37 +113,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($station->users as $staff)
+                    @forelse($staffList as $staff)
                     <tr style="border-bottom: 1px solid var(--border-soft); transition: 0.2s;" onmouseover="this.style.background='#fcfcfd'" onmouseout="this.style.background='transparent'">
                         <td style="padding: 1.2rem 1.5rem;">
                             <div style="display: flex; align-items: center; gap: 1rem;">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($staff->name) }}&background=random" style="width: 40px; height: 40px; border-radius: 12px;">
+                                <img src="{{ $staff->profile_image ? asset('storage/' . $staff->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($staff->name) . '&background=random' }}"
+                                    style="width: 40px; height: 40px; border-radius: 12px; object-fit: cover;">
                                 <div style="display: flex; flex-direction: column;">
-                                    <span style="font-weight: 800; color: var(--sidebar-bg); font-size: 0.95rem;">{{ $staff->name }}</span>
+                                    <span style="font-weight: 800; color: var(--sidebar-bg); font-size: 0.95rem;">
+                                        {{ $staff->name }}
+                                        @if(isset($staff->source) && $staff->source == 'commander')
+                                        <i class="fa-solid fa-crown" style="color: #f39c12; margin-left: 5px; font-size: 0.7rem;" title="Taliyaha"></i>
+                                        @endif
+                                    </span>
                                     <span style="font-size: 0.7rem; color: var(--text-sub);">{{ $staff->email }}</span>
                                 </div>
                             </div>
                         </td>
                         <td style="padding: 1.2rem 1.5rem;">
                             <div style="display: flex; flex-direction: column;">
-                                <span style="font-weight: 800; color: #2d3436; font-size: 0.85rem;">{{ $staff->rank ?? 'ASKARI' }}</span>
-                                <span style="font-size: 0.65rem; color: #3498db; font-weight: 700; text-transform: uppercase;">{{ $staff->role->name ?? 'Door' }}</span>
+                                <span style="font-weight: 800; color: #2d3436; font-size: 0.85rem;">{{ $staff->display_rank ?? $staff->rank ?? 'Askari' }}</span>
+                                <span style="font-size: 0.65rem; color: #3498db; font-weight: 700; text-transform: uppercase;">{{ $staff->display_role ?? $staff->role->name ?? 'N/A' }}</span>
                             </div>
                         </td>
                         <td style="padding: 1.2rem 1.5rem;">
+                            @php
+                            $status = $staff->display_status ?? $staff->status ?? 'unknown';
+                            $isActive = strtolower($status) == 'active';
+                            @endphp
                             <span style="
                                 padding: 0.4rem 0.8rem; 
                                 border-radius: 8px; 
                                 font-size: 0.7rem; 
                                 font-weight: 800;
-                                background: {{ $staff->status == 'active' ? '#e8f5e9' : '#ffebee' }};
-                                color: {{ $staff->status == 'active' ? '#2e7d32' : '#c62828' }};
+                                background: {{ $isActive ? '#e8f5e9' : '#ffebee' }};
+                                color: {{ $isActive ? '#2e7d32' : '#c62828' }};
                                 display: inline-flex;
                                 align-items: center;
                                 gap: 0.3rem;
                                 text-transform: uppercase;
                             ">
-                                <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> {{ $staff->status == 'active' ? 'Shaqaynaya' : 'Ma Joogo' }}
+                                <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> {{ $isActive ? 'Shaqaynaya' : 'Ma Joogo' }}
                             </span>
                         </td>
                         <td style="padding: 1.2rem 1.5rem; text-align: right;">
