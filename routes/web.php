@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -36,7 +36,7 @@ Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+    
     // Shared Operational Routes (Admin, CID, Askari)
     // Added Regional Commander (taliye-gobol) and Army Commander (taliye-ciidan) to view all operations
     Route::middleware(['role:admin,cid,askari,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
@@ -52,9 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Legal Routes (Prosecutor, Judge, Admin)
     // Added Commanders to view legal proceedings
-    // Legal Routes (Prosecutor, Judge, Admin) - View Access Expanded
-    // Added Commanders and Officers to view legal proceedings (Read Only enforced in Controller for others)
-    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan,askari,cid,taliye-saldhig'])->group(function () {
+    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan'])->group(function () {
         Route::resource('prosecutions', ProsecutionController::class);
         Route::resource('court-cases', CourtCaseController::class);
     });
@@ -73,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
-
+    
     // User Profile
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
@@ -100,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
     Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
     Route::post('/chat/delete', [\App\Http\Controllers\ChatController::class, 'deleteMessage'])->name('chat.delete');
-
+    
     // Call System Signals
     Route::post('/chat/call/initiate', [\App\Http\Controllers\ChatController::class, 'initiateCall'])->name('chat.call.initiate');
     Route::get('/chat/call/check', [\App\Http\Controllers\ChatController::class, 'checkIncomingCall'])->name('chat.call.check');
