@@ -54,14 +54,7 @@ Route::middleware(['auth'])->group(function () {
     // Added Commanders to view legal proceedings
     Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan,taliye-qaran'])->group(function () {
         Route::resource('prosecutions', ProsecutionController::class);
-        // Court cases management (Create/Edit/Delete) restricted to legal/admin roles
-        Route::resource('court-cases', CourtCaseController::class)->except(['index', 'show']);
-    });
-
-    // Court Cases Read Access (Visible to all authorized personnel)
-    Route::middleware(['role:admin,cid,askari,prosecutor,judge,taliye-saldhig,taliye-gobol,taliye-ciidan,taliye-qaran'])->group(function () {
-        Route::get('/court-cases', [CourtCaseController::class, 'index'])->name('court-cases.index');
-        Route::get('/court-cases/{court_case}', [CourtCaseController::class, 'show'])->name('court-cases.show');
+        Route::resource('court-cases', CourtCaseController::class);
     });
 
     // Administrative Routes (Admin only or Commanders)
