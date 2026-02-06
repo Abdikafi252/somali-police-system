@@ -26,7 +26,7 @@ class FacilityController extends Controller
 
     public function create()
     {
-        $commanders = User::whereHas('role', function($query) {
+        $commanders = User::whereHas('role', function ($query) {
             $query->whereIn('slug', ['admin', 'taliye-qaran', 'taliye-gobol', 'taliye-saldhig']);
         })->get();
         return view('facilities.create', compact('commanders'));
@@ -35,7 +35,7 @@ class FacilityController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:facilities,name',
             'type' => 'required|string',
             'location' => 'required|string',
             'security_level' => 'required|string',
@@ -49,7 +49,7 @@ class FacilityController extends Controller
 
     public function edit(Facility $facility)
     {
-        $commanders = User::whereHas('role', function($query) {
+        $commanders = User::whereHas('role', function ($query) {
             $query->whereIn('slug', ['admin', 'taliye-qaran', 'taliye-gobol', 'taliye-saldhig']);
         })->get();
         return view('facilities.edit', compact('facility', 'commanders'));
@@ -58,7 +58,7 @@ class FacilityController extends Controller
     public function update(Request $request, Facility $facility)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:facilities,name,' . $facility->id,
             'type' => 'required|string',
             'location' => 'required|string',
             'security_level' => 'required|string',

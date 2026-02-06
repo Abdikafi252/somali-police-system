@@ -35,7 +35,7 @@ class StationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'station_name' => 'required|string|max:255',
+            'station_name' => 'required|string|max:255|unique:stations,station_name',
             'location' => 'required|string|max:255',
         ]);
 
@@ -58,7 +58,7 @@ class StationController extends Controller
     public function update(Request $request, Station $station)
     {
         $request->validate([
-            'station_name' => 'required|string|max:255',
+            'station_name' => 'required|string|max:255|unique:stations,station_name,' . $station->id,
             'location' => 'required|string|max:255',
         ]);
 
