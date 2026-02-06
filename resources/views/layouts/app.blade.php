@@ -53,7 +53,7 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['prosecutor', 'taliye-qaran']))
+                @if(in_array(auth()->user()->role->slug, ['prosecutor']))
                 <div class="nav-section-title">Xeer-ilaalinta (Prosecution)</div>
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
@@ -66,7 +66,7 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['judge', 'taliye-qaran']))
+                @if(in_array(auth()->user()->role->slug, ['judge']))
                 <div class="nav-section-title">Garsoorka (Judiciary)</div>
                 <a href="{{ route('court-cases.index') }}" class="nav-link {{ request()->is('court-cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-gavel"></i> <span>Court Cases (Maxkamadda)</span>
