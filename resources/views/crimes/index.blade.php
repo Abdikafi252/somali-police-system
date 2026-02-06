@@ -116,7 +116,7 @@
         </table>
     </div>
     <div style="margin-top: 2rem;">
-        {{ $crimes->links('vendor.pagination.glass') }}
+        {{ $crimes->links() }}
     </div>
 </div>
 @endsection

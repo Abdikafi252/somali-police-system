@@ -67,16 +67,6 @@ class User extends Authenticatable
         return $this->hasOne(StationCommander::class, 'user_id');
     }
 
-    public function stationOfficer()
-    {
-        return $this->hasOne(StationOfficer::class, 'user_id');
-    }
-
-    public function stationOfficers()
-    {
-        return $this->hasMany(StationOfficer::class, 'user_id');
-    }
-
     public function isOnline()
     {
         return $this->last_seen_at && $this->last_seen_at->diffInMinutes(now()) < 5;

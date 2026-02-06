@@ -578,7 +578,7 @@
 
         <!-- Pagination -->
         <div class="pagination">
-            {{ $logs->links('vendor.pagination.glass') }}
+            {{ $logs->links() }}
         </div>
         @else
         <div style="text-align: center; padding: 3rem; color: var(--text-sub);">

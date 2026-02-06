@@ -152,7 +152,7 @@
     </div>
 
     <div style="margin-top: 2rem;">
-        {{ $cases->links('vendor.pagination.glass') }}
+        {{ $cases->links() }}
     </div>
 </div>
 @endsection

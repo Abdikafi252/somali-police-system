@@ -144,7 +144,7 @@
         </table>
     </div>
     <div style="padding: 1.5rem; border-top: 1px solid var(--border-soft); background: #fbfbfc;">
-        {{ $deployments->links('vendor.pagination.glass') }}
+        {{ $deployments->links() }}
     </div>
 </div>
 @endsection

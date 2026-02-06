@@ -83,7 +83,7 @@
         </tbody>
     </table>
     <div style="padding: 1rem;">
-        {{ $commanders->links('vendor.pagination.glass') }}
+        {{ $commanders->links() }}
     </div>
 </div>
 @endsection

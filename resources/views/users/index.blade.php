@@ -218,7 +218,7 @@
 
     <!-- Professional Pagination -->
     <div style="padding: 1.5rem; border-top: 1px solid var(--border-soft); background: #f8fafc;">
-        {{ $users->links('vendor.pagination.glass') }}
+        {{ $users->links() }}
     </div>
 </div>
 

@@ -89,7 +89,7 @@
         </tbody>
     </table>
     <div style="margin-top: 1.5rem;">
-        {{ $suspects->links('vendor.pagination.glass') }}
+        {{ $suspects->links() }}
     </div>
 </div>
 @endsection

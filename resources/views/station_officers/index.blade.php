@@ -100,7 +100,7 @@
         </tbody>
     </table>
     <div style="padding: 1rem;">
-        {{ $officers->links('vendor.pagination.glass') }}
+        {{ $officers->links() }}
     </div>
 </div>
 @endsection

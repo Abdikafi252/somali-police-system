@@ -43,8 +43,8 @@
         @endif
     </div>
 
-    <div class="pagination-info">
-        Waxaa la muujinayaa <span class="font-bold">{{ $paginator->firstItem() }}</span> ilaa <span class="font-bold">{{ $paginator->lastItem() }}</span> oo ka mid ah <span class="font-bold">{{ $paginator->total() }}</span> natiijo
+    <div class="pagination-info glass-pill">
+        Showing <span class="highlight">{{ $paginator->firstItem() }}</span> - <span class="highlight">{{ $paginator->lastItem() }}</span> of <span class="highlight">{{ $paginator->total() }}</span>
     </div>
 </nav>
 
@@ -53,57 +53,55 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.2rem;
-        margin-top: 2.5rem;
+        gap: 1rem;
+        margin-top: 2rem;
         width: 100%;
-        padding: 1rem 0;
     }
 
     .glass-pagination {
-        display: inline-flex;
+        display: flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 0.6rem 0.8rem;
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        /* Very subtle glass */
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     .pagination-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #4b5563;
-        background: rgba(255, 255, 255, 0.6);
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #6b7280;
+        background: rgba(255, 255, 255, 0.5);
         text-decoration: none;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
     }
 
     .pagination-btn:hover:not(.disabled) {
-        background: #ffffff;
+        background: white;
         color: #4f46e5;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
-        border-color: #4f46e5;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        border-color: rgba(79, 70, 229, 0.1);
     }
 
     .pagination-btn.active {
         background: #4f46e5;
         /* Primary Color */
         color: white;
-        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
-        border: 1px solid rgba(79, 70, 229, 0.5);
-        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
     }
 
     .pagination-btn.disabled {
@@ -153,5 +151,24 @@
     [data-theme="dark"] .font-bold {
         color: #e5e7eb;
     }
+
+    .glass-pill {
+        background: rgba(255, 255, 255, 0.4);
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6b7280;
+        backdrop-filter: blur(4px);
+    }
+
+    .highlight {
+        color: #4f46e5;
+        font-weight: 800;
+    }
+
+    /* Dark Mode Support (if updated via js) */
 </style>
 @endif

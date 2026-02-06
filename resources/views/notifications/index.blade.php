@@ -164,7 +164,7 @@
                             @endforelse
 
                             <div class="p-3">
-                                {{ $notifications->links('vendor.pagination.glass') }}
+                                {{ $notifications->links() }}
                             </div>
                         </div>
 
