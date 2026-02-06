@@ -59,12 +59,6 @@ class CourtCaseController extends Controller
         $case = PoliceCase::find($prosecution->case_id);
         $case->update(['status' => 'Xiran']); // Officially Closed
 
-        return redirect()->route('court-cases.show', $courtCase)->with('success', 'Kiiska si rasmi ah ayaa loo xiray xukuna waa laga soo saaray. Kiisku hadda waa XIRAN.');
-    }
-
-    public function show(CourtCase $courtCase)
-    {
-        $courtCase->load(['prosecution.policeCase.crime.suspects', 'judge', 'prosecution.policeCase.investigation']);
-        return view('court.show', compact('courtCase'));
+        return redirect()->route('court-cases.index')->with('success', 'Kiiska si rasmi ah ayaa loo xiray xukuna waa laga soo saaray. Kiisku hadda waa XIRAN.');
     }
 }

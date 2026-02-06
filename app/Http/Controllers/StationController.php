@@ -65,7 +65,7 @@ class StationController extends Controller
         }
 
         // 2. Build Comprehensive Staff List
-        // Start with Active Station Officers (New System)
+        // Start with Active Station Officers
         $staffList = $station->activeStationOfficers->map(function ($officer) {
             $user = $officer->user;
             if ($user) {
@@ -78,22 +78,6 @@ class StationController extends Controller
             return $user;
         })->filter();
 
-        // Merge Legacy Users (Directly assigned via users.station_id)
-        // This ensures officers not yet migrated to station_officers table are still visible
-        if ($station->users->count() > 0) {
-            foreach ($station->users as $legacyUser) {
-                // Only add if not already in the list
-                if (!$staffList->contains('id', $legacyUser->id)) {
-                    // For legacy users, we use their profile data
-                    $legacyUser->display_rank = $legacyUser->rank;
-                    $legacyUser->display_role = $legacyUser->role->name ?? 'Askari';
-                    $legacyUser->display_status = $legacyUser->status ?? 'active';
-                    $legacyUser->source = 'legacy';
-                    $staffList->push($legacyUser);
-                }
-            }
-        }
-
         // Add Commander to the list if exists and not already in list
         if ($activeCommander) {
             // Check if already in list to avoid duplicates
@@ -104,6 +88,11 @@ class StationController extends Controller
                 $activeCommander->source = 'commander';
                 $staffList->prepend($activeCommander);
             }
+        }
+
+        // If staff list is empty, fallback to users table (legacy support)
+        if ($staffList->isEmpty() && $station->users->count() > 0) {
+            $staffList = $station->users;
         }
 
         return view('stations.show', compact('station', 'activeCommander', 'staffList'));
