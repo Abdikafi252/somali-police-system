@@ -4,7 +4,7 @@
 <div class="dashboard-grid">
     <!-- Main Column (Left) -->
     <div class="main-column">
-        
+
         <!-- Stats Row 1 - Primary Metrics -->
         <div class="stats-row">
             <div class="edu-card stat-card">
@@ -126,7 +126,7 @@
                 <h3 style="margin: 0; font-size: 1.1rem; color: #111827;">🗂️ Kiisaskii Ugu Dambeeyay</h3>
                 <a href="{{ route('cases.index') }}" style="font-size: 0.85rem; color: #3b82f6; text-decoration: none; font-weight: 600;">Eeg Dhamaan →</a>
             </div>
-            
+
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 @foreach($recent_crimes->take(5) as $crime)
                 <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
@@ -144,7 +144,7 @@
                 @endforeach
             </div>
         </div>
-        
+
         <!-- Wanted Suspects -->
         <div class="edu-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -223,19 +223,19 @@
 
         <!-- Top Stations -->
         <div class="edu-card">
-             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                 <h3 style="margin: 0; font-size: 1rem; color: #111827;">🏢 Saldhigyada Ugu Shaqada Badan</h3>
-             </div>
-             
-             @foreach($crimes_by_station as $stat)
-             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem;">
-                 <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-lime);"></div>
-                 <div style="flex: 1;">
-                     <div style="font-size: 0.9rem; font-weight: 600; color: #374151;">{{ Str::limit($stat->station_name ?? 'Saldhig', 18) }}</div>
-                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">{{ $stat->total }} Kiis</div>
-                 </div>
-             </div>
-             @endforeach
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0; font-size: 1rem; color: #111827;">🏢 Saldhigyada Ugu Shaqada Badan</h3>
+            </div>
+
+            @foreach($crimes_by_station as $stat)
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-lime);"></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #374151;">{{ Str::limit($stat->station_name ?? 'Saldhig', 18) }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">{{ $stat->total }} Kiis</div>
+                </div>
+            </div>
+            @endforeach
         </div>
 
         <!-- Recent Activities -->
@@ -281,7 +281,7 @@
                 <div style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #f0fdf4; border-radius: 8px;">
                     <div style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></div>
                     <div style="flex: 1;">
-                        <div style="font-weight: 600; font-size: 0.85rem; color: #1f2937;">{{ $deployment->user->name }}</div>
+                        <div style="font-weight: 600; font-size: 0.85rem; color: #1f2937;">{{ $deployment->user->name ?? 'Unknown Officer' }}</div>
                         <div style="font-size: 0.75rem; color: #6b7280;">{{ $deployment->station->station_name ?? $deployment->facility->name ?? 'Location' }}</div>
                     </div>
                 </div>
@@ -313,8 +313,18 @@
 <script>
     // Trends Chart
     var options = {
-        series: [{ name: 'Kiisaska', data: @json(array_values($trend_counts)) }],
-        chart: { type: 'area', height: 250, toolbar: { show: false }, fontFamily: 'Outfit, sans-serif' },
+        series: [{
+            name: 'Kiisaska',
+            data: @json(array_values($trend_counts))
+        }],
+        chart: {
+            type: 'area',
+            height: 250,
+            toolbar: {
+                show: false
+            },
+            fontFamily: 'Outfit, sans-serif'
+        },
         colors: ['#1C1E26'],
         fill: {
             type: 'gradient',
@@ -324,33 +334,70 @@
                 opacityTo: 0.2,
             }
         },
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth', width: 2 },
-        xaxis: { 
-            categories: @json($months), 
-            axisBorder: { show: false }, 
-            axisTicks: { show: false },
-            labels: { style: { colors: '#9ca3af' } }
+        dataLabels: {
+            enabled: false
         },
-        yaxis: { 
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        xaxis: {
+            categories: @json($months),
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            labels: {
+                style: {
+                    colors: '#9ca3af'
+                }
+            }
+        },
+        yaxis: {
             show: true,
-            labels: { style: { colors: '#9ca3af' } }
+            labels: {
+                style: {
+                    colors: '#9ca3af'
+                }
+            }
         },
-        grid: { borderColor: 'rgba(0,0,0,0.05)', strokeDashArray: 4 },
-        tooltip: { theme: 'dark' }
+        grid: {
+            borderColor: 'rgba(0,0,0,0.05)',
+            strokeDashArray: 4
+        },
+        tooltip: {
+            theme: 'dark'
+        }
     };
     new ApexCharts(document.querySelector("#trendChart"), options).render();
 
     // Gender Donut Chart
     var genderOptions = {
-        series: @json($suspect_gender->pluck('count')),
-        chart: { type: 'donut', height: 200, fontFamily: 'Outfit, sans-serif' },
-        labels: @json($suspect_gender->pluck('gender')),
+        series: @json($suspect_gender - > pluck('count')),
+        chart: {
+            type: 'donut',
+            height: 200,
+            fontFamily: 'Outfit, sans-serif'
+        },
+        labels: @json($suspect_gender - > pluck('gender')),
         colors: ['#1C1E26', '#C6F048', '#d1d5db'],
-        dataLabels: { enabled: false },
-        legend: { position: 'bottom', markers: { radius: 12 } },
-        stroke: { show: false },
-        tooltip: { theme: 'dark' },
+        dataLabels: {
+            enabled: false
+        },
+        legend: {
+            position: 'bottom',
+            markers: {
+                radius: 12
+            }
+        },
+        stroke: {
+            show: false
+        },
+        tooltip: {
+            theme: 'dark'
+        },
         plotOptions: {
             pie: {
                 donut: {
