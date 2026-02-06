@@ -22,7 +22,5 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
-
-        \Illuminate\Pagination\Paginator::defaultView('vendor.pagination.glass');
     }
 }

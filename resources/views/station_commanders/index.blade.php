@@ -36,10 +36,10 @@
             <tr style="border-bottom: 1px solid var(--border-soft);">
                 <td style="padding: 1rem;">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        <img src="{{ $commander->user->profile_image ? asset('storage/' . $commander->user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($commander->user->name) . '&background=random&color=fff' }}"
-                            alt="Commander"
-                            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($commander->user->name) }}&background=6366f1&color=fff'"
-                            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
+                        <img src="{{ $commander->user->profile_image ? asset('storage/' . $commander->user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($commander->user->name) . '&background=random&color=fff' }}" 
+                             alt="Commander"
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($commander->user->name) }}&background=6366f1&color=fff'"
+                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
                         <span style="font-weight: 700;">{{ $commander->user->name }}</span>
                     </div>
                 </td>

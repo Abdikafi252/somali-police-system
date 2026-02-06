@@ -72,16 +72,6 @@ class User extends Authenticatable
         return $this->last_seen_at && $this->last_seen_at->diffInMinutes(now()) < 5;
     }
 
-    public function stationOfficer()
-    {
-        return $this->hasOne(StationOfficer::class, 'user_id');
-    }
-
-    public function stationOfficers()
-    {
-        return $this->hasMany(StationOfficer::class, 'user_id');
-    }
-
     public function sentMessages()
     {
         return $this->hasMany(Message::class, 'sender_id');
@@ -127,3 +117,4 @@ class User extends Authenticatable
         ];
     }
 }
+

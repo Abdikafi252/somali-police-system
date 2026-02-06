@@ -38,17 +38,17 @@
         <tbody>
             @forelse($officers as $officer)
             @php
-            $isHighLevel = in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-qaran']);
-            $commanderRecord = \App\Models\StationCommander::where('user_id', auth()->id())->first();
-            $canManage = $isHighLevel || ($commanderRecord && $officer->station_id == $commanderRecord->station_id);
+                $isHighLevel = in_array(auth()->user()->role->slug, ['admin', 'taliye-gobol', 'taliye-qaran']);
+                $commanderRecord = \App\Models\StationCommander::where('user_id', auth()->id())->first();
+                $canManage = $isHighLevel || ($commanderRecord && $officer->station_id == $commanderRecord->station_id);
             @endphp
             <tr style="border-bottom: 1px solid var(--border-soft);">
                 <td style="padding: 1rem;">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        <img src="{{ ($officer->user && $officer->user->profile_image) ? asset('storage/' . $officer->user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($officer->user->name ?? 'N/A') . '&background=random&color=fff' }}"
-                            alt="Officer"
-                            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($officer->user->name ?? 'N/A') }}&background=6366f1&color=fff'"
-                            style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
+                        <img src="{{ ($officer->user && $officer->user->profile_image) ? asset('storage/' . $officer->user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($officer->user->name ?? 'N/A') . '&background=random&color=fff' }}" 
+                             alt="Officer"
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($officer->user->name ?? 'N/A') }}&background=6366f1&color=fff'"
+                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #eee;">
                         <span style="font-weight: 700;">{{ $officer->user->name ?? 'Lama yaqaan' }}</span>
                     </div>
                 </td>
@@ -77,14 +77,14 @@
                     <div style="display: flex; gap: 0.5rem;">
                         <a href="{{ route('station-officers.show', $officer->id) }}" style="color: #3498db;" title="Eeg"><i class="fa-solid fa-eye"></i></a>
                         @if($canManage)
-                        <a href="{{ route('station-officers.edit', $officer->id) }}" style="color: #f39c12;" title="Wax ka bedel"><i class="fa-solid fa-edit"></i></a>
-                        <form action="{{ route('station-officers.destroy', $officer->id) }}" method="POST" onsubmit="return confirm('Ma xaqiijinaysaa inaad tirtirto askarigan?');" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 0;" title="Tirtir">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
+                            <a href="{{ route('station-officers.edit', $officer->id) }}" style="color: #f39c12;" title="Wax ka bedel"><i class="fa-solid fa-edit"></i></a>
+                            <form action="{{ route('station-officers.destroy', $officer->id) }}" method="POST" onsubmit="return confirm('Ma xaqiijinaysaa inaad tirtirto askarigan?');" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 0;" title="Tirtir">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
                         @endif
                     </div>
                 </td>

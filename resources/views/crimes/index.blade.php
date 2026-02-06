@@ -15,15 +15,15 @@
 
 <div class="glass-card" style="padding: 1.5rem;">
     @if(session('success'))
-    <div style="background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #2ecc71;">
-        <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-    </div>
+        <div style="background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #2ecc71;">
+            <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
+        </div>
     @endif
 
     @if(session('error'))
-    <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #e74c3c;">
-        <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
-    </div>
+        <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #e74c3c;">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+        </div>
     @endif
 
     <div style="overflow-x: auto;">
@@ -51,12 +51,12 @@
                     </td>
                     <td style="padding: 1.2rem 1rem;">
                         @php
-                        $statusColors = [
-                        'Diiwaangelin' => ['bg' => '#e3f2fd', 'color' => '#0d47a1'],
-                        'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100'],
-                        'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20'],
-                        ];
-                        $colors = $statusColors[$crime->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436'];
+                            $statusColors = [
+                                'Diiwaangelin' => ['bg' => '#e3f2fd', 'color' => '#0d47a1'],
+                                'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100'],
+                                'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20'],
+                            ];
+                            $colors = $statusColors[$crime->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436'];
                         @endphp
                         <span style="
                             padding: 0.4rem 0.8rem; 
@@ -78,7 +78,7 @@
                             <a href="{{ route('crimes.show', $crime->id) }}" class="btn-icon" title="View" style="padding: 0.5rem 0.8rem; font-size: 0.8rem; border-radius: 8px; width: auto; background: #3498db; border: none; color: white;">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
-
+                            
                             <!-- Edit -->
                             @if(auth()->user()->role->slug == 'admin' || auth()->user()->id == $crime->reported_by)
                             <a href="{{ route('crimes.edit', $crime->id) }}" class="btn-icon" title="Edit" style="padding: 0.5rem 0.8rem; font-size: 0.8rem; border-radius: 8px; width: auto; background: #f1c40f; border: none; color: black;">
@@ -120,3 +120,4 @@
     </div>
 </div>
 @endsection
+
