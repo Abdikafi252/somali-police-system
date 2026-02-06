@@ -15,14 +15,14 @@
 
 @if(session('success'))
 <div style="background: #e8f5e9; color: #2e7d32; padding: 1.2rem; border-radius: 15px; margin-bottom: 1.5rem; border-left: 5px solid #4caf50; display: flex; align-items: center; gap: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-    <i class="fa-solid fa-circle-check fa-lg"></i> 
+    <i class="fa-solid fa-circle-check fa-lg"></i>
     <span style="font-weight: 600;">{{ session('success') }}</span>
 </div>
 @endif
 
 @if(session('error'))
 <div style="background: #fce8e6; color: #c0392b; padding: 1.2rem; border-radius: 15px; margin-bottom: 1.5rem; border-left: 5px solid #e74c3c; display: flex; align-items: center; gap: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-    <i class="fa-solid fa-circle-exclamation fa-lg"></i> 
+    <i class="fa-solid fa-circle-exclamation fa-lg"></i>
     <span style="font-weight: 600;">{{ session('error') }}</span>
 </div>
 @endif
@@ -34,7 +34,7 @@
             Total: <strong>{{ $deployments->total() }}</strong> Geeyn
         </div>
     </div>
-    
+
     <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
@@ -53,11 +53,11 @@
                     <td style="padding: 1.2rem 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             @if($dep->user->profile_image)
-                                <img src="{{ asset('storage/' . $dep->user->profile_image) }}" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;">
+                            <img src="{{ asset('storage/' . $dep->user->profile_image) }}" style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover;">
                             @else
-                                <div style="width: 40px; height: 40px; border-radius: 10px; background: #f0f2f5; color: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-weight: 800;">
-                                    {{ substr($dep->user->name, 0, 1) }}
-                                </div>
+                            <div style="width: 40px; height: 40px; border-radius: 10px; background: #f0f2f5; color: var(--sidebar-bg); display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                                {{ substr($dep->user->name, 0, 1) }}
+                            </div>
                             @endif
                             <div style="display: flex; flex-direction: column;">
                                 <span style="font-weight: 800; color: var(--sidebar-bg); font-size: 0.9rem;">{{ $dep->user->name }}</span>
@@ -74,15 +74,15 @@
                     <td style="padding: 1.2rem 1.5rem;">
                         <div style="display: flex; flex-direction: column;">
                             @if($dep->station)
-                                <span style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
-                                    <i class="fa-solid fa-shield-halved" style="color: #3498db; font-size: 0.8rem;"></i> {{ $dep->station->station_name }}
-                                </span>
+                            <span style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+                                <i class="fa-solid fa-shield-halved" style="color: #3498db; font-size: 0.8rem;"></i> {{ $dep->station->station_name }}
+                            </span>
                             @elseif($dep->facility)
-                                <span style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
-                                    <i class="fa-solid fa-building-circle-check" style="color: #27ae60; font-size: 0.8rem;"></i> {{ $dep->facility->name }}
-                                </span>
+                            <span style="font-weight: 700; color: var(--sidebar-bg); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+                                <i class="fa-solid fa-building-circle-check" style="color: #27ae60; font-size: 0.8rem;"></i> {{ $dep->facility->name }}
+                            </span>
                             @else
-                                <span style="color: #ccc; font-size: 0.85rem;">Lama yaqaan</span>
+                            <span style="color: #ccc; font-size: 0.85rem;">Lama yaqaan</span>
                             @endif
                         </div>
                     </td>
@@ -144,8 +144,7 @@
         </table>
     </div>
     <div style="padding: 1.5rem; border-top: 1px solid var(--border-soft); background: #fbfbfc;">
-        {{ $deployments->links() }}
+        {{ $deployments->links('vendor.pagination.glass') }}
     </div>
 </div>
 @endsection
-

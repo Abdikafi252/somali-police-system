@@ -17,15 +17,15 @@
 
 <div class="glass-card">
     @if(session('success'))
-        <div style="background: rgba(26, 188, 156, 0.1); color: var(--accent-teal); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600;">
-            <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-        </div>
+    <div style="background: rgba(26, 188, 156, 0.1); color: var(--accent-teal); padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600;">
+        <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
+    </div>
     @endif
 
     @if(session('error'))
-        <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600;">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
-        </div>
+    <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600;">
+        <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+    </div>
     @endif
 
     <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -43,10 +43,10 @@
             <tr style="border-bottom: 1px solid var(--border-soft);">
                 <td style="padding: 1rem; font-weight: 700; color: var(--sidebar-bg);">
                     <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=6366f1&color=fff' }}" 
-                             alt="Suspect"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=6366f1&color=fff'"
-                             style="width: 40px; height: 40px; border-radius: 12px; object-fit: cover; border: 2px solid #f1f5f9;">
+                        <img src="{{ $suspect->photo ? asset('storage/' . $suspect->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($suspect->name) . '&background=6366f1&color=fff' }}"
+                            alt="Suspect"
+                            onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($suspect->name) }}&background=6366f1&color=fff'"
+                            style="width: 40px; height: 40px; border-radius: 12px; object-fit: cover; border: 2px solid #f1f5f9;">
                         {{ $suspect->name }}
                     </div>
                 </td>
@@ -60,9 +60,9 @@
                 </td>
                 <td style="padding: 1rem;">
                     @if($suspect->crime)
-                        <span style="color: var(--accent-blue); font-weight: 600;">{{ $suspect->crime->case_number }}</span>
+                    <span style="color: var(--accent-blue); font-weight: 600;">{{ $suspect->crime->case_number }}</span>
                     @else
-                        <span style="color: #ccc;">Ma jiro</span>
+                    <span style="color: #ccc;">Ma jiro</span>
                     @endif
                 </td>
                 <td style="padding: 1rem;">
@@ -89,8 +89,7 @@
         </tbody>
     </table>
     <div style="margin-top: 1.5rem;">
-        {{ $suspects->links() }}
+        {{ $suspects->links('vendor.pagination.glass') }}
     </div>
 </div>
 @endsection
-

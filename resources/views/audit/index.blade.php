@@ -55,12 +55,12 @@
     }
 
     .stat-card {
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 16px;
         padding: 1.5rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -78,7 +78,7 @@
 
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
     .stat-icon {
@@ -109,12 +109,12 @@
     }
 
     .filters-card {
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 16px;
         padding: 1.5rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         margin-bottom: 2rem;
     }
 
@@ -214,12 +214,12 @@
     }
 
     .logs-card {
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 16px;
         padding: 1.5rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .logs-table {
@@ -470,7 +470,7 @@
         <h3 style="margin-bottom: 1.5rem; color: var(--sidebar-bg); font-weight: 700;">
             <i class="fa-solid fa-table"></i> Liiska Diiwaanka
         </h3>
-        
+
         @if($logs->count() > 0)
         <table class="logs-table">
             <thead>
@@ -488,22 +488,22 @@
                     <td>
                         <div class="user-cell">
                             @if($log->user && $log->user->profile_image)
-                                <img src="{{ asset('storage/' . $log->user->profile_image) }}" class="user-avatar" alt="Profile">
+                            <img src="{{ asset('storage/' . $log->user->profile_image) }}" class="user-avatar" alt="Profile">
                             @else
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($log->user->name ?? 'N/A') }}&size=35&background=random" class="user-avatar" alt="Avatar">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($log->user->name ?? 'N/A') }}&size=35&background=random" class="user-avatar" alt="Avatar">
                             @endif
                             <span class="user-name">{{ $log->user->name ?? 'N/A' }}</span>
                         </div>
                     </td>
                     <td>
                         @php
-                            $actionClass = strtolower($log->action);
-                            $actionText = [
-                                'created' => 'La Abuuray',
-                                'updated' => 'La Cusboonaysiiyay',
-                                'deleted' => 'La Tirtiray',
-                                'viewed' => 'La Daawday'
-                            ][$log->action] ?? $log->action;
+                        $actionClass = strtolower($log->action);
+                        $actionText = [
+                        'created' => 'La Abuuray',
+                        'updated' => 'La Cusboonaysiiyay',
+                        'deleted' => 'La Tirtiray',
+                        'viewed' => 'La Daawday'
+                        ][$log->action] ?? $log->action;
                         @endphp
                         <span class="action-badge {{ $actionClass }}">{{ $actionText }}</span>
                     </td>
@@ -513,57 +513,57 @@
                     </td>
                     <td style="font-size: 0.85rem; color: #495057;">
                         {{ Str::limit($log->description ?? $log->details, 50) }}
-                        
-                        @if(!empty($log->old_values) || !empty($log->new_values))
-                            <button type="button" class="btn btn-sm btn-link text-primary p-0 ms-2" data-bs-toggle="modal" data-bs-target="#logModal{{ $log->id }}">
-                                <i class="fa-solid fa-eye"></i> Eeg Isbedelka
-                            </button>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="logModal{{ $log->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title fw-bold">Faahfaahinta Waxqabadka</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <h6 class="fw-bold text-danger mb-2">Hore (Old Values)</h6>
-                                                    @if(!empty($log->old_values))
-                                                        <div class="bg-light p-3 rounded" style="font-family: monospace; font-size: 0.85rem;">
-                                                            @foreach($log->old_values as $key => $value)
-                                                                <div class="mb-1">
-                                                                    <span class="fw-bold">{{ $key }}:</span> 
-                                                                    <span class="text-danger">{{ is_array($value) ? json_encode($value) : $value }}</span>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        <span class="text-muted fst-italic">Ma jiro xog hore</span>
-                                                    @endif
+                        @if(!empty($log->old_values) || !empty($log->new_values))
+                        <button type="button" class="btn btn-sm btn-link text-primary p-0 ms-2" data-bs-toggle="modal" data-bs-target="#logModal{{ $log->id }}">
+                            <i class="fa-solid fa-eye"></i> Eeg Isbedelka
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="logModal{{ $log->id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold">Faahfaahinta Waxqabadka</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-danger mb-2">Hore (Old Values)</h6>
+                                                @if(!empty($log->old_values))
+                                                <div class="bg-light p-3 rounded" style="font-family: monospace; font-size: 0.85rem;">
+                                                    @foreach($log->old_values as $key => $value)
+                                                    <div class="mb-1">
+                                                        <span class="fw-bold">{{ $key }}:</span>
+                                                        <span class="text-danger">{{ is_array($value) ? json_encode($value) : $value }}</span>
+                                                    </div>
+                                                    @endforeach
                                                 </div>
-                                                <div class="col-md-6 border-start">
-                                                    <h6 class="fw-bold text-success mb-2">Cusub (New Values)</h6>
-                                                    @if(!empty($log->new_values))
-                                                        <div class="bg-light p-3 rounded" style="font-family: monospace; font-size: 0.85rem;">
-                                                            @foreach($log->new_values as $key => $value)
-                                                                <div class="mb-1">
-                                                                    <span class="fw-bold">{{ $key }}:</span> 
-                                                                    <span class="text-success">{{ is_array($value) ? json_encode($value) : $value }}</span>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        <span class="text-muted fst-italic">Ma jiro xog cusub</span>
-                                                    @endif
+                                                @else
+                                                <span class="text-muted fst-italic">Ma jiro xog hore</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-6 border-start">
+                                                <h6 class="fw-bold text-success mb-2">Cusub (New Values)</h6>
+                                                @if(!empty($log->new_values))
+                                                <div class="bg-light p-3 rounded" style="font-family: monospace; font-size: 0.85rem;">
+                                                    @foreach($log->new_values as $key => $value)
+                                                    <div class="mb-1">
+                                                        <span class="fw-bold">{{ $key }}:</span>
+                                                        <span class="text-success">{{ is_array($value) ? json_encode($value) : $value }}</span>
+                                                    </div>
+                                                    @endforeach
                                                 </div>
+                                                @else
+                                                <span class="text-muted fst-italic">Ma jiro xog cusub</span>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         @endif
                     </td>
                     <td>
@@ -578,7 +578,7 @@
 
         <!-- Pagination -->
         <div class="pagination">
-            {{ $logs->links() }}
+            {{ $logs->links('vendor.pagination.glass') }}
         </div>
         @else
         <div style="text-align: center; padding: 3rem; color: var(--text-sub);">

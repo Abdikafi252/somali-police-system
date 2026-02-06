@@ -21,15 +21,15 @@
 
 <div class="glass-card" style="padding: 1.5rem;">
     @if(session('success'))
-        <div style="background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #2ecc71;">
-            <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-        </div>
+    <div style="background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #2ecc71;">
+        <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
+    </div>
     @endif
 
     @if(session('error'))
-        <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #e74c3c;">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
-        </div>
+    <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #e74c3c;">
+        <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+    </div>
     @endif
 
     <div style="overflow-x: auto;">
@@ -60,31 +60,31 @@
                     </td>
                     <td style="padding: 1.2rem 1rem;">
                         @if($case->assignedOfficer)
-                            <div style="display: flex; align-items: center; gap: 0.6rem;">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($case->assignedOfficer->name) }}&size=30&background=F0F4F8&color=3498db&font-size=0.4" style="border-radius: 8px; border: 1px solid var(--border-soft);">
-                                <span style="font-size: 0.9rem; font-weight: 600;">{{ $case->assignedOfficer->name }}</span>
-                            </div>
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($case->assignedOfficer->name) }}&size=30&background=F0F4F8&color=3498db&font-size=0.4" style="border-radius: 8px; border: 1px solid var(--border-soft);">
+                            <span style="font-size: 0.9rem; font-weight: 600;">{{ $case->assignedOfficer->name }}</span>
+                        </div>
                         @else
-                            <span style="color: #e74c3c; font-size: 0.8rem; font-weight: 700; background: rgba(231, 76, 60, 0.05); padding: 0.3rem 0.6rem; border-radius: 6px;">
-                                <i class="fa-solid fa-user-slash"></i> Lama magacaabin
-                            </span>
+                        <span style="color: #e74c3c; font-size: 0.8rem; font-weight: 700; background: rgba(231, 76, 60, 0.05); padding: 0.3rem 0.6rem; border-radius: 6px;">
+                            <i class="fa-solid fa-user-slash"></i> Lama magacaabin
+                        </span>
                         @endif
                     </td>
                     <td style="padding: 1.2rem 1rem;">
                         @php
-                            $statusColors = [
-                                'assigned' => ['bg' => '#e3f2fd', 'color' => '#0d47a1', 'label' => 'Loo-xilsaaray', 'progress' => 25],
-                                'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan', 'progress' => 25],
-                                'Baarista-CID' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan CID', 'progress' => 40],
-                                'Xeer-Ilaalinta' => ['bg' => '#f3e5f5', 'color' => '#4a148c', 'label' => 'Xeer-ilaalinta', 'progress' => 60],
-                                'Maxkamadda' => ['bg' => '#efebe9', 'color' => '#3e2723', 'label' => 'Maxkamadda', 'progress' => 80],
-                                'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xiran', 'progress' => 100],
-                                'Xukunsan' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xukunsan', 'progress' => 100],
-                                'Dhamaaday' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Dhamaaday', 'progress' => 100],
-                            ];
-                            $statusData = $statusColors[$case->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436', 'label' => $case->status, 'progress' => 0];
+                        $statusColors = [
+                        'assigned' => ['bg' => '#e3f2fd', 'color' => '#0d47a1', 'label' => 'Loo-xilsaaray', 'progress' => 25],
+                        'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan', 'progress' => 25],
+                        'Baarista-CID' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan CID', 'progress' => 40],
+                        'Xeer-Ilaalinta' => ['bg' => '#f3e5f5', 'color' => '#4a148c', 'label' => 'Xeer-ilaalinta', 'progress' => 60],
+                        'Maxkamadda' => ['bg' => '#efebe9', 'color' => '#3e2723', 'label' => 'Maxkamadda', 'progress' => 80],
+                        'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xiran', 'progress' => 100],
+                        'Xukunsan' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xukunsan', 'progress' => 100],
+                        'Dhamaaday' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Dhamaaday', 'progress' => 100],
+                        ];
+                        $statusData = $statusColors[$case->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436', 'label' => $case->status, 'progress' => 0];
                         @endphp
-                        
+
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <span style="
                                 padding: 0.4rem 0.8rem; 
@@ -101,7 +101,7 @@
                                 <i class="fa-solid fa-circle" style="font-size: 0.4rem;"></i>
                                 {{ $statusData['label'] }}
                             </span>
-                            
+
                             <!-- Progress Bar -->
                             <div style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 6px; overflow: hidden;">
                                 <div style="
@@ -152,8 +152,7 @@
     </div>
 
     <div style="margin-top: 2rem;">
-        {{ $cases->links() }}
+        {{ $cases->links('vendor.pagination.glass') }}
     </div>
 </div>
 @endsection
-

@@ -17,7 +17,7 @@
 
 @if(session('success'))
 <div style="background: #e8f5e9; color: #2e7d32; padding: 1.2rem; border-radius: 15px; margin-bottom: 1.5rem; border-left: 5px solid #4caf50; display: flex; align-items: center; gap: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-    <i class="fa-solid fa-circle-check fa-lg"></i> 
+    <i class="fa-solid fa-circle-check fa-lg"></i>
     <span style="font-weight: 600;">{{ session('success') }}</span>
 </div>
 @endif
@@ -29,28 +29,42 @@
     </div>
     <div class="marquee" style="white-space: nowrap; animation: marquee 35s linear infinite; display: inline-block; padding-left: 100%;">
         @foreach($users->take(10) as $usr)
-            <span style="margin-right: 3rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px;">
-                <span style="color: var(--accent-lime);">[{{ $usr->rank ?? 'ASKARI' }}]</span> 
-                {{ $usr->name }} • 
-                <span style="color: #94a3b8;">{{ $usr->station->station_name ?? 'RESERVE' }}</span> • 
-                <span style="color: {{ $usr->status == 'active' ? '#2ecc71' : '#ef4444' }}; font-size: 0.7rem;">
-                    <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> {{ strtoupper($usr->status) }}
-                </span>
+        <span style="margin-right: 3rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px;">
+            <span style="color: var(--accent-lime);">[{{ $usr->rank ?? 'ASKARI' }}]</span>
+            {{ $usr->name }} •
+            <span style="color: #94a3b8;">{{ $usr->station->station_name ?? 'RESERVE' }}</span> •
+            <span style="color: {{ $usr->status == 'active' ? '#2ecc71' : '#ef4444' }}; font-size: 0.7rem;">
+                <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> {{ strtoupper($usr->status) }}
             </span>
+        </span>
         @endforeach
     </div>
 </div>
 
 <style>
-@keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-}
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
+    @keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
 </style>
 
 <!-- Interactive Stats Charts Row -->
@@ -62,7 +76,7 @@
         </h5>
         <div id="roleChart" style="min-height: 250px;"></div>
     </div>
-    
+
     <!-- Rank Distribution Chart -->
     <div class="glass-card" style="padding: 1.5rem; position: relative;">
         <h5 style="margin: 0 0 1.5rem 0; color: var(--sidebar-bg); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -75,7 +89,7 @@
 <!-- Simple Count Indicator -->
 <div style="margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;">
     <div style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 700; background: #fff; padding: 10px 20px; border-radius: 15px; box-shadow: var(--shadow-premium); border: 1px solid #e2e8f0;">
-        <i class="fa-solid fa-users-police" style="color: var(--accent-blue); margin-right: 0.5rem;"></i> 
+        <i class="fa-solid fa-users-police" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>
         WADARTA: <strong style="color: var(--text-primary);">{{ $users->total() }}</strong> SARKAAL
     </div>
 </div>
@@ -85,7 +99,7 @@
         <h5 style="margin: 0; color: var(--sidebar-bg); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
             <i class="fa-solid fa-list-ul" style="margin-right: 0.5rem; color: #667eea;"></i> Saraakiisha Diiwaangashan
         </h5>
-        
+
         <!-- Server-Side Search Tool -->
         <form action="{{ route('users.index') }}" method="GET" style="position: relative; width: 350px;">
             <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
@@ -100,9 +114,9 @@
                 background: #f8f9fa;
             ">
             @if(request('search'))
-                <a href="{{ route('users.index') }}" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #ef4444; font-size: 0.8rem; text-decoration: none;">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </a>
+            <a href="{{ route('users.index') }}" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #ef4444; font-size: 0.8rem; text-decoration: none;">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </a>
             @endif
         </form>
 
@@ -110,7 +124,7 @@
             WADARTA: <strong style="color: var(--sidebar-bg);">{{ $users->total() }}</strong> SARKAAL
         </div>
     </div>
-    
+
     <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;" id="staffTable">
             <thead>
@@ -128,9 +142,9 @@
                     <td style="padding: 1.2rem 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 1rem;">
                             <div style="position: relative;">
-                                <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=1c1e26&color=fff' }}" 
-                                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=1c1e26&color=fff'"
-                                     style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=1c1e26&color=fff' }}"
+                                    onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=1c1e26&color=fff'"
+                                    style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                                 <div style="position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; border-radius: 50%; background: {{ $user->status == 'active' ? '#2ecc71' : '#94a3af' }}; border: 2px solid #fff;"></div>
                             </div>
                             <div style="display: flex; flex-direction: column;">
@@ -201,10 +215,10 @@
             </tbody>
         </table>
     </div>
-    
+
     <!-- Professional Pagination -->
     <div style="padding: 1.5rem; border-top: 1px solid var(--border-soft); background: #f8fafc;">
-        {{ $users->links() }}
+        {{ $users->links('vendor.pagination.glass') }}
     </div>
 </div>
 
@@ -213,18 +227,31 @@
 <script>
     // Stats for Role Distribution
     var roleOptions = {
-        series: @json($roleStats->pluck('count')),
-        chart: { type: 'donut', height: 250, fontFamily: 'Outfit, sans-serif' },
-        labels: @json($roleStats->pluck('role.name')),
+        series: @json($roleStats - > pluck('count')),
+        chart: {
+            type: 'donut',
+            height: 250,
+            fontFamily: 'Outfit, sans-serif'
+        },
+        labels: @json($roleStats - > pluck('role.name')),
         colors: ['#3498db', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'],
-        legend: { position: 'bottom', fontSize: '11px', fontWeight: 700 },
+        legend: {
+            position: 'bottom',
+            fontSize: '11px',
+            fontWeight: 700
+        },
         plotOptions: {
             pie: {
                 donut: {
                     size: '70%',
                     labels: {
                         show: true,
-                        total: { show: true, label: 'WADARTA', fontSize: '12px', fontWeight: 800 }
+                        total: {
+                            show: true,
+                            label: 'WADARTA',
+                            fontSize: '12px',
+                            fontWeight: 800
+                        }
                     }
                 }
             }
@@ -236,19 +263,44 @@
     var rankOptions = {
         series: [{
             name: 'Saraakiisha',
-            data: @json($rankStats->pluck('count'))
+            data: @json($rankStats - > pluck('count'))
         }],
-        chart: { type: 'bar', height: 250, toolbar: { show: false }, fontFamily: 'Outfit, sans-serif' },
+        chart: {
+            type: 'bar',
+            height: 250,
+            toolbar: {
+                show: false
+            },
+            fontFamily: 'Outfit, sans-serif'
+        },
         colors: ['#2ecc71'],
         plotOptions: {
-            bar: { borderRadius: 8, horizontal: true, distributed: true }
+            bar: {
+                borderRadius: 8,
+                horizontal: true,
+                distributed: true
+            }
         },
         xaxis: {
-            categories: @json($rankStats->pluck('rank')),
-            labels: { style: { colors: '#94a3b8', fontWeight: 700 } }
+            categories: @json($rankStats - > pluck('rank')),
+            labels: {
+                style: {
+                    colors: '#94a3b8',
+                    fontWeight: 700
+                }
+            }
         },
-        yaxis: { labels: { style: { colors: '#94a3b8', fontWeight: 700 } } },
-        dataLabels: { enabled: true }
+        yaxis: {
+            labels: {
+                style: {
+                    colors: '#94a3b8',
+                    fontWeight: 700
+                }
+            }
+        },
+        dataLabels: {
+            enabled: true
+        }
     };
     new ApexCharts(document.querySelector("#rankChart"), rankOptions).render();
 </script>
