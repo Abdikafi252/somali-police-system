@@ -44,7 +44,7 @@
     </div>
 
     <div class="pagination-info">
-        Showing <span class="font-bold">{{ $paginator->firstItem() }}</span> to <span class="font-bold">{{ $paginator->lastItem() }}</span> of <span class="font-bold">{{ $paginator->total() }}</span> results
+        Waxaa la muujinayaa <span class="font-bold">{{ $paginator->firstItem() }}</span> ilaa <span class="font-bold">{{ $paginator->lastItem() }}</span> oo ka mid ah <span class="font-bold">{{ $paginator->total() }}</span> natiijo
     </div>
 </nav>
 
@@ -53,55 +53,57 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        margin-top: 2rem;
+        gap: 1.2rem;
+        margin-top: 2.5rem;
         width: 100%;
+        padding: 1rem 0;
     }
 
     .glass-pagination {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        /* Very subtle glass */
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        gap: 0.6rem;
+        padding: 0.6rem 0.8rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
     }
 
     .pagination-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #6b7280;
-        background: rgba(255, 255, 255, 0.5);
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #4b5563;
+        background: rgba(255, 255, 255, 0.6);
         text-decoration: none;
-        transition: all 0.2s ease;
-        border: 1px solid transparent;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(255, 255, 255, 0.5);
     }
 
     .pagination-btn:hover:not(.disabled) {
-        background: white;
+        background: #ffffff;
         color: #4f46e5;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
-        border-color: rgba(79, 70, 229, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+        border-color: #4f46e5;
     }
 
     .pagination-btn.active {
         background: #4f46e5;
         /* Primary Color */
         color: white;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+        border: 1px solid rgba(79, 70, 229, 0.5);
+        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        transform: scale(1.05);
     }
 
     .pagination-btn.disabled {
