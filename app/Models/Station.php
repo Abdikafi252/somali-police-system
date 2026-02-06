@@ -26,10 +26,19 @@ class Station extends Model
         return $this->hasMany(Deployment::class);
     }
 
-    // Accessor for officer count (Based on Users table)
+    // Accessor for officer count (Merges New System + Legacy Users)
     public function getOfficerCountAttribute()
     {
-        return $this->users()->count();
+        // 1. Count Active Officers from StationOfficer table
+        $newSystemCount = $this->activeStationOfficers()->count();
+
+        // 2. Count Legacy Users (directly assigned via users.station_id)
+        // We need to avoid double counting if a user is in both
+        $legacyCount = $this->users()->whereDoesntHave('stationOfficer', function ($q) {
+            $q->where('station_id', $this->id)->where('status', 'active');
+        })->count();
+
+        return $newSystemCount + $legacyCount;
     }
 
     // Relationship to Station Commanders
