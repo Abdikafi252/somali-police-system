@@ -34,7 +34,7 @@ class StationCommanderController extends Controller
         }
 
         // Users with role 'taliye-saldhig'
-        $available_users = User::whereHas('role', function($q) {
+        $available_users = User::whereHas('role', function ($q) {
             $q->where('slug', 'taliye-saldhig');
         })->get();
 
@@ -55,6 +55,9 @@ class StationCommanderController extends Controller
         ]);
 
         $commanderUser = User::findOrFail($request->user_id);
+
+        // Check if user is already a commander elsewhere and remove it
+        StationCommander::where('user_id', $request->user_id)->delete();
 
         $commander = StationCommander::create([
             'user_id' => $request->user_id,
@@ -97,9 +100,9 @@ class StationCommanderController extends Controller
         }
 
         $commander = StationCommander::findOrFail($id);
-        
+
         // Users with role 'taliye-saldhig'
-        $available_users = User::whereHas('role', function($q) {
+        $available_users = User::whereHas('role', function ($q) {
             $q->where('slug', 'taliye-saldhig');
         })->get();
 
@@ -151,7 +154,7 @@ class StationCommanderController extends Controller
         }
 
         $commander = StationCommander::with(['user', 'station'])->findOrFail($id);
-        
+
         \App\Services\AuditService::log('delete', $commander, ['description' => "Removed commander {$commander->user->name} from {$commander->station->station_name}"]);
 
         $commander->delete();

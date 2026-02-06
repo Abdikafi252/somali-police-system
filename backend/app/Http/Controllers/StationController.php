@@ -10,8 +10,7 @@ class StationController extends Controller
     public function __construct()
     {
         // Restrict access to specific roles
-        // admin, taliye-gobol, taliye-qaran, taliye-ciidanka
-        // Note: The user said 'taliyaha ciidanka' which maps to 'taliye-qaran' in seeder
+        // admin, taliye-gobol, taliye-qaran
         $this->middleware(function ($request, $next) {
             $allowedRoles = ['admin', 'taliye-gobol', 'taliye-qaran'];
             if (!auth()->check() || !in_array(auth()->user()->role->slug, $allowedRoles)) {
@@ -35,7 +34,7 @@ class StationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'station_name' => 'required|string|max:255',
+            'station_name' => 'required|string|max:255|unique:stations,station_name',
             'location' => 'required|string|max:255',
         ]);
 
@@ -58,7 +57,7 @@ class StationController extends Controller
     public function update(Request $request, Station $station)
     {
         $request->validate([
-            'station_name' => 'required|string|max:255',
+            'station_name' => 'required|string|max:255|unique:stations,station_name,' . $station->id,
             'location' => 'required|string|max:255',
         ]);
 

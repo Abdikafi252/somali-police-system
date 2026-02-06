@@ -32,7 +32,7 @@
             <p style="color: #e74c3c; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                 <i class="fa-solid fa-location-dot"></i> {{ $station->location }}
             </p>
-            
+
             <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem;">
                 <div style="background: rgba(52, 152, 219, 0.05); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(52, 152, 219, 0.1);">
                     <h1 style="margin: 0; font-size: 3rem; color: #2980b9; font-family: 'Outfit'; font-weight: 900;">{{ $station->users->count() }}</h1>
@@ -46,13 +46,13 @@
             <h5 style="font-weight: 800; color: var(--sidebar-bg); margin-bottom: 1.2rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-soft); padding-bottom: 0.8rem;">
                 <i class="fa-solid fa-user-shield" style="margin-right: 0.5rem; color: #f39c12;"></i> Taliyaha Saldhigga
             </h5>
-            
-            @if($station->commander)
+
+            @if($station->currentCommander)
             <div style="display: flex; align-items: center; gap: 1.2rem;">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode($station->commander->name) }}&size=100&background=random" style="width: 60px; height: 60px; border-radius: 15px; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($station->currentCommander->name) }}&size=100&background=random" style="width: 60px; height: 60px; border-radius: 15px; border: 3px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                 <div>
-                    <h4 style="margin: 0; font-weight: 800; color: var(--sidebar-bg); font-size: 1rem;">{{ $station->commander->name }}</h4>
-                    <p style="margin: 0.2rem 0; color: #f39c12; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">{{ $station->commander->rank ?? 'TALIYE' }}</p>
+                    <h4 style="margin: 0; font-weight: 800; color: var(--sidebar-bg); font-size: 1rem;">{{ $station->currentCommander->name }}</h4>
+                    <p style="margin: 0.2rem 0; color: #f39c12; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;">{{ $station->currentCommander->rank ?? 'TALIYE' }}</p>
                 </div>
             </div>
             @else

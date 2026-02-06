@@ -35,7 +35,7 @@
                     <i class="fa-solid fa-grid-2"></i> <span>Dashboard</span>
                 </a>
 
-                @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
+                @if(in_array(auth()->user()->role->slug, ['admin', 'cid', 'askari', 'taliye-saldhig', 'taliye-gobol', 'taliye-qaran']))
                 <div class="nav-section-title">Operations</div>
                 <a href="{{ route('cases.index') }}" class="nav-link {{ request()->is('cases*') ? 'active' : '' }}">
                     <i class="fa-solid fa-folder-open"></i> <span>Cases (Kiisaska)</span>
@@ -48,7 +48,9 @@
                 <a href="{{ route('investigations.index') }}" class="nav-link {{ request()->is('investigations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-magnifying-glass"></i> <span>Investigations (Baaritaanka)</span>
                 </a>
-
+                <a href="{{ route('chat.index') }}" class="nav-link {{ request()->is('chat*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-comments"></i> <span>Chat (Wada-hadalka)</span>
+                </a>
                 @endif
 
                 @if(auth()->user()->role->slug == 'prosecutor')
@@ -71,7 +73,7 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-ciidan']))
+                @if(in_array(auth()->user()->role->slug, ['admin', 'taliye-saldhig', 'taliye-gobol', 'taliye-qaran']))
                 <div class="nav-section-title">Administration</div>
                 <a href="{{ route('stations.index') }}" class="nav-link {{ request()->is('stations*') ? 'active' : '' }}">
                     <i class="fa-solid fa-building-shield"></i> <span>Saldhigyada (Registry)</span>
@@ -117,7 +119,7 @@
             <header class="edu-topbar">
                 <div class="welcome-text">
                     <h1>Welcome back, {{ explode(' ', auth()->user()->name)[0] }} 👋</h1>
-                    <span>Here's what's happening in your jurisdiction today.</span>
+                    <span>{{ \Carbon\Carbon::now()->format('l, F j, Y') }}</span>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 1.5rem;">

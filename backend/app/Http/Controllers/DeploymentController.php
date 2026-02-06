@@ -27,13 +27,13 @@ class DeploymentController extends Controller
 
     public function create()
     {
-        $officers = User::whereHas('role', function($query) {
+        $officers = User::whereHas('role', function ($query) {
             $query->where('slug', 'askari');
         })->get();
 
         $stations = \App\Models\Station::all();
         $facilities = Facility::where('type', '!=', 'Court')->get();
-        
+
         return view('deployments.create', compact('officers', 'stations', 'facilities'));
     }
 
@@ -47,6 +47,9 @@ class DeploymentController extends Controller
             'shift' => 'required|string',
         ]);
 
+        // Prevent duplicate deployments: Delete old deployment for this user
+        Deployment::where('user_id', $request->user_id)->delete();
+
         Deployment::create($validated + ['status' => 'on_duty']);
 
         return redirect()->route('deployments.index')->with('success', 'Askari si guul leh ayaa loo geeyay shaqada.');
@@ -58,7 +61,7 @@ class DeploymentController extends Controller
 
     public function edit(Deployment $deployment)
     {
-        $officers = User::whereHas('role', function($query) {
+        $officers = User::whereHas('role', function ($query) {
             $query->where('slug', 'askari');
         })->get();
 

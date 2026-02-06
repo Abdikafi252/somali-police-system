@@ -25,6 +25,7 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout']); // Fallback for GET request
 
 // Password Reset Routes
 Route::get('/password/reset', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
@@ -35,19 +36,14 @@ Route::post('/password/reset', [AuthController::class, 'resetPassword'])->name('
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Shared Operational Routes (Admin, CID, Askari)
-    // Added Regional Commander (taliye-gobol) and Army Commander (taliye-ciidan) to view all operations
-    Route::middleware(['role:admin,cid,askari,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
+    // Added Regional Commander (taliye-gobol) and Army Commander (taliye-qaran) to view all operations
+    Route::middleware(['role:admin,cid,askari,taliye-saldhig,taliye-gobol,taliye-qaran'])->group(function () {
         Route::resource('crimes', CrimeController::class);
         Route::get('/crimes/{crime}/pdf', [\App\Http\Controllers\CrimeController::class, 'exportPDF'])->name('crimes.pdf');
         Route::resource('suspects', SuspectController::class);
         Route::get('/cases/dashboard', [PoliceCaseController::class, 'dashboard'])->name('cases.dashboard');
-        
-        // Unified Incident Creation (Crime + Suspect + Case)
-        Route::get('/cases/create-unified', [PoliceCaseController::class, 'createUnified'])->name('cases.create-unified');
-        Route::post('/cases/store-unified', [PoliceCaseController::class, 'storeUnified'])->name('cases.store-unified');
-
         Route::resource('cases', PoliceCaseController::class);
         Route::resource('investigations', InvestigationController::class);
         Route::get('/investigations/{id}/report', [InvestigationController::class, 'showReport'])->name('investigations.report');
@@ -56,14 +52,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Legal Routes (Prosecutor, Judge, Admin)
     // Added Commanders to view legal proceedings
-    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-ciidan'])->group(function () {
+    Route::middleware(['role:admin,prosecutor,judge,taliye-gobol,taliye-qaran'])->group(function () {
         Route::resource('prosecutions', ProsecutionController::class);
         Route::resource('court-cases', CourtCaseController::class);
     });
 
     // Administrative Routes (Admin only or Commanders)
-    // Added Taliye Ciidan to admin routes
-    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol,taliye-ciidan'])->group(function () {
+    // Added Taliye Qaran to admin routes
+    Route::middleware(['role:admin,taliye-saldhig,taliye-gobol,taliye-qaran'])->group(function () {
         Route::resource('deployments', DeploymentController::class);
         Route::resource('facilities', FacilityController::class);
         Route::resource('stations', StationController::class);
@@ -75,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
     });
-    
+
     // User Profile
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
@@ -88,10 +84,10 @@ Route::middleware(['auth'])->group(function () {
     // Notifications
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])->name('index');
-        Route::get('/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('show');
+        Route::get('/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('readAll');
         Route::get('/check', [App\Http\Controllers\NotificationController::class, 'checkNew'])->name('check');
+        Route::get('/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('show');
         Route::post('/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('read');
-        Route::post('/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
         Route::delete('/{id}', [App\Http\Controllers\NotificationController::class, 'destroy'])->name('destroy');
         Route::delete('/clear/all', [App\Http\Controllers\NotificationController::class, 'destroyAll'])->name('destroy-all');
     });
@@ -101,6 +97,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/users', [\App\Http\Controllers\ChatController::class, 'fetchUsers'])->name('chat.users');
     Route::get('/chat/messages', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
     Route::post('/chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/delete', [\App\Http\Controllers\ChatController::class, 'deleteMessage'])->name('chat.delete');
+
+    // Call System Signals
+    Route::post('/chat/call/initiate', [\App\Http\Controllers\ChatController::class, 'initiateCall'])->name('chat.call.initiate');
+    Route::get('/chat/call/check', [\App\Http\Controllers\ChatController::class, 'checkIncomingCall'])->name('chat.call.check');
+    Route::post('/chat/call/respond', [\App\Http\Controllers\ChatController::class, 'respondToCall'])->name('chat.call.respond');
+    Route::post('/chat/call/end', [\App\Http\Controllers\ChatController::class, 'endCall'])->name('chat.call.end');
+    Route::post('/chat/call/signal', [\App\Http\Controllers\ChatController::class, 'sendSignal'])->name('chat.call.signal');
+    Route::get('/chat/call/signal', [\App\Http\Controllers\ChatController::class, 'getSignal'])->name('chat.call.get_signal');
+    Route::post('/chat/ping', [\App\Http\Controllers\ChatController::class, 'updatePing'])->name('chat.ping');
     // Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [App\Http\Controllers\SettingsController::class, 'index'])->name('index');

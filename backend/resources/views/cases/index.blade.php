@@ -21,15 +21,15 @@
 
 <div class="glass-card" style="padding: 1.5rem;">
     @if(session('success'))
-        <div style="background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #2ecc71;">
-            <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
-        </div>
+    <div style="background: rgba(46, 204, 113, 0.1); color: #27ae60; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #2ecc71;">
+        <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
+    </div>
     @endif
 
     @if(session('error'))
-        <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #e74c3c;">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
-        </div>
+    <div style="background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; border-left: 4px solid #e74c3c;">
+        <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
+    </div>
     @endif
 
     <div style="overflow-x: auto;">
@@ -60,31 +60,31 @@
                     </td>
                     <td style="padding: 1.2rem 1rem;">
                         @if($case->assignedOfficer)
-                            <div style="display: flex; align-items: center; gap: 0.6rem;">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($case->assignedOfficer->name) }}&size=30&background=F0F4F8&color=3498db&font-size=0.4" style="border-radius: 8px; border: 1px solid var(--border-soft);">
-                                <span style="font-size: 0.9rem; font-weight: 600;">{{ $case->assignedOfficer->name }}</span>
-                            </div>
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($case->assignedOfficer->name) }}&size=30&background=F0F4F8&color=3498db&font-size=0.4" style="border-radius: 8px; border: 1px solid var(--border-soft);">
+                            <span style="font-size: 0.9rem; font-weight: 600;">{{ $case->assignedOfficer->name }}</span>
+                        </div>
                         @else
-                            <span style="color: #e74c3c; font-size: 0.8rem; font-weight: 700; background: rgba(231, 76, 60, 0.05); padding: 0.3rem 0.6rem; border-radius: 6px;">
-                                <i class="fa-solid fa-user-slash"></i> Lama magacaabin
-                            </span>
+                        <span style="color: #e74c3c; font-size: 0.8rem; font-weight: 700; background: rgba(231, 76, 60, 0.05); padding: 0.3rem 0.6rem; border-radius: 6px;">
+                            <i class="fa-solid fa-user-slash"></i> Lama magacaabin
+                        </span>
                         @endif
                     </td>
                     <td style="padding: 1.2rem 1rem;">
                         @php
-                            $statusColors = [
-                                'assigned' => ['bg' => '#e3f2fd', 'color' => '#0d47a1', 'label' => 'Loo-xilsaaray', 'progress' => 25],
-                                'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan', 'progress' => 25],
-                                'Baarista-CID' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan CID', 'progress' => 40],
-                                'Xeer-Ilaalinta' => ['bg' => '#f3e5f5', 'color' => '#4a148c', 'label' => 'Xeer-ilaalinta', 'progress' => 60],
-                                'Maxkamadda' => ['bg' => '#efebe9', 'color' => '#3e2723', 'label' => 'Maxkamadda', 'progress' => 80],
-                                'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xiran', 'progress' => 100],
-                                'Xukunsan' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xukunsan', 'progress' => 100],
-                                'Dhamaaday' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Dhamaaday', 'progress' => 100],
-                            ];
-                            $statusData = $statusColors[$case->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436', 'label' => $case->status, 'progress' => 0];
+                        $statusColors = [
+                        'assigned' => ['bg' => '#e3f2fd', 'color' => '#0d47a1', 'label' => 'Loo-xilsaaray', 'progress' => 25],
+                        'Baaris' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan', 'progress' => 25],
+                        'Baarista-CID' => ['bg' => '#fff3e0', 'color' => '#e65100', 'label' => 'Baaritaan CID', 'progress' => 40],
+                        'Xeer-Ilaalinta' => ['bg' => '#f3e5f5', 'color' => '#4a148c', 'label' => 'Xeer-ilaalinta', 'progress' => 60],
+                        'Maxkamadda' => ['bg' => '#efebe9', 'color' => '#3e2723', 'label' => 'Maxkamadda', 'progress' => 80],
+                        'Xiran' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xiran', 'progress' => 100],
+                        'Xukunsan' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Xukunsan', 'progress' => 100],
+                        'Dhamaaday' => ['bg' => '#e8f5e9', 'color' => '#1b5e20', 'label' => 'Dhamaaday', 'progress' => 100],
+                        ];
+                        $statusData = $statusColors[$case->status] ?? ['bg' => '#f1f2f6', 'color' => '#2d3436', 'label' => $case->status, 'progress' => 0];
                         @endphp
-                        
+
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <span style="
                                 padding: 0.4rem 0.8rem; 
@@ -101,7 +101,7 @@
                                 <i class="fa-solid fa-circle" style="font-size: 0.4rem;"></i>
                                 {{ $statusData['label'] }}
                             </span>
-                            
+
                             <!-- Progress Bar -->
                             <div style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 6px; overflow: hidden;">
                                 <div style="
@@ -157,3 +157,79 @@
 </div>
 @endsection
 
+@if(session('new_case'))
+<div id="caseSuccessModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;">
+    <div style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.1); width: 90%; max-width: 500px; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.3); transform: scale(0.9); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;">
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 70px; height: 70px; background: #2ecc71; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);">
+                <i class="fa-solid fa-check fa-2x" style="color: white;"></i>
+            </div>
+            <h2 style="color: white; font-family: 'Outfit'; font-weight: 800; margin-bottom: 0.5rem;">Kiiska Waa La Diiwaangeliyay</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Macluumaadka kiiska cusub waa sida hoos ku xusan:</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">CASE NUMBER</span>
+                <span style="color: #C6F048; font-weight: 800; font-family: monospace; font-size: 1rem;">{{ session('new_case')->case_number }}</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Crime Type</span>
+                <span style="color: white; font-weight: 700;">{{ session('new_case')->crime->crime_type }}</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Occurred At</span>
+                <span style="color: white; font-weight: 600;">{{ \Carbon\Carbon::parse(session('new_case')->crime->date_committed)->format('d M, Y') }}</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Location</span>
+                <span style="color: white; font-weight: 600;">{{ session('new_case')->crime->location }}</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Status</span>
+                <span style="background: rgba(255, 165, 0, 0.2); color: orange; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">{{ session('new_case')->status }}</span>
+            </div>
+
+            <div style="margin-top: 1rem;">
+                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Description</span>
+                <p style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.5; background: rgba(0,0,0,0.2); padding: 0.8rem; border-radius: 8px; margin: 0;">
+                    {{ Str::limit(session('new_case')->crime->description, 100) }}
+                </p>
+            </div>
+        </div>
+
+        <button onclick="document.getElementById('caseSuccessModal').remove()" style="width: 100%; padding: 1rem; background: #C6F048; border: none; border-radius: 12px; color: #1C1E26; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s;">
+            FAHMAY, XIR
+        </button>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes popIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
+@endif

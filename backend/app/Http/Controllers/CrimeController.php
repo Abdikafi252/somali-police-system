@@ -21,32 +21,32 @@ class CrimeController extends Controller
     public function index(Request $request)
     {
         $query = Crime::with('reporter');
-        
+
         $user = auth()->user();
         $userRole = $user->role->slug;
-        
+
         // Role-based filtering
-        if (!in_array($userRole, ['admin', 'taliye-ciidan', 'taliye-gobol'])) {
+        if (!in_array($userRole, ['admin', 'taliye-qaran', 'taliye-gobol'])) {
             // Station-based officers only see their station's crimes
             if (in_array($userRole, ['askari', 'taliye-saldhig', 'cid'])) {
                 $query->where('reported_by', $user->id)
-                      ->orWhereHas('reporter', function($q) use ($user) {
-                          $q->where('station_id', $user->station_id);
-                      });
+                    ->orWhereHas('reporter', function ($q) use ($user) {
+                        $q->where('station_id', $user->station_id);
+                    });
             }
         }
-        
+
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('case_number', 'LIKE', "%{$search}%")
-                  ->orWhere('crime_type', 'LIKE', "%{$search}%")
-                  ->orWhere('location', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%");
+                    ->orWhere('crime_type', 'LIKE', "%{$search}%")
+                    ->orWhere('location', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
             });
         }
-        
+
         $crimes = $query->latest()->paginate(10);
         return view('crimes.index', compact('crimes'));
     }
@@ -72,11 +72,11 @@ class CrimeController extends Controller
         $year = date('Y');
         $lastCrime = Crime::whereYear('created_at', $year)->latest()->first();
         $nextNumber = 1;
-        
+
         if ($lastCrime && preg_match('/-(\d+)$/', $lastCrime->case_number, $matches)) {
             $nextNumber = intval($matches[1]) + 1;
         }
-        
+
         $caseNumber = sprintf("SNP-CR-%s-%03d", $year, $nextNumber);
 
         $crime = Crime::create([
@@ -142,14 +142,14 @@ class CrimeController extends Controller
         // Send notifications to prosecutors and judges
         $prosecutorRole = \App\Models\Role::where('slug', 'prosecutor')->first();
         $judgeRole = \App\Models\Role::where('slug', 'judge')->first();
-        
+
         if ($prosecutorRole) {
             $prosecutors = \App\Models\User::where('role_id', $prosecutorRole->id)->get();
             foreach ($prosecutors as $prosecutor) {
                 $prosecutor->notify(new \App\Notifications\CaseRegistered($crime, $caseNumber));
             }
         }
-        
+
         if ($judgeRole) {
             $judges = \App\Models\User::where('role_id', $judgeRole->id)->get();
             foreach ($judges as $judge) {
