@@ -49,4 +49,16 @@ class Station extends Model
     {
         return $this->hasMany(StationOfficer::class)->where('status', 'active');
     }
+
+    // Active Station Commander (The single active record)
+    public function activeStationCommander()
+    {
+        return $this->hasOne(StationCommander::class)->where('status', 'active')->latest();
+    }
+
+    // Accessor to get the User object of the active commander
+    public function getCurrentCommanderAttribute()
+    {
+        return $this->activeStationCommander ? $this->activeStationCommander->user : $this->commander;
+    }
 }
