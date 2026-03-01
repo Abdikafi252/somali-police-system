@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "bmewburn.vscode-intelephense-client",
+        "shufo.vscode-blade-formatter",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "onecentlin.laravel-blade",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "mikestead.dotenv",
+        "editorconfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "humao.rest-client"
+    ]
+}
