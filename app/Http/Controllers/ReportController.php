@@ -10,6 +10,7 @@ use App\Models\Deployment;
 use App\Models\Suspect;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -186,9 +187,64 @@ class ReportController extends Controller
 
     private function exportPDF()
     {
-        // Note: This requires barryvdh/laravel-dompdf package
-        // For now, return a simple message
-        return redirect()->back()->with('info', 'PDF export requires DomPDF package installation');
+        $startDate = Carbon::now()->subMonths(6)->format('Y-m-d');
+        $endDate = Carbon::now()->format('Y-m-d');
+
+        $totalCrimes = Crime::whereBetween('created_at', [$startDate, $endDate])->count();
+        $totalCases = PoliceCase::whereBetween('created_at', [$startDate, $endDate])->count();
+        $totalSuspects = Suspect::whereBetween('created_at', [$startDate, $endDate])->count();
+        $activeCases = PoliceCase::where('status', 'open')->count();
+
+        $crime_types = Crime::select('crime_type as type', \DB::raw('count(*) as total'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('crime_type')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $caseStatus = PoliceCase::select('status', \DB::raw('count(*) as total'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('status')
+            ->get();
+
+        $officer_workload = PoliceCase::select('assigned_to', \DB::raw('count(*) as total'))
+            ->whereNotNull('assigned_to')
+            ->with('assignedOfficer')
+            ->groupBy('assigned_to')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        $facility_coverage = Facility::withCount('deployments')
+            ->orderBy('deployments_count', 'desc')
+            ->get();
+
+        $suspectGender = Suspect::select('gender', \DB::raw('count(*) as total'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('gender')
+            ->get();
+
+        $resolvedCases = PoliceCase::where('status', 'closed')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+        $resolutionRate = $totalCases > 0 ? round(($resolvedCases / $totalCases) * 100, 1) : 0;
+
+        $pdf = Pdf::loadView('reports.pdf', compact(
+            'crime_types',
+            'officer_workload',
+            'facility_coverage',
+            'totalCrimes',
+            'totalCases',
+            'totalSuspects',
+            'activeCases',
+            'caseStatus',
+            'suspectGender',
+            'resolutionRate',
+            'startDate',
+            'endDate'
+        ))->setPaper('a4', 'portrait');
+
+        $filename = "somali_police_report_" . date('Y-m-d') . ".pdf";
+        return $pdf->download($filename);
     }
 
     private function exportExcel()
